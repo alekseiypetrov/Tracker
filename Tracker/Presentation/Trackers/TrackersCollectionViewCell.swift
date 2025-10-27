@@ -64,6 +64,14 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func setupCell() {
+        let views = [cardTracker, emojiLabel, pinTrackerImageView, titleOfTrackerLabel, countDaysLabel, completeButton]
+        views.forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+        contentView.addSubviews(views)
+        setupView()
+        setupQuantityManagment()
+    }
+    
     private func setupView() {
         titleOfTrackerLabel.numberOfLines = 2
         titleOfTrackerLabel.font = UIFont.systemFont(ofSize: TextSize.ofLabels, weight: .medium)
@@ -100,15 +108,17 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         completeButton.addAction(
             UIAction(handler: { [weak self] _ in
                 guard let self = self,
-                      let currentImage = completeButton.currentImage
+                      let currentImage = self.completeButton.currentImage
                 else {
                     return
                 }
                 // TODO: - Will be done later
                 if currentImage == Image.ofButtonWithPlus {
-                    completeButton.setImage(Image.ofButtonWithCheckmark, for: .normal)
+                    self.updateCountDaysLabel(1)
+                    self.completeButton.setImage(Image.ofButtonWithCheckmark, for: .normal)
                 } else {
-                    completeButton.setImage(Image.ofButtonWithPlus, for: .normal)
+                    self.updateCountDaysLabel(-1)
+                    self.completeButton.setImage(Image.ofButtonWithPlus, for: .normal)
                 }
             }),
             for: .touchUpInside)
@@ -128,11 +138,18 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    private func setupCell() {
-        let views = [cardTracker, emojiLabel, pinTrackerImageView, titleOfTrackerLabel, countDaysLabel, completeButton]
-        views.forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-        contentView.addSubviews(views)
-        setupView()
-        setupQuantityManagment()
+    private func updateCountDaysLabel(_ value: Int) {
+        guard let text = countDaysLabel.text,
+              var days = Int(text.split(separator: " ")[0]) else {
+            return
+        }
+        days += value
+        if days % 10 == 1 && days % 100 != 11 {
+            countDaysLabel.text = "\(days) день"
+        } else if Set(2...4).contains(days %  10) && !Set(2...4).contains(days %  100)  {
+            countDaysLabel.text = "\(days) дня"
+        } else {
+            countDaysLabel.text = "\(days) дней"
+        }
     }
 }
