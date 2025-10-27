@@ -168,11 +168,28 @@ final class TrackersViewController: UIViewController {
 
 extension TrackersViewController: UICollectionViewDataSource {
     private func config(_ cell: TrackersCollectionViewCell, at indexPath: IndexPath) {
-        let currentTracker = categories[indexPath.section].trackers[indexPath.row]
+        let category = categories[indexPath.section]
+        let currentTracker = category.trackers[indexPath.row]
         cell.cardTracker.backgroundColor = currentTracker.color
         cell.completeButton.tintColor = currentTracker.color
         cell.emojiLabel.text = currentTracker.emoji
-        cell.titleOfTrackerLabel.text = "\(currentTracker.name)"
+        cell.pinTrackerImageView.isHidden = category.title == "Закрепленные" ? false : true
+        
+        cell.titleOfTrackerLabel.text = currentTracker.name
+        let constraintRect = CGSize(width: cell.frame.size.width - 24.0,
+                                    height: CGFloat.greatestFiniteMagnitude)
+        let sizeOfTitleText = currentTracker.name.boundingRect(
+            with: constraintRect,
+            options: .usesLineFragmentOrigin,
+            attributes: [.font: cell.titleOfTrackerLabel.font],
+            context: nil
+        )
+        let numberOfLines = Int(ceil(sizeOfTitleText.height / cell.titleOfTrackerLabel.font.lineHeight))
+        if numberOfLines == 1 {
+            cell.titleOfTrackerLabel.text = "\n\(currentTracker.name)"
+        }
+        
+        // TODO: - Will be done later (настройка кнопки и лейбла)
     }
     
     private func config(_ header: HeaderSupplementaryView, at indexPath: IndexPath) {
