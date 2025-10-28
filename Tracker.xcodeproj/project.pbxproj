@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		97B1F95D2EB097540045D7D7 /* TrackersCollectionViewCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B1F95C2EB097540045D7D7 /* TrackersCollectionViewCellDelegate.swift */; };
 		97F381F62EABAC990013F66B /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F52EABAC990013F66B /* Tracker.swift */; };
 		97F381F82EABACA50013F66B /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F72EABACA50013F66B /* TrackerCategory.swift */; };
 		97F381FA2EABACB50013F66B /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F92EABACB50013F66B /* TrackerRecord.swift */; };
@@ -25,6 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		97B1F95C2EB097540045D7D7 /* TrackersCollectionViewCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersCollectionViewCellDelegate.swift; sourceTree = "<group>"; };
 		97F381F52EABAC990013F66B /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		97F381F72EABACA50013F66B /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		97F381F92EABACB50013F66B /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				97F9FC602EA675A90034200A /* TrackersViewController.swift */,
 				97F381FF2EAD4D4E0013F66B /* TrackersCollectionViewCell.swift */,
 				97F382042EAF94FD0013F66B /* HeaderSupplementaryView.swift */,
+				97B1F95C2EB097540045D7D7 /* TrackersCollectionViewCellDelegate.swift */,
 			);
 			path = Trackers;
 			sourceTree = "<group>";
@@ -218,6 +221,7 @@
 				97F9FC5F2EA6759C0034200A /* StatisticsViewController.swift in Sources */,
 				97F381F82EABACA50013F66B /* TrackerCategory.swift in Sources */,
 				97F9FC592EA672F60034200A /* TabBarController.swift in Sources */,
+				97B1F95D2EB097540045D7D7 /* TrackersCollectionViewCellDelegate.swift in Sources */,
 				97F9FC452EA667BE0034200A /* AppDelegate.swift in Sources */,
 				97F381FA2EABACB50013F66B /* TrackerRecord.swift in Sources */,
 				97F381FC2EABAE330013F66B /* Weekday.swift in Sources */,

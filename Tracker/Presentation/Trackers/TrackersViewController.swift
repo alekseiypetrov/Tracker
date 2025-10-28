@@ -7,6 +7,11 @@ final class TrackersViewController: UIViewController {
     private enum Constants {
         static let imageAddTrackerButton = UIImage(named: "add_tracker_image")
         static let imageOfEmptyList = UIImage(named: "empty_list_image")
+        static let imageOfButtonWithPlus = UIImage(systemName: "plus.circle.fill")?
+            .withConfiguration(UIImage.SymbolConfiguration(pointSize: Constants.sizeOfButtonInCell))
+        static let imageOfButtonWithCheckmark = UIImage(systemName: "checkmark.circle.fill")?
+            .withConfiguration(UIImage.SymbolConfiguration(pointSize: Constants.sizeOfButtonInCell))
+        static let sizeOfButtonInCell: CGFloat = 24.0
         static let addTrackerButtonSize: CGFloat = 42.0
         static let titleTrackerSizeOfText: CGFloat = 34.0
         static let titleTrackerLabelSize: CGSize = CGSize(width: 254.0, height: 41.0)
@@ -36,6 +41,9 @@ final class TrackersViewController: UIViewController {
         datePicker.preferredDatePickerStyle = .compact
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         datePicker.translatesAutoresizingMaskIntoConstraints = false
+        var calendar = Calendar(identifier: .iso8601)
+        calendar.firstWeekday = 2
+        datePicker.calendar = calendar
         return datePicker
     }()
     
@@ -93,15 +101,16 @@ final class TrackersViewController: UIViewController {
         TrackerCategory(title: "Домашний уют",
                         trackers: [
                             Tracker(id: 1, name: "Поливать растения", color: .ypRed, emoji: "❤️", timetable: [.monday]),
-                            Tracker(id: 2, name: "Помыть полы", color: .ypBlue, emoji: "😇", timetable: [.wednesday, .sunday]),
+                            Tracker(id: 2, name: "Помыть полы", color: .ypBlue, emoji: "😇", timetable: [.tuesday, .friday]),
                         ]),
         TrackerCategory(title: "Проект разгром",
                         trackers: [
-                            Tracker(id: 3, name: "Сварить мыло", color: .ypGrey, emoji: "🧼", timetable: [.monday]),
-                            Tracker(id: 4, name: "Уничтожить предмет искусства", color: .orange, emoji: "🧨", timetable: [.wednesday, .sunday]),
-                            Tracker(id: 5, name: "Подраться с незнакомцем", color: .cyan, emoji: "👊🏻", timetable: [.wednesday, .sunday]),
+                            Tracker(id: 3, name: "Сварить мыло", color: .ypGrey, emoji: "🧼", timetable: [.thursday]),
+                            Tracker(id: 4, name: "Уничтожить предмет искусства", color: .orange, emoji: "🧨", timetable: [.saturday, .tuesday]),
+                            Tracker(id: 5, name: "Подраться с незнакомцем", color: .cyan, emoji: "👊🏻", timetable: [.friday, .sunday]),
                         ])
     ]
+    private var filteredCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     
     // MARK: - Lifecycle
@@ -111,17 +120,6 @@ final class TrackersViewController: UIViewController {
         setupSubviewsAndConstraints()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if categories.isEmpty {
-            [imageViewOfEmptyList, titleOfEmptyListLabel].forEach { $0.isHidden = false }
-            collectionView.isHidden = true
-        } else {
-            [imageViewOfEmptyList, titleOfEmptyListLabel].forEach { $0.isHidden = true }
-            collectionView.isHidden = false
-        }
-    }
-    
     // MARK: - Private Methods
     
     @objc 
@@ -129,6 +127,19 @@ final class TrackersViewController: UIViewController {
         let selectedDate = sender.date
         let formattedDate = dateFormatter.string(from: selectedDate)
         print("Выбранная дата: \(formattedDate)")
+        let calendar = sender.calendar
+        print(calendar?.component(.weekday, from: selectedDate))
+        collectionView.reloadData()
+    }
+    
+    private func hideCollection() {
+        [imageViewOfEmptyList, titleOfEmptyListLabel].forEach { $0.isHidden = false }
+        collectionView.isHidden = true
+    }
+    
+    private func showCollection() {
+        [imageViewOfEmptyList, titleOfEmptyListLabel].forEach { $0.isHidden = true }
+        collectionView.isHidden = false
     }
     
     private func setupSubviewsAndConstraints() {
@@ -166,9 +177,63 @@ final class TrackersViewController: UIViewController {
     }
 }
 
+extension TrackersViewController: TrackersCollectionViewCellDelegate {
+    private func setDaysAtTracker(with id: UInt) -> String {
+        let numberOfDays = numberOfTimesCompleted(byTrackerWith: id)
+        var resultString: String
+        if numberOfDays % 10 == 1 && numberOfDays % 100 != 11 {
+            resultString = "\(numberOfDays) день"
+        } else if Set(2...4).contains(numberOfDays %  10) && !Set(12...14).contains(numberOfDays %  100)  {
+            resultString = "\(numberOfDays) дня"
+        } else {
+            resultString = "\(numberOfDays) дней"
+        }
+        return resultString
+    }
+    
+    private func numberOfTimesCompleted(byTrackerWith id: UInt) -> Int {
+        completedTrackers.filter { $0.id == id }.count
+    }
+    
+    private func setButtonImageAtTracker(with id: UInt) -> UIImage? {
+        let currentDateAtDatePicker = datePicker.date
+        let formattedCurrentDate = dateFormatter.string(from: currentDateAtDatePicker)
+        return isTrackerDone(atThisDate: formattedCurrentDate, with: id) ? Constants.imageOfButtonWithCheckmark : Constants.imageOfButtonWithPlus
+    }
+    
+    private func isTrackerDone(atThisDate date: String, with id: UInt) -> Bool {
+        return !completedTrackers
+            .filter { $0.id == id && $0.date == date }
+            .isEmpty
+    }
+    
+    func didTappedButtonInTracker(_ tracker: TrackersCollectionViewCell) {
+        let currentDateAtDatePicker = datePicker.date
+        let isItAFuture = currentDateAtDatePicker.timeIntervalSinceNow > 0
+        if isItAFuture {
+            return
+        }
+        guard let indexPath = collectionView.indexPath(for: tracker) else {
+            return
+        }
+        let formattedCurrentDate = dateFormatter.string(from: currentDateAtDatePicker)
+        let idOfTracker = filteredCategories[indexPath.section].trackers[indexPath.row].id
+        if !isTrackerDone(atThisDate: formattedCurrentDate, with: idOfTracker) {
+            let newRecord = TrackerRecord(id: idOfTracker,
+                                          date: formattedCurrentDate)
+            completedTrackers.append(newRecord)
+        } else if let indexOfTracker = completedTrackers.firstIndex(where: { $0.id == idOfTracker && $0.date == formattedCurrentDate } ) {
+            completedTrackers.remove(at: indexOfTracker)
+        }
+        tracker.countDaysLabel.text = setDaysAtTracker(with: idOfTracker)
+        tracker.completeButton.setImage(setButtonImageAtTracker(with: idOfTracker), for: .normal)
+    }
+}
+
 extension TrackersViewController: UICollectionViewDataSource {
     private func config(_ cell: TrackersCollectionViewCell, at indexPath: IndexPath) {
-        let category = categories[indexPath.section]
+        cell.delegate = self
+        let category = filteredCategories[indexPath.section]
         let currentTracker = category.trackers[indexPath.row]
         cell.cardTracker.backgroundColor = currentTracker.color
         cell.completeButton.tintColor = currentTracker.color
@@ -189,20 +254,48 @@ extension TrackersViewController: UICollectionViewDataSource {
             cell.titleOfTrackerLabel.text = "\n\(currentTracker.name)"
         }
         
-        // TODO: - Will be done later (настройка кнопки и лейбла)
+        cell.countDaysLabel.text = setDaysAtTracker(with: currentTracker.id)
+        cell.completeButton.setImage(setButtonImageAtTracker(with: currentTracker.id),
+                                     for: .normal)
     }
     
     private func config(_ header: HeaderSupplementaryView, at indexPath: IndexPath) {
-        let category = categories[indexPath.section]
+        let category = filteredCategories[indexPath.section]
         header.titleLabel.text = category.title
     }
     
+    private func filterCategories() {
+        let currentDateAtDatePicker = datePicker.date
+        guard let calendar = datePicker.calendar,
+              let weekday = Weekday(rawValue: calendar.component(.weekday, from: currentDateAtDatePicker)) else {
+            return
+        }
+        print(weekday, calendar.component(.weekday, from: currentDateAtDatePicker))
+        filteredCategories = categories
+            .filter {
+                !$0.trackers.filter {
+                    $0.timetable.contains(weekday)
+                }.isEmpty
+            }.map {
+                TrackerCategory(title: $0.title,
+                                trackers: $0.trackers.filter {
+                    $0.timetable.contains(weekday)
+                })
+            }
+    }
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return categories.count
+        filterCategories()
+        if filteredCategories.isEmpty {
+            hideCollection()
+            return 0
+        }
+        showCollection()
+        return filteredCategories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let category = categories[section]
+        let category = filteredCategories[section]
         return category.trackers.count
     }
     

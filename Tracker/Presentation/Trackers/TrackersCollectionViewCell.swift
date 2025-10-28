@@ -48,6 +48,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         static let distanceBetweenLabelAndButton: CGFloat = -8.0
     }
     
+    weak var delegate: TrackersCollectionViewCellDelegate?
     let cardTracker = UIView()
     let pinTrackerImageView = UIImageView(image: Image.ofPin)
     let emojiLabel = UILabel()
@@ -107,19 +108,8 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     private func setupQuantityManagment() {
         completeButton.addAction(
             UIAction(handler: { [weak self] _ in
-                guard let self = self,
-                      let currentImage = self.completeButton.currentImage
-                else {
-                    return
-                }
-                // TODO: - Will be done later
-                if currentImage == Image.ofButtonWithPlus {
-                    self.updateCountDaysLabel(1)
-                    self.completeButton.setImage(Image.ofButtonWithCheckmark, for: .normal)
-                } else {
-                    self.updateCountDaysLabel(-1)
-                    self.completeButton.setImage(Image.ofButtonWithPlus, for: .normal)
-                }
+                guard let self = self else { return }
+                self.delegate?.didTappedButtonInTracker(self)
             }),
             for: .touchUpInside)
         completeButton.setImage(Image.ofButtonWithPlus, for: .normal)
@@ -136,20 +126,5 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
             countDaysLabel.trailingAnchor.constraint(equalTo: completeButton.leadingAnchor, constant: -8.0),
             countDaysLabel.heightAnchor.constraint(equalToConstant: Height.ofCountDaysLabel),
         ])
-    }
-    
-    private func updateCountDaysLabel(_ value: Int) {
-        guard let text = countDaysLabel.text,
-              var days = Int(text.split(separator: " ")[0]) else {
-            return
-        }
-        days += value
-        if days % 10 == 1 && days % 100 != 11 {
-            countDaysLabel.text = "\(days) день"
-        } else if Set(2...4).contains(days %  10) && !Set(2...4).contains(days %  100)  {
-            countDaysLabel.text = "\(days) дня"
-        } else {
-            countDaysLabel.text = "\(days) дней"
-        }
     }
 }
