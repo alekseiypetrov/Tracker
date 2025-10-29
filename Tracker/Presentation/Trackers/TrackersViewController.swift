@@ -31,6 +31,11 @@ final class TrackersViewController: UIViewController {
     private lazy var addTrackerButton: UIButton = {
         let button = UIButton()
         button.setImage(Constants.imageAddTrackerButton, for: .normal)
+        button.addAction(UIAction(handler: { [weak self] _ in
+            guard let self = self else { return }
+            self.addTracker()
+        }),
+                         for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -122,6 +127,13 @@ final class TrackersViewController: UIViewController {
     
     // MARK: - Private Methods
     
+    @objc
+    private func addTracker() {
+        let createTrackerViewController = TimetableViewController()
+        let navigationController = UINavigationController(rootViewController: createTrackerViewController)
+        present(navigationController, animated: true)
+    }
+    
     @objc 
     private func datePickerValueChanged(_ sender: UIDatePicker) {
         let selectedDate = sender.date
@@ -177,6 +189,8 @@ final class TrackersViewController: UIViewController {
     }
 }
 
+// MARK: - TrackersViewController + TrackersCollectionViewCellDelegate
+
 extension TrackersViewController: TrackersCollectionViewCellDelegate {
     private func setDaysAtTracker(with id: UInt) -> String {
         let numberOfDays = numberOfTimesCompleted(byTrackerWith: id)
@@ -229,6 +243,8 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
         tracker.completeButton.setImage(setButtonImageAtTracker(with: idOfTracker), for: .normal)
     }
 }
+
+// MARK: - TrackersViewController + UICollectionViewDataSource
 
 extension TrackersViewController: UICollectionViewDataSource {
     private func config(_ cell: TrackersCollectionViewCell, at indexPath: IndexPath) {
@@ -328,6 +344,8 @@ extension TrackersViewController: UICollectionViewDataSource {
         return currentSupplementaryView
     }
 }
+
+// MARK: - TrackersViewController + UICollectionViewDelegateFlowLayout & UICollectionViewDelegate
 
 extension TrackersViewController: UICollectionViewDelegateFlowLayout & UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

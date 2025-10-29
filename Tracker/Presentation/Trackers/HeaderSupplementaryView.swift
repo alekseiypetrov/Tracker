@@ -1,9 +1,16 @@
 import UIKit
 
 final class HeaderSupplementaryView: UICollectionReusableView {
-    var titleLabel = UILabel()
+    
+    // MARK: - Static properties
     
     static let identifier = "Header"
+    
+    // MARK: - Public properties
+    
+    var titleLabel = UILabel()
+    
+    // MARK: - Initializers
     
     override init(frame: CGRect) {
         super.init(frame: frame)

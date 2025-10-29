@@ -1,7 +1,12 @@
 import UIKit
 
 final class TrackersCollectionViewCell: UICollectionViewCell {
+    
+    // MARK: - Static properties
+    
     static let identifier = "cell"
+   
+    // MARK: - Constants
     
     private enum Image {
         static let ofButtonWithPlus = UIImage(systemName: "plus.circle.fill",
@@ -37,16 +42,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         static let ofLabels: CGFloat = 12.0
     }
     
-    private enum Constraints {
-        static let topAnchorConstaintValue: CGFloat = 12.0
-        static let topAnchorConstraintOfButtonValue: CGFloat = 8.0
-        static let leadingAnchorConstraintValue: CGFloat = 12.0
-        static let trailingAnchorConstraintOfPinValue: CGFloat = -4.0
-        static let trailingAnchorConstraintValue: CGFloat = -12.0
-        static let bottomAnchorConstraintValue: CGFloat = -12.0
-        static let bottomAnchorConstraintOfButtonValue: CGFloat = -16.0
-        static let distanceBetweenLabelAndButton: CGFloat = -8.0
-    }
+    // MARK: - Public properties
     
     weak var delegate: TrackersCollectionViewCellDelegate?
     let cardTracker = UIView()
@@ -56,6 +52,8 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     let completeButton = UIButton()
     let countDaysLabel = UILabel()
     
+    // MARK: - Initializers
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupCell()
@@ -64,6 +62,8 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Private methods
     
     private func setupCell() {
         let views = [cardTracker, emojiLabel, pinTrackerImageView, titleOfTrackerLabel, countDaysLabel, completeButton]

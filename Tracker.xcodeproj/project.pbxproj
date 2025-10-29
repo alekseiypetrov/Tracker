@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		97B1F95D2EB097540045D7D7 /* TrackersCollectionViewCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B1F95C2EB097540045D7D7 /* TrackersCollectionViewCellDelegate.swift */; };
+		97CFCA812EB202F60090FD9C /* CreateTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA802EB202F60090FD9C /* CreateTrackerViewController.swift */; };
+		97CFCA832EB2030C0090FD9C /* TimetableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA822EB2030C0090FD9C /* TimetableViewController.swift */; };
+		97CFCA852EB205540090FD9C /* TimetableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA842EB205540090FD9C /* TimetableTableViewCell.swift */; };
+		97CFCA872EB22C180090FD9C /* Day.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA862EB22C180090FD9C /* Day.swift */; };
+		97CFCA8A2EB22FB00090FD9C /* CreateTrackerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA892EB22FAF0090FD9C /* CreateTrackerTableViewCell.swift */; };
+		97CFCA8D2EB22FEC0090FD9C /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA8C2EB22FEC0090FD9C /* CategoryViewController.swift */; };
 		97F381F62EABAC990013F66B /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F52EABAC990013F66B /* Tracker.swift */; };
 		97F381F82EABACA50013F66B /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F72EABACA50013F66B /* TrackerCategory.swift */; };
 		97F381FA2EABACB50013F66B /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F92EABACB50013F66B /* TrackerRecord.swift */; };
@@ -27,6 +33,12 @@
 
 /* Begin PBXFileReference section */
 		97B1F95C2EB097540045D7D7 /* TrackersCollectionViewCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersCollectionViewCellDelegate.swift; sourceTree = "<group>"; };
+		97CFCA802EB202F60090FD9C /* CreateTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerViewController.swift; sourceTree = "<group>"; };
+		97CFCA822EB2030C0090FD9C /* TimetableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableViewController.swift; sourceTree = "<group>"; };
+		97CFCA842EB205540090FD9C /* TimetableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableTableViewCell.swift; sourceTree = "<group>"; };
+		97CFCA862EB22C180090FD9C /* Day.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day.swift; sourceTree = "<group>"; };
+		97CFCA892EB22FAF0090FD9C /* CreateTrackerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerTableViewCell.swift; sourceTree = "<group>"; };
+		97CFCA8C2EB22FEC0090FD9C /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 		97F381F52EABAC990013F66B /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		97F381F72EABACA50013F66B /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		97F381F92EABACB50013F66B /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
@@ -57,6 +69,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		97CFCA7F2EB202D90090FD9C /* CreateTracker */ = {
+			isa = PBXGroup;
+			children = (
+				97CFCA802EB202F60090FD9C /* CreateTrackerViewController.swift */,
+				97CFCA892EB22FAF0090FD9C /* CreateTrackerTableViewCell.swift */,
+			);
+			path = CreateTracker;
+			sourceTree = "<group>";
+		};
+		97CFCA882EB22F8B0090FD9C /* Timetable */ = {
+			isa = PBXGroup;
+			children = (
+				97CFCA822EB2030C0090FD9C /* TimetableViewController.swift */,
+				97CFCA842EB205540090FD9C /* TimetableTableViewCell.swift */,
+			);
+			path = Timetable;
+			sourceTree = "<group>";
+		};
+		97CFCA8B2EB22FD70090FD9C /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				97CFCA8C2EB22FEC0090FD9C /* CategoryViewController.swift */,
+			);
+			path = Category;
+			sourceTree = "<group>";
+		};
 		97F381F42EABAC880013F66B /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -64,6 +102,7 @@
 				97F381F72EABACA50013F66B /* TrackerCategory.swift */,
 				97F381F92EABACB50013F66B /* TrackerRecord.swift */,
 				97F381FB2EABAE330013F66B /* Weekday.swift */,
+				97CFCA862EB22C180090FD9C /* Day.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -111,6 +150,9 @@
 		97F9FC5A2EA6755B0034200A /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				97CFCA8B2EB22FD70090FD9C /* Category */,
+				97CFCA882EB22F8B0090FD9C /* Timetable */,
+				97CFCA7F2EB202D90090FD9C /* CreateTracker */,
 				97F9FC5D2EA675890034200A /* Statistics */,
 				97F9FC5C2EA675730034200A /* Trackers */,
 				97F9FC5B2EA6756A0034200A /* TabBar */,
@@ -215,9 +257,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97CFCA8D2EB22FEC0090FD9C /* CategoryViewController.swift in Sources */,
 				97F382032EAF8F760013F66B /* UIView+addSubviews.swift in Sources */,
 				97F382002EAD4D4F0013F66B /* TrackersCollectionViewCell.swift in Sources */,
 				97F9FC492EA667BE0034200A /* ViewController.swift in Sources */,
+				97CFCA812EB202F60090FD9C /* CreateTrackerViewController.swift in Sources */,
 				97F9FC5F2EA6759C0034200A /* StatisticsViewController.swift in Sources */,
 				97F381F82EABACA50013F66B /* TrackerCategory.swift in Sources */,
 				97F9FC592EA672F60034200A /* TabBarController.swift in Sources */,
@@ -225,9 +269,13 @@
 				97F9FC452EA667BE0034200A /* AppDelegate.swift in Sources */,
 				97F381FA2EABACB50013F66B /* TrackerRecord.swift in Sources */,
 				97F381FC2EABAE330013F66B /* Weekday.swift in Sources */,
+				97CFCA8A2EB22FB00090FD9C /* CreateTrackerTableViewCell.swift in Sources */,
+				97CFCA852EB205540090FD9C /* TimetableTableViewCell.swift in Sources */,
 				97F9FC472EA667BE0034200A /* SceneDelegate.swift in Sources */,
 				97F382052EAF94FD0013F66B /* HeaderSupplementaryView.swift in Sources */,
+				97CFCA872EB22C180090FD9C /* Day.swift in Sources */,
 				97F9FC612EA675A90034200A /* TrackersViewController.swift in Sources */,
+				97CFCA832EB2030C0090FD9C /* TimetableViewController.swift in Sources */,
 				97F381F62EABAC990013F66B /* Tracker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

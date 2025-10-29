@@ -1,6 +1,9 @@
 import UIKit
 
 final class TabBarController: UITabBarController {
+    
+    // MARK: - Constants
+    
     private enum Constants {
         static let trackerBarItemImage = UIImage(named: "tracker_bar_item")?
             .withTintColor(.ypGrey)
@@ -11,12 +14,16 @@ final class TabBarController: UITabBarController {
         static let statisticsBarItemImageFilled = UIImage(named: "statistics_bar_item")?
             .withTintColor(.ypBlue)
     }
+    
+    // MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
         setupViewControllers()
     }
+    
+    // MARK: - Private methods
     
     private func setupViewControllers() {
         let trackerVC = TrackersViewController()
