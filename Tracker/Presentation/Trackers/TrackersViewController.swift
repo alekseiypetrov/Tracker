@@ -110,7 +110,7 @@ final class TrackersViewController: UIViewController {
                         ]),
         TrackerCategory(title: "Проект разгром",
                         trackers: [
-                            Tracker(id: 3, name: "Сварить мыло", color: .ypGrey, emoji: "🧼", timetable: [.thursday]),
+                            Tracker(id: 3, name: "Сварить мыло", color: .ypGray, emoji: "🧼", timetable: [.thursday]),
                             Tracker(id: 4, name: "Уничтожить предмет искусства", color: .orange, emoji: "🧨", timetable: [.saturday, .tuesday]),
                             Tracker(id: 5, name: "Подраться с незнакомцем", color: .cyan, emoji: "👊🏻", timetable: [.friday, .sunday]),
                         ])
@@ -129,7 +129,7 @@ final class TrackersViewController: UIViewController {
     
     @objc
     private func addTracker() {
-        let createTrackerViewController = TimetableViewController()
+        let createTrackerViewController = CreateTrackerViewController()
         let navigationController = UINavigationController(rootViewController: createTrackerViewController)
         present(navigationController, animated: true)
     }
@@ -286,7 +286,6 @@ extension TrackersViewController: UICollectionViewDataSource {
               let weekday = Weekday(rawValue: calendar.component(.weekday, from: currentDateAtDatePicker)) else {
             return
         }
-        print(weekday, calendar.component(.weekday, from: currentDateAtDatePicker))
         filteredCategories = categories
             .filter {
                 !$0.trackers.filter {

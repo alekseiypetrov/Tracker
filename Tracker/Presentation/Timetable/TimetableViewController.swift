@@ -16,6 +16,9 @@ final class TimetableViewController: UIViewController {
                          .foregroundColor: UIColor.ypWhite])
     }
     
+    // MARK: - Public properties
+    weak var delegate: CreateTrackerViewController?
+    
     // MARK: - Private properties
     
     private let week: [Day] = (2...7).map { Day(weekday: Weekday(rawValue: $0)) } + [Day(weekday: Weekday(rawValue: 1))]
@@ -96,9 +99,9 @@ final class TimetableViewController: UIViewController {
             acceptedDays.sort(by: { $0.orderNumber < $1.orderNumber })
             acceptedDaysInString = acceptedDays.map { $0.shortName }.joined(separator: ", ")
         }
-        dismiss(animated: true, completion: {
-            // TODO: - Will be done later (возвращение строки из выбранных дней на экран создания трекера)
-            // function(acceptedDaysInString)
+        dismiss(animated: true, completion: { [weak self] in
+            guard let self = self else { return }
+            self.delegate?.updateCell(at: 1, by: acceptedDaysInString)
         })
     }
 }

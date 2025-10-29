@@ -27,7 +27,7 @@ final class TimetableTableViewCell: UITableViewCell {
     
     lazy var switchBar: UISwitch = {
         let switchBar = UISwitch()
-        switchBar.tintColor = .ypLightGrey
+        switchBar.tintColor = .ypLightGray
         switchBar.onTintColor = .ypBlue
         switchBar.isOn = false
         switchBar.addTarget(self, action: #selector(switchIsToggled), for: .valueChanged)

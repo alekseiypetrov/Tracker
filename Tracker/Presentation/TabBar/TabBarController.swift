@@ -6,11 +6,11 @@ final class TabBarController: UITabBarController {
     
     private enum Constants {
         static let trackerBarItemImage = UIImage(named: "tracker_bar_item")?
-            .withTintColor(.ypGrey)
+            .withTintColor(.ypGray)
         static let trackerBarItemImageFilled = UIImage(named: "tracker_bar_item")?
             .withTintColor(.ypBlue)
         static let statisticsBarItemImage = UIImage(named: "statistics_bar_item")?
-            .withTintColor(.ypGrey)
+            .withTintColor(.ypGray)
         static let statisticsBarItemImageFilled = UIImage(named: "statistics_bar_item")?
             .withTintColor(.ypBlue)
     }
