@@ -19,7 +19,7 @@ final class TimetableViewController: UIViewController {
     // MARK: - Private properties
     
     private let week: [Day] = (2...7).map { Day(weekday: Weekday(rawValue: $0)) } + [Day(weekday: Weekday(rawValue: 1))]
-    private let acceptedDays: [Day] = []
+    private var acceptedDays: [Day] = []
     
     // MARK: - UI-elements
     
@@ -89,7 +89,29 @@ final class TimetableViewController: UIViewController {
     
     @objc
     private func acceptTimetable() {
-        // TODO: - Will be done later (обработка нажатия кнопки "Готово")
+        var acceptedDaysInString: String
+        if acceptedDays.count == week.count {
+            acceptedDaysInString = "Каждый день"
+        } else {
+            acceptedDays.sort(by: { $0.orderNumber < $1.orderNumber })
+            acceptedDaysInString = acceptedDays.map { $0.shortName }.joined(separator: ", ")
+        }
+        dismiss(animated: true, completion: {
+            // TODO: - Will be done later (возвращение строки из выбранных дней на экран создания трекера)
+            // function(acceptedDaysInString)
+        })
+    }
+}
+
+// MARK: - TimetableViewController + TimetableTableViewCellDelegate
+extension TimetableViewController: TimetableTableViewCellDelegate {
+    func add(day fullNameOfDay: String) {
+        guard let chosenDay = week.first(where: { $0.fullName == fullNameOfDay }) else { return }
+        acceptedDays.append(chosenDay)
+    }
+    
+    func remove(day fullNameOfDay: String) {
+        acceptedDays.removeAll(where: { $0.fullName == fullNameOfDay })
     }
 }
 
@@ -99,6 +121,7 @@ extension TimetableViewController: UITableViewDataSource {
     private func config(_ cell: TimetableTableViewCell, at indexPath: IndexPath) {
         let day = week[indexPath.row]
         cell.dayLabel.text = day.fullName
+        cell.delegate = self
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -35,6 +35,9 @@ final class TimetableTableViewCell: UITableViewCell {
         return switchBar
     }()
     
+    // MARK: - Public properties
+    weak var delegate: TimetableTableViewCellDelegate?
+    
     // MARK: - Initializers
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -50,12 +53,8 @@ final class TimetableTableViewCell: UITableViewCell {
     
     @objc
     private func switchIsToggled() {
-        // TODO: - Will be done later (Обработка выбора дня)
-        if switchBar.isOn {
-            print("On")
-        } else {
-            print("Off")
-        }
+        guard let day = dayLabel.text else { return }
+        switchBar.isOn ? delegate?.add(day: day) : delegate?.remove(day: day)
     }
     
     private func setupViewsAndConstraints() {
