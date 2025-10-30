@@ -179,7 +179,7 @@ extension CreateTrackerViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.row {
         case 0:
-            let categoryViewController = CategoryViewController()
+            let categoryViewController = ChooseCategoryViewController()
             categoryViewController.delegate = self
             let navigationController = UINavigationController(rootViewController: categoryViewController)
             present(navigationController, animated: true)
