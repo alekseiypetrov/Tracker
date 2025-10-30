@@ -77,6 +77,7 @@ final class ChooseCategoryViewController: UIViewController {
     
     // MARK: - Public properties
     
+    var selectedCategory: String?
     weak var delegate: CreateTrackerViewController?
     
     // MARK: - Private properties
@@ -178,8 +179,15 @@ extension ChooseCategoryViewController: ChooseCategoryViewControllerDelegate {
 
 extension ChooseCategoryViewController: UITableViewDataSource {
     private func config(_ cell: ChooseCategoryTableViewCell, at indexPath: IndexPath) {
-        cell.titleOfCellLabel.text = categories[indexPath.row]
-        cell.accessoryType = .none
+        let currentCategory = categories[indexPath.row]
+        cell.titleOfCellLabel.text = currentCategory
+        guard let selectedCategory,
+              selectedCategory == currentCategory else {
+            cell.imageViewOfCheckmark.isHidden = true
+            return
+        }
+        cell.imageViewOfCheckmark.isHidden = false
+        cell.accessoryView?.backgroundColor = cell.backgroundColor
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -214,12 +222,17 @@ extension ChooseCategoryViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard let cell = tableView.cellForRow(at: indexPath) else { return }
-        cell.accessoryType = .checkmark
+        guard let cell = tableView.cellForRow(at: indexPath) as? ChooseCategoryTableViewCell else { return }
+        cell.imageViewOfCheckmark.isHidden = false
         let chosenCategory = categories[indexPath.row]
         dismiss(animated: true, completion: { [weak self] in
             guard let self = self else { return }
             self.delegate?.updateCell(at: 0, by: chosenCategory)
         })
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? ChooseCategoryTableViewCell else { return }
+        cell.imageViewOfCheckmark.isHidden = true
     }
 }

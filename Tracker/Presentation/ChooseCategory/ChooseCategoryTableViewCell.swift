@@ -11,6 +11,7 @@ final class ChooseCategoryTableViewCell: UITableViewCell {
     private enum Constants {
         static let fontForLabel = UIFont.systemFont(ofSize: 17.0, weight: .regular)
         static let heightOfLabel: CGFloat = 22.0
+        static let sizeOfCheckmark: CGFloat = 24.0
     }
     
     // MARK: - UI-elements
@@ -22,6 +23,13 @@ final class ChooseCategoryTableViewCell: UITableViewCell {
         label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    lazy var imageViewOfCheckmark: UIImageView = {
+        let imageView = UIImageView(image: UIImage(systemName: "checkmark")?
+        .withTintColor(.ypBlue, renderingMode: .alwaysOriginal))
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
     }()
     
     // MARK: - Initializers
@@ -38,14 +46,20 @@ final class ChooseCategoryTableViewCell: UITableViewCell {
     // MARK: - Private methods
     
     private func setupViewsAndConstraints() {
-        contentView.addSubview(titleOfCellLabel)
+        let views = [titleOfCellLabel, imageViewOfCheckmark]
+        contentView.addSubviews(views)
         contentView.backgroundColor = .ypBackground
+        imageViewOfCheckmark.isHidden = true
         
         NSLayoutConstraint.activate([
-            titleOfCellLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -41.0),
             titleOfCellLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16.0),
             titleOfCellLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            titleOfCellLabel.trailingAnchor.constraint(greaterThanOrEqualTo: imageViewOfCheckmark.leadingAnchor, constant: 1.0),
             titleOfCellLabel.heightAnchor.constraint(equalToConstant: Constants.heightOfLabel),
+            imageViewOfCheckmark.centerYAnchor.constraint(equalTo: titleOfCellLabel.centerYAnchor),
+            imageViewOfCheckmark.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16.0),
+            imageViewOfCheckmark.widthAnchor.constraint(equalToConstant: Constants.sizeOfCheckmark),
+            imageViewOfCheckmark.heightAnchor.constraint(equalToConstant: Constants.sizeOfCheckmark),
         ])
     }
 }

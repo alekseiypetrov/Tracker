@@ -13,6 +13,7 @@ final class CreateTrackerViewController: UIViewController {
         static let borderWidth: CGFloat = 1.0
         static let fontForButtonsAndTitle = UIFont.systemFont(ofSize: 16.0, weight: .medium)
         static let fontForCellsAndTextField = UIFont.systemFont(ofSize: 17.0, weight: .regular)
+        static let maximumLenghtOfText = 38
     }
     
     // MARK: - UI-elements
@@ -28,17 +29,46 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var nameOfTracker: UITextField = {
         let textField = UITextField()
-        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 1))
-        textField.leftViewMode = .always
-        textField.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 1))
-        textField.rightViewMode = .always
         textField.placeholder = "Введите название трекера"
         textField.font = Constants.fontForCellsAndTextField
         textField.textColor = .ypBlack
         textField.backgroundColor = .ypBackground
+        textField.addTarget(self, action: #selector(textChanged), for: .allEditingEvents)
         textField.layer.cornerRadius = Constants.cornerRadiusOfUIElements
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 1))
+        textField.leftViewMode = .always
+        
+        let clearButton = UIButton(type: .custom)
+        clearButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        clearButton.tintColor = .ypGray
+        clearButton.addTarget(self, action: #selector(clearText), for: .touchUpInside)
+        clearButton.translatesAutoresizingMaskIntoConstraints = false
+        let rightView = UIView()
+        rightView.translatesAutoresizingMaskIntoConstraints = false
+        rightView.addSubview(clearButton)
+        NSLayoutConstraint.activate([
+            rightView.widthAnchor.constraint(equalToConstant: 41.0),
+            rightView.heightAnchor.constraint(equalToConstant: 75.0),
+            clearButton.widthAnchor.constraint(equalToConstant: 17),
+            clearButton.heightAnchor.constraint(equalToConstant: 17),
+            clearButton.centerXAnchor.constraint(equalTo: rightView.centerXAnchor),
+            clearButton.centerYAnchor.constraint(equalTo: rightView.centerYAnchor),
+        ])
+        textField.rightView = rightView
+        textField.rightViewMode = .whileEditing
+        
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
+    }()
+    
+    private lazy var errorLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Ограничение 38 символов"
+        label.textColor = .ypRed
+        label.textAlignment = .center
+        label.font = Constants.fontForCellsAndTextField
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
     
     private lazy var tableView: UITableView = {
@@ -53,6 +83,11 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
+        button.addAction(UIAction(handler: { [weak self] _ in
+            guard let self = self else { return }
+            self.cancelOfCreation()
+        }),
+                         for: .touchUpInside)
         button.setAttributedTitle(NSAttributedString(
             string: "Отменить",
             attributes: [.font: Constants.fontForButtonsAndTitle,
@@ -67,6 +102,11 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var createTrackerButton: UIButton = {
         let button = UIButton()
+        button.addAction(UIAction(handler: { [weak self] _ in
+            guard let self = self else { return }
+            self.createTracker()
+        }),
+                         for: .touchUpInside)
         button.setAttributedTitle(NSAttributedString(
             string: "Создать",
             attributes: [.font: Constants.fontForButtonsAndTitle,
@@ -79,6 +119,8 @@ final class CreateTrackerViewController: UIViewController {
     
     // MARK: - Private properties
     
+    private var constraintsOfErrorLabel: [NSLayoutConstraint] = []
+    private var haveChoosenParameters = [false, false]
     private let cellTitles = ["Категория", "Расписание"]
     
     // MARK: - Lifecycle
@@ -90,12 +132,47 @@ final class CreateTrackerViewController: UIViewController {
     
     // MARK: - Private methods
     
+    @objc
+    private func cancelOfCreation() {
+        dismiss(animated: true)
+    }
+    
+    @objc func createTracker() {
+        // TODO: - Will be done later (создание трекера заданной категории)
+    }
+    
+    @objc
+    private func clearText() {
+        nameOfTracker.text = ""
+        hideErrorLabel()
+        activateButton()
+    }
+    
+    @objc
+    private func textChanged() {
+        guard let currentTextInField = nameOfTracker.text else { return }
+        if currentTextInField.count > Constants.maximumLenghtOfText {
+            showErrorLabel()
+            nameOfTracker.text = String(currentTextInField.prefix(Constants.maximumLenghtOfText))
+        } else {
+            hideErrorLabel()
+        }
+        activateButton()
+    }
+    
     private func setupViewsAndConstraints() {
         let views = [titleLabel, nameOfTracker, tableView, cancelButton, createTrackerButton]
         view.addSubviews(views)
         view.backgroundColor = .ypWhite
         
-        disableButton()
+        errorLabel.isHidden = true
+        constraintsOfErrorLabel = [
+            errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            errorLabel.heightAnchor.constraint(equalToConstant: Constants.heightOfLabel),
+            errorLabel.topAnchor.constraint(equalTo: nameOfTracker.bottomAnchor, constant: 8.0),
+            errorLabel.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: -32.0),
+        ]
+        activateButton()
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 28.0),
@@ -121,14 +198,28 @@ final class CreateTrackerViewController: UIViewController {
         ])
     }
     
-    private func disableButton() {
-        createTrackerButton.isEnabled = false
-        createTrackerButton.backgroundColor = .ypGray
+    private func activateButton() {
+        if let inputedText = nameOfTracker.text,
+           !inputedText.isEmpty,
+           haveChoosenParameters.allSatisfy( { $0 == true }) {
+            createTrackerButton.isEnabled = true
+            createTrackerButton.backgroundColor = .ypBlack
+        } else {
+            createTrackerButton.isEnabled = false
+            createTrackerButton.backgroundColor = .ypGray
+        }
     }
     
-    private func enableButton() {
-        createTrackerButton.isEnabled = true
-        createTrackerButton.backgroundColor = .ypBlack
+    private func showErrorLabel() {
+        errorLabel.isHidden = false
+        view.addSubview(errorLabel)
+        NSLayoutConstraint.activate(constraintsOfErrorLabel)
+    }
+    
+    private func hideErrorLabel() {
+        errorLabel.isHidden = true
+        errorLabel.removeFromSuperview()
+        NSLayoutConstraint.deactivate(constraintsOfErrorLabel)
     }
 }
 
@@ -139,6 +230,8 @@ extension CreateTrackerViewController: CreateTrackerViewControllerDelegate {
         guard let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CreateTrackerTableViewCell else { return }
         cell.descriptionLabel.text = description
         cell.update()
+        haveChoosenParameters[index] = !description.isEmpty
+        activateButton()
     }
 }
 
@@ -183,6 +276,11 @@ extension CreateTrackerViewController: UITableViewDelegate {
             categoryViewController.delegate = self
             let navigationController = UINavigationController(rootViewController: categoryViewController)
             present(navigationController, animated: true)
+            guard let cell = tableView.cellForRow(at: indexPath) as? CreateTrackerTableViewCell,
+                  let selectedCategory = cell.descriptionLabel.text else {
+                return
+            }
+            categoryViewController.selectedCategory = selectedCategory
         case 1:
             let timetableViewController = TimetableViewController()
             timetableViewController.delegate = self
