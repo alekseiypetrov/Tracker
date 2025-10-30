@@ -18,6 +18,7 @@
 		97CFCA932EB2B27B0090FD9C /* CreateTrackerViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA922EB2B27B0090FD9C /* CreateTrackerViewControllerDelegate.swift */; };
 		97CFCA962EB369D90090FD9C /* NewCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA952EB369D90090FD9C /* NewCategoryViewController.swift */; };
 		97CFCA982EB36C7F0090FD9C /* ChooseCategoryViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA972EB36C7F0090FD9C /* ChooseCategoryViewControllerDelegate.swift */; };
+		97CFCA9A2EB3F76F0090FD9C /* ChooseCategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA992EB3F76F0090FD9C /* ChooseCategoryTableViewCell.swift */; };
 		97F381F62EABAC990013F66B /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F52EABAC990013F66B /* Tracker.swift */; };
 		97F381F82EABACA50013F66B /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F72EABACA50013F66B /* TrackerCategory.swift */; };
 		97F381FA2EABACB50013F66B /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F92EABACB50013F66B /* TrackerRecord.swift */; };
@@ -47,6 +48,7 @@
 		97CFCA922EB2B27B0090FD9C /* CreateTrackerViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerViewControllerDelegate.swift; sourceTree = "<group>"; };
 		97CFCA952EB369D90090FD9C /* NewCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCategoryViewController.swift; sourceTree = "<group>"; };
 		97CFCA972EB36C7F0090FD9C /* ChooseCategoryViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCategoryViewControllerDelegate.swift; sourceTree = "<group>"; };
+		97CFCA992EB3F76F0090FD9C /* ChooseCategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCategoryTableViewCell.swift; sourceTree = "<group>"; };
 		97F381F52EABAC990013F66B /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		97F381F72EABACA50013F66B /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		97F381F92EABACB50013F66B /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 			children = (
 				97CFCA8C2EB22FEC0090FD9C /* ChooseCategoryViewController.swift */,
 				97CFCA972EB36C7F0090FD9C /* ChooseCategoryViewControllerDelegate.swift */,
+				97CFCA992EB3F76F0090FD9C /* ChooseCategoryTableViewCell.swift */,
 			);
 			path = ChooseCategory;
 			sourceTree = "<group>";
@@ -282,6 +285,7 @@
 				97F382002EAD4D4F0013F66B /* TrackersCollectionViewCell.swift in Sources */,
 				97F9FC492EA667BE0034200A /* ViewController.swift in Sources */,
 				97CFCA8F2EB246D60090FD9C /* TimetableTableViewCellDelegate.swift in Sources */,
+				97CFCA9A2EB3F76F0090FD9C /* ChooseCategoryTableViewCell.swift in Sources */,
 				97CFCA812EB202F60090FD9C /* CreateTrackerViewController.swift in Sources */,
 				97CFCA982EB36C7F0090FD9C /* ChooseCategoryViewControllerDelegate.swift in Sources */,
 				97F9FC5F2EA6759C0034200A /* StatisticsViewController.swift in Sources */,

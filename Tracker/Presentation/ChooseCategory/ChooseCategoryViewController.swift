@@ -51,10 +51,12 @@ final class ChooseCategoryViewController: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
+        tableView.backgroundColor = .ypBackground
         tableView.allowsMultipleSelection = false
         tableView.layer.cornerRadius = Constants.cornerRadius
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.register(ChooseCategoryTableViewCell.self, forCellReuseIdentifier: ChooseCategoryTableViewCell.identifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -79,7 +81,8 @@ final class ChooseCategoryViewController: UIViewController {
     
     // MARK: - Private properties
     
-    private var categories: [String] = [] // ["Домашний уют", "Проект разгром"]
+    private var tableViewHeightConstraint: NSLayoutConstraint?
+    private var categories: [String] = ["Домашний уют", "Проект разгром"]
     
     // MARK: - Lifecycle
     
@@ -103,12 +106,18 @@ final class ChooseCategoryViewController: UIViewController {
         view.addSubviews(views)
         view.backgroundColor = .ypWhite
         
+        let heightOfTable = CGFloat(categories.count) * Constants.heightOfCell
+        tableViewHeightConstraint = tableView.heightAnchor.constraint(equalToConstant: heightOfTable)
+        guard let tableViewHeightConstraint = tableViewHeightConstraint else { return }
+        
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 28.0),
+            titleLabel.heightAnchor.constraint(equalToConstant: Constants.heightOfTitle),
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24.0),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
+            tableViewHeightConstraint,
             imageViewOfEmptyList.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageViewOfEmptyList.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -20.0),
             imageViewOfEmptyList.heightAnchor.constraint(equalToConstant: Constants.imageViewOfEmptyListSize),
@@ -140,11 +149,39 @@ extension ChooseCategoryViewController: ChooseCategoryViewControllerDelegate {
         categories.append(category)
         tableView.performBatchUpdates {
             tableView.insertRows(at: [IndexPath(row: oldCount, section: 0)], with: .automatic)
-        } completion: { _ in }
+        } completion: { [weak self] _ in
+            guard let self = self else { return }
+            self.updateTableViewHeight()
+        }
+    }
+    
+    private func updateTableViewHeight() {
+        tableView.layoutIfNeeded()
+        let contentHeight = tableView.contentSize.height
+        let maxHeight = view.safeAreaLayoutGuide.layoutFrame.height - Constants.heightOfButton - 28.0
+        
+        guard let tableViewHeightConstraint else { return }
+        if contentHeight > maxHeight {
+            tableView.isScrollEnabled = true
+            tableViewHeightConstraint.constant = maxHeight
+        } else {
+            tableView.isScrollEnabled = false
+            tableViewHeightConstraint.constant = contentHeight
+        }
+        
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self = self else { return }
+            self.view.layoutIfNeeded()
+        }
     }
 }
 
 extension ChooseCategoryViewController: UITableViewDataSource {
+    private func config(_ cell: ChooseCategoryTableViewCell, at indexPath: IndexPath) {
+        cell.titleOfCellLabel.text = categories[indexPath.row]
+        cell.accessoryType = .none
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if categories.isEmpty {
             hideTable()
@@ -156,8 +193,10 @@ extension ChooseCategoryViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.backgroundColor = .ypBackground
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ChooseCategoryTableViewCell.identifier, for: indexPath) as? ChooseCategoryTableViewCell else {
+            return UITableViewCell()
+        }
+        config(cell, at: indexPath)
         return cell
     }
 }
@@ -167,11 +206,20 @@ extension ChooseCategoryViewController: UITableViewDelegate {
         return Constants.heightOfCell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        return
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == categories.count - 1 {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+        }
     }
     
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        return
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        guard let cell = tableView.cellForRow(at: indexPath) else { return }
+        cell.accessoryType = .checkmark
+        let chosenCategory = categories[indexPath.row]
+        dismiss(animated: true, completion: { [weak self] in
+            guard let self = self else { return }
+            self.delegate?.updateCell(at: 0, by: chosenCategory)
+        })
     }
 }
