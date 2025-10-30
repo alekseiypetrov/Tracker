@@ -10,6 +10,7 @@ final class ChooseCategoryViewController: UIViewController {
         static let imageViewOfEmptyListSize: CGFloat = 80.0
         static let cornerRadius: CGFloat = 16.0
         static let titleOfEmptyListLabelHeight: CGFloat = 36.0
+        static let heightOfCell: CGFloat = 75.0
         static let heightOfButton: CGFloat = 60.0
         static let fontOfLabelUnderImage = UIFont.systemFont(ofSize: 12.0, weight: .medium)
         static let fontOfButtonAndTitle = UIFont.systemFont(ofSize: 16.0, weight: .medium)
@@ -50,6 +51,7 @@ final class ChooseCategoryViewController: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
+        tableView.allowsMultipleSelection = false
         tableView.layer.cornerRadius = Constants.cornerRadius
         tableView.delegate = self
         tableView.dataSource = self
@@ -154,10 +156,22 @@ extension ChooseCategoryViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        let cell = UITableViewCell()
+        cell.backgroundColor = .ypBackground
+        return cell
     }
 }
 
 extension ChooseCategoryViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return Constants.heightOfCell
+    }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        return
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        return
+    }
 }

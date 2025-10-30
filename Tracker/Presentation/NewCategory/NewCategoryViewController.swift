@@ -19,6 +19,7 @@ final class NewCategoryViewController: UIViewController {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Новая категория"
+        label.textColor = .ypBlack
         label.textAlignment = .center
         label.font = Constants.fontForButtonAndTitle
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -59,6 +60,16 @@ final class NewCategoryViewController: UIViewController {
         return textField
     }()
     
+    private lazy var errorLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Ограничение 38 символов"
+        label.textColor = .ypRed
+        label.textAlignment = .center
+        label.font = Constants.fontForTextField
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     private lazy var createCategoryButton: UIButton = {
         let button = UIButton()
         button.setAttributedTitle(NSAttributedString(
@@ -91,6 +102,7 @@ final class NewCategoryViewController: UIViewController {
     
     @objc 
     private func clearText() {
+        errorLabel.isHidden = true
         nameOfCategory.text = ""
         disableButtons()
     }
@@ -100,7 +112,10 @@ final class NewCategoryViewController: UIViewController {
         guard let currentTextInField = nameOfCategory.text else { return }
         currentTextInField.isEmpty ? disableButtons() : enableButtons()
         if currentTextInField.count > Constants.maximumLenghtOfText {
+            errorLabel.isHidden = false
             nameOfCategory.text = String(currentTextInField.prefix(Constants.maximumLenghtOfText))
+        } else {
+            errorLabel.isHidden = true
         }
     }
     
@@ -114,21 +129,24 @@ final class NewCategoryViewController: UIViewController {
     }
     
     private func setupViewsAndConstraints() {
-        let views = [titleLabel, nameOfCategory, createCategoryButton]
+        let views = [titleLabel, nameOfCategory, errorLabel, createCategoryButton]
         view.addSubviews(views)
         view.backgroundColor = .ypWhite
         
+        errorLabel.isHidden = true
         disableButtons()
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 28.0),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             titleLabel.heightAnchor.constraint(equalToConstant: Constants.heightOfLabel),
             nameOfCategory.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24.0),
             nameOfCategory.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             nameOfCategory.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
             nameOfCategory.heightAnchor.constraint(equalToConstant: Constants.heightOfField),
+            errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            errorLabel.topAnchor.constraint(equalTo: nameOfCategory.bottomAnchor, constant: 8.0),
+            errorLabel.heightAnchor.constraint(equalToConstant: Constants.heightOfLabel),
             createCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16.0),
             createCategoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.0),
             createCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.0),
