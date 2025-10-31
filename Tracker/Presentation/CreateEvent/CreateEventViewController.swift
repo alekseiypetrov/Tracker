@@ -130,10 +130,16 @@ final class CreateEventViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureScreenTapEvent()
         setupViewsAndConstraints()
     }
     
     // MARK: - Actions
+    
+    @objc 
+    private func hideKeyboard() {
+        view.endEditing(true)
+    }
     
     @objc
     private func cancelOfCreation() {
@@ -216,6 +222,12 @@ final class CreateEventViewController: UIViewController {
             createTrackerButton.heightAnchor.constraint(equalToConstant: Constants.heightOfButton),
             createTrackerButton.widthAnchor.constraint(equalTo: cancelButton.widthAnchor),
         ])
+    }
+    
+    private func configureScreenTapEvent() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
     }
     
     private func activateButton() {

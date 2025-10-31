@@ -9,6 +9,7 @@ final class TrackersViewController: UIViewController {
         static let imageOfEmptyList = UIImage(named: "empty_list_image")
         static let imageOfButtonWithPlus = UIImage(systemName: "plus.circle.fill")?
             .withConfiguration(UIImage.SymbolConfiguration(pointSize: Constants.sizeOfButtonInCell))
+            .withTintColor(.ypBlack)
         static let imageOfButtonWithCheckmark = UIImage(systemName: "checkmark.circle.fill")?
             .withConfiguration(UIImage.SymbolConfiguration(pointSize: Constants.sizeOfButtonInCell))
         static let sizeOfButtonInCell: CGFloat = 24.0
@@ -63,17 +64,21 @@ final class TrackersViewController: UIViewController {
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.placeholder = "Поиск"
+        searchBar.barTintColor = .ypWhite
+        searchBar.backgroundColor = .ypWhite
+        searchBar.backgroundImage = UIImage()
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         return searchBar
     }()
     
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .ypWhite
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(TrackersCollectionViewCell.self, forCellWithReuseIdentifier: TrackersCollectionViewCell.identifier)
         collectionView.register(HeaderSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderSupplementaryView.identifier)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
     
