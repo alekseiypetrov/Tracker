@@ -129,7 +129,8 @@ final class TrackersViewController: UIViewController {
     
     @objc
     private func addTracker() {
-        let createTrackerViewController = CreateTrackerViewController()
+        let createTrackerViewController = CreateHabbitViewController() // CreateTrackerViewController()
+        createTrackerViewController.delegate = self
         let navigationController = UINavigationController(rootViewController: createTrackerViewController)
         present(navigationController, animated: true)
     }
@@ -186,6 +187,21 @@ final class TrackersViewController: UIViewController {
             titleOfEmptyListLabel.topAnchor.constraint(equalTo: imageViewOfEmptyList.bottomAnchor, constant: 8.0),
             titleOfEmptyListLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
         ])
+    }
+}
+
+extension TrackersViewController: TrackersViewControllerDelegate {
+    func addNewTracker(_ tracker: Tracker, ofCategory categoryTitle: String) {
+        let index: Int = categories.firstIndex(where: { $0.title == categoryTitle }) ?? categories.count
+        if index < categories.count {
+            let category = categories[index]
+            categories[index] = TrackerCategory(title: categoryTitle,
+                                                trackers: category.trackers + [tracker])
+        } else {
+            categories.append(TrackerCategory(title: categoryTitle,
+                                              trackers: [tracker]))
+        }
+        collectionView.reloadData()
     }
 }
 

@@ -1,6 +1,6 @@
 import UIKit
 
-final class CreateTrackerTableViewCell: UITableViewCell {
+final class CreateHabbitTableViewCell: UITableViewCell {
     
     // MARK: - Static properties
     

@@ -17,7 +17,7 @@ final class TimetableViewController: UIViewController {
     }
     
     // MARK: - Public properties
-    weak var delegate: CreateTrackerViewController?
+    weak var delegate: CreateHabbitViewController?
     
     // MARK: - Private properties
     
@@ -107,6 +107,7 @@ final class TimetableViewController: UIViewController {
 }
 
 // MARK: - TimetableViewController + TimetableTableViewCellDelegate
+
 extension TimetableViewController: TimetableTableViewCellDelegate {
     func add(day fullNameOfDay: String) {
         guard let chosenDay = week.first(where: { $0.fullName == fullNameOfDay }) else { return }

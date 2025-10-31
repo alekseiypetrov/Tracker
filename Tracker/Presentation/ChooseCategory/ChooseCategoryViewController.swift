@@ -78,7 +78,7 @@ final class ChooseCategoryViewController: UIViewController {
     // MARK: - Public properties
     
     var selectedCategory: String?
-    weak var delegate: CreateTrackerViewController?
+    weak var delegate: CreateHabbitViewControllerDelegate?
     
     // MARK: - Private properties
     

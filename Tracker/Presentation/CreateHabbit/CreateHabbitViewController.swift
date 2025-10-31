@@ -1,6 +1,6 @@
 import UIKit
 
-final class CreateTrackerViewController: UIViewController {
+final class CreateHabbitViewController: UIViewController {
     
     // MARK: - Constants
     
@@ -73,7 +73,7 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.register(CreateTrackerTableViewCell.self, forCellReuseIdentifier: CreateTrackerTableViewCell.identifier)
+        tableView.register(CreateHabbitTableViewCell.self, forCellReuseIdentifier: CreateHabbitTableViewCell.identifier)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.layer.cornerRadius = Constants.cornerRadiusOfUIElements
@@ -117,10 +117,14 @@ final class CreateTrackerViewController: UIViewController {
         return button
     }()
     
+    // MARK: - Public properties
+    
+    weak var delegate: TrackersViewControllerDelegate?
+    
     // MARK: - Private properties
     
     private var constraintsOfErrorLabel: [NSLayoutConstraint] = []
-    private var haveChoosenParameters = [false, false]
+    private var selectedParameters: [String?] = [nil, nil]
     private let cellTitles = ["Категория", "Расписание"]
     
     // MARK: - Lifecycle
@@ -138,7 +142,25 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     @objc func createTracker() {
-        // TODO: - Will be done later (создание трекера заданной категории)
+        guard let name = nameOfTracker.text,
+              let category = selectedParameters[0],
+              let stringTimetable = selectedParameters[1]
+        else {
+            return
+        }
+        let timetable: [Weekday] = stringTimetable == "Каждый день"
+        ? [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
+        : stringTimetable.split(separator: ", ").map { Day.convert(from: String($0)) }
+        dismiss(animated: true, completion: { [weak self] in
+            guard let self else { return }
+            self.delegate?.addNewTracker(Tracker(
+                id: 1,
+                name: name,
+                color: .ypRed,
+                emoji: "",
+                timetable: timetable),
+                                         ofCategory: category)
+        })
     }
     
     @objc
@@ -201,7 +223,7 @@ final class CreateTrackerViewController: UIViewController {
     private func activateButton() {
         if let inputedText = nameOfTracker.text,
            !inputedText.isEmpty,
-           haveChoosenParameters.allSatisfy( { $0 == true }) {
+           selectedParameters.allSatisfy( { $0 != nil }) {
             createTrackerButton.isEnabled = true
             createTrackerButton.backgroundColor = .ypBlack
         } else {
@@ -225,20 +247,20 @@ final class CreateTrackerViewController: UIViewController {
 
 // MARK: - CreateTrackerViewController + CreateTrackerViewControllerDelegate
 
-extension CreateTrackerViewController: CreateTrackerViewControllerDelegate {
+extension CreateHabbitViewController: CreateHabbitViewControllerDelegate {
     func updateCell(at index: Int, by description: String) {
-        guard let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CreateTrackerTableViewCell else { return }
+        guard let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CreateHabbitTableViewCell else { return }
         cell.descriptionLabel.text = description
         cell.update()
-        haveChoosenParameters[index] = !description.isEmpty
+        selectedParameters[index] = !description.isEmpty ? description : nil
         activateButton()
     }
 }
 
 // MARK: - CreateTrackerViewController + UITableViewDataSource
 
-extension CreateTrackerViewController: UITableViewDataSource {
-    private func config(_ cell: CreateTrackerTableViewCell, at indexPath: IndexPath) {
+extension CreateHabbitViewController: UITableViewDataSource {
+    private func config(_ cell: CreateHabbitTableViewCell, at indexPath: IndexPath) {
         cell.titleLabel.text = cellTitles[indexPath.row]
     }
     
@@ -247,7 +269,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let currentCell = tableView.dequeueReusableCell(withIdentifier: CreateTrackerTableViewCell.identifier, for: indexPath) as? CreateTrackerTableViewCell else {
+        guard let currentCell = tableView.dequeueReusableCell(withIdentifier: CreateHabbitTableViewCell.identifier, for: indexPath) as? CreateHabbitTableViewCell else {
             return UITableViewCell()
         }
         config(currentCell, at: indexPath)
@@ -257,7 +279,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
 
 // MARK: - CreateTrackerViewController + UITableViewDelegate
 
-extension CreateTrackerViewController: UITableViewDelegate {
+extension CreateHabbitViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return Constants.heightOfCellAndField
     }
@@ -276,7 +298,7 @@ extension CreateTrackerViewController: UITableViewDelegate {
             categoryViewController.delegate = self
             let navigationController = UINavigationController(rootViewController: categoryViewController)
             present(navigationController, animated: true)
-            guard let cell = tableView.cellForRow(at: indexPath) as? CreateTrackerTableViewCell,
+            guard let cell = tableView.cellForRow(at: indexPath) as? CreateHabbitTableViewCell,
                   let selectedCategory = cell.descriptionLabel.text else {
                 return
             }

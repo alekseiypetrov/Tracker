@@ -41,4 +41,25 @@ struct Day {
             orderNumber = 7
         }
     }
+    
+    static func convert(from string: String) -> Weekday {
+        switch string {
+        case "Пн":
+            return .monday
+        case "Вт":
+            return .tuesday
+        case "Ср":
+            return .wednesday
+        case "Чт":
+            return .thursday
+        case "Пт":
+            return .friday
+        case "Сб":
+            return .saturday
+        case "Вс":
+            return .sunday
+        default:
+            return .monday
+        }
+    }
 }
