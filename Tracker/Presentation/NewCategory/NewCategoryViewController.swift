@@ -98,7 +98,7 @@ final class NewCategoryViewController: UIViewController {
         setupViewsAndConstraints()
     }
     
-    // MARK: - Private methods
+    // MARK: - Actions
     
     @objc 
     private func clearText() {
@@ -127,6 +127,8 @@ final class NewCategoryViewController: UIViewController {
             self.delegate?.addCell(withCategory: newCategory)
         })
     }
+    
+    // MARK: - Private methods
     
     private func setupViewsAndConstraints() {
         let views = [titleLabel, nameOfCategory, errorLabel, createCategoryButton]

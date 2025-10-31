@@ -17,6 +17,7 @@ final class TimetableViewController: UIViewController {
     }
     
     // MARK: - Public properties
+    
     weak var delegate: CreateHabbitViewController?
     
     // MARK: - Private properties
@@ -68,6 +69,23 @@ final class TimetableViewController: UIViewController {
         setupViewsAndConstraints()
     }
     
+    // MARK: - Actions
+    
+    @objc
+    private func acceptTimetable() {
+        var acceptedDaysInString: String
+        if acceptedDays.count == week.count {
+            acceptedDaysInString = "Каждый день"
+        } else {
+            acceptedDays.sort(by: { $0.orderNumber < $1.orderNumber })
+            acceptedDaysInString = acceptedDays.map { $0.shortName }.joined(separator: ", ")
+        }
+        dismiss(animated: true, completion: { [weak self] in
+            guard let self = self else { return }
+            self.delegate?.updateCell(at: 1, by: acceptedDaysInString)
+        })
+    }
+    
     // MARK: - Private methods
     
     private func setupViewsAndConstraints() {
@@ -88,21 +106,6 @@ final class TimetableViewController: UIViewController {
             acceptButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.0),
             acceptButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.0),
         ])
-    }
-    
-    @objc
-    private func acceptTimetable() {
-        var acceptedDaysInString: String
-        if acceptedDays.count == week.count {
-            acceptedDaysInString = "Каждый день"
-        } else {
-            acceptedDays.sort(by: { $0.orderNumber < $1.orderNumber })
-            acceptedDaysInString = acceptedDays.map { $0.shortName }.joined(separator: ", ")
-        }
-        dismiss(animated: true, completion: { [weak self] in
-            guard let self = self else { return }
-            self.delegate?.updateCell(at: 1, by: acceptedDaysInString)
-        })
     }
 }
 

@@ -1,13 +1,12 @@
 import UIKit
 
-final class CreateHabbitViewController: UIViewController {
+final class CreateEventViewController: UIViewController {
     
     // MARK: - Constants
     
     private enum Constants {
         static let heightOfLabel: CGFloat = 22.0
-        static let heightOfCellAndField: CGFloat = 75.0
-        static let heightOfTable: CGFloat = 2.0 * heightOfCellAndField
+        static let heightOfTableAndCellAndField: CGFloat = 75.0
         static let heightOfButton: CGFloat = 60.0
         static let cornerRadiusOfUIElements: CGFloat = 16.0
         static let borderWidth: CGFloat = 1.0
@@ -20,7 +19,7 @@ final class CreateHabbitViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Новая привычка"
+        label.text = "Новое нерегулярное событие"
         label.textAlignment = .center
         label.font = Constants.fontForButtonsAndTitle
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -124,7 +123,7 @@ final class CreateHabbitViewController: UIViewController {
     // MARK: - Private properties
     
     private var constraintsOfErrorLabel: [NSLayoutConstraint] = []
-    private var selectedParameters: [String?] = [nil, nil]
+    private var selectedParameter: String? = nil
     private let cellTitles = ["Категория", "Расписание"]
     
     // MARK: - Lifecycle
@@ -143,14 +142,11 @@ final class CreateHabbitViewController: UIViewController {
     
     @objc func createTracker() {
         guard let name = nameOfTracker.text,
-              let category = selectedParameters[0],
-              let stringTimetable = selectedParameters[1]
+              let category = selectedParameter
         else {
             return
         }
-        let timetable: [Weekday] = stringTimetable == "Каждый день"
-        ? [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
-        : stringTimetable.split(separator: ", ").map { Day.convert(from: String($0)) }
+        let timetable: [Weekday] = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
         dismiss(animated: true, completion: { [weak self] in
             guard let self else { return }
             self.delegate?.addNewTracker(Tracker(
@@ -206,11 +202,11 @@ final class CreateHabbitViewController: UIViewController {
             nameOfTracker.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24.0),
             nameOfTracker.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             nameOfTracker.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
-            nameOfTracker.heightAnchor.constraint(equalToConstant: Constants.heightOfCellAndField),
+            nameOfTracker.heightAnchor.constraint(equalToConstant: Constants.heightOfTableAndCellAndField),
             tableView.topAnchor.constraint(equalTo: nameOfTracker.bottomAnchor, constant: 24.0),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
-            tableView.heightAnchor.constraint(equalToConstant: Constants.heightOfTable),
+            tableView.heightAnchor.constraint(equalToConstant: Constants.heightOfTableAndCellAndField),
             cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.0),
             cancelButton.heightAnchor.constraint(equalToConstant: Constants.heightOfButton),
@@ -225,7 +221,7 @@ final class CreateHabbitViewController: UIViewController {
     private func activateButton() {
         if let inputedText = nameOfTracker.text,
            !inputedText.isEmpty,
-           selectedParameters.allSatisfy( { $0 != nil }) {
+           selectedParameter != nil {
             createTrackerButton.isEnabled = true
             createTrackerButton.backgroundColor = .ypBlack
         } else {
@@ -247,21 +243,21 @@ final class CreateHabbitViewController: UIViewController {
     }
 }
 
-// MARK: - CreateHabbitViewController + CreateHabbitViewControllerDelegate
+// MARK: - CreateEventViewController + CreateHabbitViewControllerDelegate
 
-extension CreateHabbitViewController: CreateHabbitViewControllerDelegate {
+extension CreateEventViewController: CreateHabbitViewControllerDelegate {
     func updateCell(at index: Int, by description: String) {
         guard let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CreateHabbitTableViewCell else { return }
         cell.descriptionLabel.text = description
         cell.update()
-        selectedParameters[index] = !description.isEmpty ? description : nil
+        selectedParameter = !description.isEmpty ? description : nil
         activateButton()
     }
 }
 
-// MARK: - CreateHabbitViewController + UITableViewDataSource
+// MARK: - CreateEventViewController + UITableViewDataSource
 
-extension CreateHabbitViewController: UITableViewDataSource {
+extension CreateEventViewController: UITableViewDataSource {
     private func config(_ cell: CreateHabbitTableViewCell, at indexPath: IndexPath) {
         cell.titleLabel.text = cellTitles[indexPath.row]
     }
@@ -279,17 +275,15 @@ extension CreateHabbitViewController: UITableViewDataSource {
     }
 }
 
-// MARK: - CreateHabbitViewController + UITableViewDelegate
+// MARK: - CreateEventViewController + UITableViewDelegate
 
-extension CreateHabbitViewController: UITableViewDelegate {
+extension CreateEventViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return Constants.heightOfCellAndField
+        return Constants.heightOfTableAndCellAndField
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row == cellTitles.count - 1 {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
-        }
+        cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -305,11 +299,6 @@ extension CreateHabbitViewController: UITableViewDelegate {
                 return
             }
             categoryViewController.selectedCategory = selectedCategory
-        case 1:
-            let timetableViewController = TimetableViewController()
-            timetableViewController.delegate = self
-            let navigationController = UINavigationController(rootViewController: timetableViewController)
-            present(navigationController, animated: true)
         default:
             return
         }

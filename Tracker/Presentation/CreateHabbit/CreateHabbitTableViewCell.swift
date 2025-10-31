@@ -15,12 +15,6 @@ final class CreateHabbitTableViewCell: UITableViewCell {
         static let imageOfChevron = UIImage(named: "chevron")
     }
     
-    // MARK: - Private properties
-    
-    private var hasDescription: Bool = false
-    private var centerYConstraint: NSLayoutConstraint?
-    private var topConstraint: NSLayoutConstraint?
-    
     // MARK: - UI-elements
     
     lazy var titleLabel: UILabel = {
@@ -45,6 +39,12 @@ final class CreateHabbitTableViewCell: UITableViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
+    
+    // MARK: - Private properties
+    
+    private var hasDescription: Bool = false
+    private var centerYConstraint: NSLayoutConstraint?
+    private var topConstraint: NSLayoutConstraint?
     
     // MARK: - Initializers
     

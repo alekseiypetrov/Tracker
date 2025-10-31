@@ -36,6 +36,7 @@ final class TimetableTableViewCell: UITableViewCell {
     }()
     
     // MARK: - Public properties
+    
     weak var delegate: TimetableTableViewCellDelegate?
     
     // MARK: - Initializers
@@ -49,13 +50,15 @@ final class TimetableTableViewCell: UITableViewCell {
         fatalError("Ошибка в init?(coder:)")
     }
     
-    // MARK: - Private methods
+    // MARK: - Actions
     
     @objc
     private func switchIsToggled() {
         guard let day = dayLabel.text else { return }
         switchBar.isOn ? delegate?.add(day: day) : delegate?.remove(day: day)
     }
+    
+    // MARK: - Private methods
     
     private func setupViewsAndConstraints() {
         let views = [dayLabel, switchBar]

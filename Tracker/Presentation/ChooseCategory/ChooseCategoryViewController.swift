@@ -92,7 +92,7 @@ final class ChooseCategoryViewController: UIViewController {
         setupViewsAndConstraints()
     }
     
-    // MARK: - Private methods
+    // MARK: - Actions
     
     @objc
     private func addCategory() {
@@ -101,6 +101,8 @@ final class ChooseCategoryViewController: UIViewController {
         let navigationController = UINavigationController(rootViewController: newCategoryViewController)
         present(navigationController, animated: true)
     }
+    
+    // MARK: - Private methods
     
     private func setupViewsAndConstraints() {
         let views = [titleLabel, imageViewOfEmptyList, titleOfEmptyListLabel, tableView, addCategoryButton]
@@ -144,6 +146,8 @@ final class ChooseCategoryViewController: UIViewController {
     }
 }
 
+// MARK: - ChooseCategoryViewController + ChooseCategoryViewControllerDelegate
+
 extension ChooseCategoryViewController: ChooseCategoryViewControllerDelegate {
     func addCell(withCategory category: String) {
         let oldCount = categories.count
@@ -177,6 +181,8 @@ extension ChooseCategoryViewController: ChooseCategoryViewControllerDelegate {
     }
 }
 
+// MARK: - ChooseCategoryViewController + UITableViewDataSource
+
 extension ChooseCategoryViewController: UITableViewDataSource {
     private func config(_ cell: ChooseCategoryTableViewCell, at indexPath: IndexPath) {
         let currentCategory = categories[indexPath.row]
@@ -208,6 +214,8 @@ extension ChooseCategoryViewController: UITableViewDataSource {
         return cell
     }
 }
+
+// MARK: - ChooseCategoryViewController + UITableViewDelegate
 
 extension ChooseCategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

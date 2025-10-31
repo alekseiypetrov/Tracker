@@ -46,7 +46,7 @@ final class TrackersViewController: UIViewController {
         datePicker.preferredDatePickerStyle = .compact
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         datePicker.translatesAutoresizingMaskIntoConstraints = false
-        var calendar = Calendar(identifier: .iso8601)
+        var calendar = Calendar(identifier: .gregorian)
         calendar.firstWeekday = 2
         datePicker.calendar = calendar
         return datePicker
@@ -63,7 +63,6 @@ final class TrackersViewController: UIViewController {
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.placeholder = "Поиск"
-        searchBar.searchBarStyle = .minimal
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         return searchBar
     }()
@@ -94,14 +93,13 @@ final class TrackersViewController: UIViewController {
         return label
     }()
     
-    // MARK: - Private Properties
+    // MARK: - Private properties
     
     private lazy var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.yy"
         return dateFormatter
     }()
-    
     private var categories: [TrackerCategory] = [
         TrackerCategory(title: "Домашний уют",
                         trackers: [
@@ -125,11 +123,11 @@ final class TrackersViewController: UIViewController {
         setupSubviewsAndConstraints()
     }
     
-    // MARK: - Private Methods
+    // MARK: - Actions
     
     @objc
     private func addTracker() {
-        let createTrackerViewController = CreateHabbitViewController() // CreateTrackerViewController()
+        let createTrackerViewController = CreateTrackerViewController()
         createTrackerViewController.delegate = self
         let navigationController = UINavigationController(rootViewController: createTrackerViewController)
         present(navigationController, animated: true)
@@ -137,13 +135,10 @@ final class TrackersViewController: UIViewController {
     
     @objc 
     private func datePickerValueChanged(_ sender: UIDatePicker) {
-        let selectedDate = sender.date
-        let formattedDate = dateFormatter.string(from: selectedDate)
-        print("Выбранная дата: \(formattedDate)")
-        let calendar = sender.calendar
-        print(calendar?.component(.weekday, from: selectedDate))
         collectionView.reloadData()
     }
+    
+    // MARK: - Private methods
     
     private func hideCollection() {
         [imageViewOfEmptyList, titleOfEmptyListLabel].forEach { $0.isHidden = false }
@@ -190,6 +185,8 @@ final class TrackersViewController: UIViewController {
     }
 }
 
+// MARK: - TrackersViewController + TrackersViewControllerDelegate
+
 extension TrackersViewController: TrackersViewControllerDelegate {
     func addNewTracker(_ tracker: Tracker, ofCategory categoryTitle: String) {
         let index: Int = categories.firstIndex(where: { $0.title == categoryTitle }) ?? categories.count
@@ -202,6 +199,20 @@ extension TrackersViewController: TrackersViewControllerDelegate {
                                               trackers: [tracker]))
         }
         collectionView.reloadData()
+    }
+    
+    func showViewController(whichName name: String) {
+        var navigationController: UINavigationController
+        if name == "habbit" {
+            let viewController = CreateHabbitViewController()
+            viewController.delegate = self
+            navigationController = UINavigationController(rootViewController: viewController)
+        } else {
+            let viewController = CreateEventViewController()
+            viewController.delegate = self
+            navigationController = UINavigationController(rootViewController: viewController)
+        }
+        present(navigationController, animated: true)
     }
 }
 
