@@ -16,12 +16,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="NUk-NG-k6Y">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_screen_logo" translatesAutoresizingMaskIntoConstraints="NO" id="NUk-NG-k6Y">
                                 <rect key="frame" x="151" y="379" width="91" height="94"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="91" id="M6b-XH-kas"/>
+                                    <constraint firstAttribute="height" constant="94" id="hZ5-yn-dof"/>
+                                </constraints>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Blue"/>
+                        <color key="tintColor" name="YP Blue"/>
                         <constraints>
                             <constraint firstItem="NUk-NG-k6Y" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="Eil-tr-lA7"/>
                             <constraint firstItem="NUk-NG-k6Y" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="yRb-60-KMw"/>
@@ -34,7 +40,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="logo" width="91" height="94"/>
+        <image name="launch_screen_logo" width="91" height="94"/>
         <namedColor name="YP Blue">
             <color red="0.21568627450980393" green="0.44705882352941179" blue="0.90588235294117647" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
