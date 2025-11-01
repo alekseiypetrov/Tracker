@@ -12,7 +12,7 @@ final class CreateHabbitTableViewCell: UITableViewCell {
         static let heightOfLabel: CGFloat = 22.0
         static let fontForLabel = UIFont.systemFont(ofSize: 17.0, weight: .regular)
         static let sizeOfChevron: CGFloat = 24.0
-        static let imageOfChevron = UIImage(named: "chevron")
+        static let imageOfChevron = UIImage.chevron
     }
     
     // MARK: - UI-elements

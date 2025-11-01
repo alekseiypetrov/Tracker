@@ -6,9 +6,9 @@ final class TrackersViewController: UIViewController {
     
     private enum Constants {
         enum Images {
-            static let imageAddTrackerButton = UIImage(named: "add_tracker_image")?
+            static let imageAddTrackerButton = UIImage.addTracker
                 .withTintColor(.ypBlack, renderingMode: .alwaysOriginal)
-            static let imageOfEmptyList = UIImage(named: "empty_list_image")
+            static let imageOfEmptyList = UIImage.emptyList
             static let imageOfButtonWithPlus = UIImage(systemName: "plus.circle.fill")?
                 .withConfiguration(UIImage.SymbolConfiguration(pointSize: Sizes.sizeOfButtonInCell))
             static let imageOfButtonWithCheckmark = UIImage(systemName: "checkmark.circle.fill")?

@@ -17,7 +17,7 @@ final class ChooseCategoryViewController: UIViewController {
             static let fontOfButtonAndTitle = UIFont.systemFont(ofSize: 16.0, weight: .medium)
             static let fontOfCell = UIFont.systemFont(ofSize: 17.0, weight: .regular)
         }
-        static let imageOfEmptyList = UIImage(named: "empty_list_image")
+        static let imageOfEmptyList = UIImage.emptyList
         static let cornerRadius: CGFloat = 16.0
         static let titleForButton = NSAttributedString(string: "Добавить категорию",
                                                        attributes: [.font: Fonts.fontOfButtonAndTitle,

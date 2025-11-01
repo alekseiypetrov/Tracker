@@ -6,14 +6,10 @@ final class TabBarController: UITabBarController {
     
     private enum Constants {
         enum Images {
-            static let trackerBarItemImage = UIImage(named: "tracker_bar_item")?
-                .withTintColor(.ypGray)
-            static let trackerBarItemImageFilled = UIImage(named: "tracker_bar_item")?
-                .withTintColor(.ypBlue)
-            static let statisticsBarItemImage = UIImage(named: "statistics_bar_item")?
-                .withTintColor(.ypGray)
-            static let statisticsBarItemImageFilled = UIImage(named: "statistics_bar_item")?
-                .withTintColor(.ypBlue)
+            static let trackerBarItemImage = UIImage.trackerBarItem.withTintColor(.ypGray)
+            static let trackerBarItemImageFilled = UIImage.trackerBarItem.withTintColor(.ypBlue)
+            static let statisticsBarItemImage = UIImage.statisticsBarItem.withTintColor(.ypGray)
+            static let statisticsBarItemImageFilled = UIImage.statisticsBarItem.withTintColor(.ypBlue)
         }
         static let separatorColor: UIColor = .colorAboveTabbar
     }
