@@ -221,7 +221,7 @@ extension TrackersViewController: TrackersViewControllerDelegate {
 // MARK: - TrackersViewController + TrackersCollectionViewCellDelegate
 
 extension TrackersViewController: TrackersCollectionViewCellDelegate {
-    private func setDaysAtTracker(with id: UInt) -> String {
+    func setDaysAtTracker(with id: UInt) -> String {
         let numberOfDays = numberOfTimesCompleted(byTrackerWith: id)
         var resultString: String
         if numberOfDays % 10 == 1 && numberOfDays % 100 != 11 {
@@ -237,8 +237,8 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
     private func numberOfTimesCompleted(byTrackerWith id: UInt) -> Int {
         completedTrackers.filter { $0.id == id }.count
     }
-    
-    private func setButtonImageAtTracker(with id: UInt) -> UIImage? {
+
+    func setButtonImageAtTracker(with id: UInt) -> UIImage? {
         let currentDateAtDatePicker = datePicker.date
         let formattedCurrentDate = dateFormatter.string(from: currentDateAtDatePicker)
         return isTrackerDone(atThisDate: formattedCurrentDate, with: id) ? Constants.Images.imageOfButtonWithCheckmark : Constants.Images.imageOfButtonWithPlus
@@ -268,47 +268,14 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
         } else if let indexOfTracker = completedTrackers.firstIndex(where: { $0.id == idOfTracker && $0.date == formattedCurrentDate } ) {
             completedTrackers.remove(at: indexOfTracker)
         }
-        tracker.countDaysLabel.text = setDaysAtTracker(with: idOfTracker)
-        tracker.completeButton.setImage(setButtonImageAtTracker(with: idOfTracker), for: .normal)
+        tracker.countDays = setDaysAtTracker(with: idOfTracker)
+        tracker.imageForButton = setButtonImageAtTracker(with: idOfTracker)
     }
 }
 
 // MARK: - TrackersViewController + UICollectionViewDataSource
 
 extension TrackersViewController: UICollectionViewDataSource {
-    private func config(_ cell: TrackersCollectionViewCell, at indexPath: IndexPath) {
-        cell.delegate = self
-        let category = filteredCategories[indexPath.section]
-        let currentTracker = category.trackers[indexPath.row]
-        cell.cardTracker.backgroundColor = currentTracker.color
-        cell.completeButton.tintColor = currentTracker.color
-        cell.emojiLabel.text = currentTracker.emoji
-        cell.pinTrackerImageView.isHidden = category.title == "Закрепленные" ? false : true
-        
-        cell.titleOfTrackerLabel.text = currentTracker.name
-        let constraintRect = CGSize(width: cell.frame.size.width - 24.0,
-                                    height: CGFloat.greatestFiniteMagnitude)
-        let sizeOfTitleText = currentTracker.name.boundingRect(
-            with: constraintRect,
-            options: .usesLineFragmentOrigin,
-            attributes: [.font: cell.titleOfTrackerLabel.font],
-            context: nil
-        )
-        let numberOfLines = Int(ceil(sizeOfTitleText.height / cell.titleOfTrackerLabel.font.lineHeight))
-        if numberOfLines == 1 {
-            cell.titleOfTrackerLabel.text = "\n\(currentTracker.name)"
-        }
-        
-        cell.countDaysLabel.text = setDaysAtTracker(with: currentTracker.id)
-        cell.completeButton.setImage(setButtonImageAtTracker(with: currentTracker.id),
-                                     for: .normal)
-    }
-    
-    private func config(_ header: HeaderSupplementaryView, at indexPath: IndexPath) {
-        let categoryTitle = filteredCategories[indexPath.section].title
-        header.configHeader(withTitle: categoryTitle)
-    }
-    
     private func filterCategories() {
         let currentDateAtDatePicker = datePicker.date
         guard let calendar = datePicker.calendar,
@@ -351,7 +318,13 @@ extension TrackersViewController: UICollectionViewDataSource {
         else {
             return UICollectionViewCell()
         }
-        config(currentCell, at: indexPath)
+        let category = filteredCategories[indexPath.section]
+        let currentTracker = category.trackers[indexPath.row]
+        currentCell.configCell(on: currentTracker, 
+                               isPinned: category.title != "Закрепленные")
+        currentCell.countDays = setDaysAtTracker(with: currentTracker.id)
+        currentCell.imageForButton = setButtonImageAtTracker(with: currentTracker.id)
+        currentCell.delegate = self
         return currentCell
     }
     
@@ -364,12 +337,13 @@ extension TrackersViewController: UICollectionViewDataSource {
             id = ""
         }
         
-        guard let currentSupplementaryView = collectionView
+        guard let header = collectionView
             .dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? HeaderSupplementaryView else {
             return UICollectionReusableView()
         }
-        config(currentSupplementaryView, at: indexPath)
-        return currentSupplementaryView
+        let categoryTitle = filteredCategories[indexPath.section].title
+        header.configHeader(withTitle: categoryTitle)
+        return header
     }
 }
 

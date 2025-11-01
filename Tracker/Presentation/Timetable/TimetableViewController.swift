@@ -123,12 +123,6 @@ extension TimetableViewController: TimetableTableViewCellDelegate {
 // MARK: - TimetableViewController + UITableViewDataSource
 
 extension TimetableViewController: UITableViewDataSource {
-    private func config(_ cell: TimetableTableViewCell, at indexPath: IndexPath) {
-        let day = week[indexPath.row]
-        cell.dayLabel.text = day.fullName
-        cell.delegate = self
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return week.count
     }
@@ -137,20 +131,22 @@ extension TimetableViewController: UITableViewDataSource {
         guard let currentCell = tableView.dequeueReusableCell(withIdentifier: TimetableTableViewCell.identifier, for: indexPath) as? TimetableTableViewCell else {
             return UITableViewCell()
         }
-        config(currentCell, at: indexPath)
+        let currentDay = week[indexPath.row]
+        currentCell.configCell(on: currentDay)
+        currentCell.delegate = self
         return currentCell
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row == week.count - 1 {
-            cell.separatorInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: .greatestFiniteMagnitude)
-        }
     }
 }
 
 // MARK: - TimetableViewController + UITableViewDelegate
 
 extension TimetableViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == week.count - 1 {
+            cell.separatorInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: .greatestFiniteMagnitude)
+        }
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return Constants.Sizes.heightOfCellInTable
     }

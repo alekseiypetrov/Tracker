@@ -83,14 +83,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		97CFCA7F2EB202D90090FD9C /* CreateHabbit */ = {
+		97CFCA7F2EB202D90090FD9C /* Habbit */ = {
 			isa = PBXGroup;
 			children = (
 				97CFCA802EB202F60090FD9C /* CreateHabbitViewController.swift */,
 				97CFCA892EB22FAF0090FD9C /* CreateHabbitTableViewCell.swift */,
 				97CFCA922EB2B27B0090FD9C /* CreateHabbitViewControllerDelegate.swift */,
 			);
-			path = CreateHabbit;
+			path = Habbit;
 			sourceTree = "<group>";
 		};
 		97CFCA882EB22F8B0090FD9C /* Timetable */ = {
@@ -121,17 +121,19 @@
 			path = NewCategory;
 			sourceTree = "<group>";
 		};
-		97CFCA9D2EB4E21E0090FD9C /* CreateEvent */ = {
+		97CFCA9D2EB4E21E0090FD9C /* Event */ = {
 			isa = PBXGroup;
 			children = (
 				97CFCAA12EB5059A0090FD9C /* CreateEventViewController.swift */,
 			);
-			path = CreateEvent;
+			path = Event;
 			sourceTree = "<group>";
 		};
 		97CFCA9E2EB4E2640090FD9C /* CreateTracker */ = {
 			isa = PBXGroup;
 			children = (
+				97CFCA9D2EB4E21E0090FD9C /* Event */,
+				97CFCA7F2EB202D90090FD9C /* Habbit */,
 				97CFCA9F2EB5056A0090FD9C /* CreateTrackerViewController.swift */,
 			);
 			path = CreateTracker;
@@ -194,8 +196,6 @@
 				97CFCA942EB369C40090FD9C /* NewCategory */,
 				97CFCA8B2EB22FD70090FD9C /* ChooseCategory */,
 				97CFCA882EB22F8B0090FD9C /* Timetable */,
-				97CFCA9D2EB4E21E0090FD9C /* CreateEvent */,
-				97CFCA7F2EB202D90090FD9C /* CreateHabbit */,
 				97CFCA9E2EB4E2640090FD9C /* CreateTracker */,
 				97F9FC5D2EA675890034200A /* Statistics */,
 				97F9FC5C2EA675730034200A /* Trackers */,

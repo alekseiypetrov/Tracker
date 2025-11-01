@@ -19,14 +19,14 @@ final class TimetableTableViewCell: UITableViewCell {
     
     // MARK: - UI-elements
     
-    lazy var dayLabel: UILabel = {
+    private lazy var dayLabel: UILabel = {
         let label = UILabel()
         label.text = ""
         label.font = Constants.fontForLabel
         return label
     }()
     
-    lazy var switchBar: UISwitch = {
+    private lazy var switchBar: UISwitch = {
         let switchBar = UISwitch()
         switchBar.tintColor = .ypLightGray
         switchBar.onTintColor = .ypBlue
@@ -56,6 +56,12 @@ final class TimetableTableViewCell: UITableViewCell {
     private func switchIsToggled() {
         guard let day = dayLabel.text else { return }
         switchBar.isOn ? delegate?.add(day: day) : delegate?.remove(day: day)
+    }
+    
+    // MARK: - Public methods
+    
+    func configCell(on day: Weekday) {
+        dayLabel.text = day.fullName
     }
     
     // MARK: - Private methods

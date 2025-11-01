@@ -181,18 +181,6 @@ extension ChooseCategoryViewController: ChooseCategoryViewControllerDelegate {
 // MARK: - ChooseCategoryViewController + UITableViewDataSource
 
 extension ChooseCategoryViewController: UITableViewDataSource {
-    private func config(_ cell: ChooseCategoryTableViewCell, at indexPath: IndexPath) {
-        let currentCategory = categories[indexPath.row]
-        cell.titleOfCellLabel.text = currentCategory
-        guard let selectedCategory,
-              selectedCategory == currentCategory else {
-            cell.imageViewOfCheckmark.isHidden = true
-            return
-        }
-        cell.imageViewOfCheckmark.isHidden = false
-        cell.accessoryView?.backgroundColor = cell.backgroundColor
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if categories.isEmpty {
             hideTable()
@@ -204,11 +192,17 @@ extension ChooseCategoryViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ChooseCategoryTableViewCell.identifier, for: indexPath) as? ChooseCategoryTableViewCell else {
+        guard let currentCell = tableView.dequeueReusableCell(withIdentifier: ChooseCategoryTableViewCell.identifier, for: indexPath) as? ChooseCategoryTableViewCell
+        else {
             return UITableViewCell()
         }
-        config(cell, at: indexPath)
-        return cell
+        let currentCategory = categories[indexPath.row]
+        let isSelected = selectedCategory == nil
+        ? false
+        : currentCategory == selectedCategory
+        currentCell.configCell(in: currentCategory,
+                               isSelected: isSelected)
+        return currentCell
     }
 }
 
@@ -228,7 +222,7 @@ extension ChooseCategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         guard let cell = tableView.cellForRow(at: indexPath) as? ChooseCategoryTableViewCell else { return }
-        cell.imageViewOfCheckmark.isHidden = false
+        cell.showCheckmark()
         let chosenCategory = categories[indexPath.row]
         dismiss(animated: true, completion: {
             self.delegate?.updateCell(at: 0, by: chosenCategory)
@@ -237,6 +231,6 @@ extension ChooseCategoryViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? ChooseCategoryTableViewCell else { return }
-        cell.imageViewOfCheckmark.isHidden = true
+        cell.hideCheckmark()
     }
 }

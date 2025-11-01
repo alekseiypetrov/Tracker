@@ -16,7 +16,7 @@ final class ChooseCategoryTableViewCell: UITableViewCell {
     
     // MARK: - UI-elements
     
-    lazy var titleOfCellLabel: UILabel = {
+    private lazy var titleOfCellLabel: UILabel = {
         let label = UILabel()
         label.font = Constants.fontForLabel
         label.textColor = .ypBlack
@@ -38,6 +38,22 @@ final class ChooseCategoryTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("Error in init?(coder:)")
+    }
+    
+    // MARK: - Public methods
+    
+    func configCell(in category: String, isSelected: Bool) {
+        titleOfCellLabel.text = category
+        imageViewOfCheckmark.isHidden = isSelected ? false : true
+        accessoryView?.backgroundColor = backgroundColor
+    }
+    
+    func showCheckmark() {
+        imageViewOfCheckmark.isHidden = false
+    }
+    
+    func hideCheckmark() {
+        imageViewOfCheckmark.isHidden = true
     }
     
     // MARK: - Private methods

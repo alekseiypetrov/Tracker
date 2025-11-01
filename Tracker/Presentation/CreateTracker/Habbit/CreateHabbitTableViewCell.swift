@@ -17,14 +17,14 @@ final class CreateHabbitTableViewCell: UITableViewCell {
     
     // MARK: - UI-elements
     
-    lazy var titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = Constants.fontForLabel
         label.textColor = .ypBlack
         return label
     }()
     
-    lazy var descriptionLabel: UILabel = {
+    private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
         label.font = Constants.fontForLabel
         label.textColor = .ypGray
@@ -32,9 +32,20 @@ final class CreateHabbitTableViewCell: UITableViewCell {
         return label
     }()
     
-    lazy var imageViewOfChevron: UIImageView = {
+    private lazy var imageViewOfChevron: UIImageView = {
         UIImageView(image: Constants.imageOfChevron)
     }()
+    
+    // MARK: - Public properties
+    
+    var descriptionOfParameter: String? {
+        get {
+            return descriptionLabel.text
+        }
+        set {
+            descriptionLabel.text = newValue
+        }
+    }
     
     // MARK: - Private properties
     
@@ -54,6 +65,10 @@ final class CreateHabbitTableViewCell: UITableViewCell {
     }
     
     // MARK: - Public methods
+    
+    func configCell(with title: String) {
+        titleLabel.text = title
+    }
     
     func update() {
         if let description = descriptionLabel.text,

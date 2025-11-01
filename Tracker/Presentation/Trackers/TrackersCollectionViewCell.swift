@@ -31,52 +31,126 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
             static let ofTitleLabel: CGFloat = 34.0
             static let ofCard: CGFloat = 90.0
         }
+        static let fontForLabels = UIFont.systemFont(ofSize: textSizeOfLabels, weight: .medium)
         static let textSizeOfLabels: CGFloat = 12.0
         static let colorOfBackgroundColorForEmoji: UIColor = .ypWhite.withAlphaComponent(0.3)
     }
     
+    // MARK: - UI-elements
+    
+    private lazy var cardTracker: UIView = {
+        let view = UIView()
+        view.layer.masksToBounds = true
+        view.layer.cornerRadius = Constants.CornerRadius.ofCard
+        return view
+    }()
+    
+    private lazy var pinTrackerImageView: UIImageView = {
+        let imageView = UIImageView(image: Constants.Image.ofPin)
+        imageView.tintColor = .white
+        imageView.contentMode = .center
+        return imageView
+    }()
+    
+    private lazy var emojiLabel: UILabel = {
+        let label = UILabel()
+        label.font = Constants.fontForLabels
+        label.textAlignment = .center
+        label.backgroundColor = Constants.colorOfBackgroundColorForEmoji
+        label.layer.masksToBounds = true
+        label.layer.cornerRadius = Constants.CornerRadius.ofEmojiLabel
+        return label
+    }()
+    
+    private lazy var titleOfTrackerLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 2
+        label.font = Constants.fontForLabels
+        label.textColor = .white
+        return label
+    }()
+    
+    private lazy var completeButton: UIButton = {
+        let button = UIButton()
+        button.addAction(
+            UIAction(handler: { [weak self] _ in
+                guard let self else { return }
+                self.delegate?.didTappedButtonInTracker(self)
+            }),
+            for: .touchUpInside)
+        button.setImage(Constants.Image.ofButtonWithPlus, for: .normal)
+        return button
+    }()
+    
+    private lazy var countDaysLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .ypBlack
+        label.font = Constants.fontForLabels
+        label.text = "0 дней"
+        return label
+    }()
+    
     // MARK: - Public properties
     
     weak var delegate: TrackersCollectionViewCellDelegate?
-    let cardTracker = UIView()
-    let pinTrackerImageView = UIImageView(image: Constants.Image.ofPin)
-    let emojiLabel = UILabel()
-    let titleOfTrackerLabel = UILabel()
-    let completeButton = UIButton()
-    let countDaysLabel = UILabel()
+    
+    var countDays: String? {
+        get {
+            return countDaysLabel.text
+        }
+        set {
+            countDaysLabel.text = newValue
+        }
+    }
+    
+    var imageForButton: UIImage? {
+        get {
+            return completeButton.currentImage
+        }
+        set {
+            completeButton.setImage(newValue, for: .normal)
+        }
+    }
     
     // MARK: - Initializers
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupCell()
+        setupViewsAndConstraintsInCell()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Private methods
+    // MARK: - Public methods
     
-    private func setupCell() {
-        let views = [cardTracker, emojiLabel, pinTrackerImageView, titleOfTrackerLabel, countDaysLabel, completeButton]
-        contentView.addSubviews(views)
-        setupView()
-        setupQuantityManagment()
+    func configCell(on tracker: Tracker, isPinned: Bool) {
+        cardTracker.backgroundColor = tracker.color
+        completeButton.tintColor = tracker.color
+        emojiLabel.text = tracker.emoji
+        pinTrackerImageView.isHidden = isPinned
+        
+        titleOfTrackerLabel.text = tracker.name
+        let constraintRect = CGSize(width: frame.size.width - 24.0,
+                                    height: CGFloat.greatestFiniteMagnitude)
+        let sizeOfTitleText = tracker.name.boundingRect(
+            with: constraintRect,
+            options: .usesLineFragmentOrigin,
+            attributes: [.font: Constants.fontForLabels],
+            context: nil
+        )
+        let numberOfLines = Int(ceil(sizeOfTitleText.height / titleOfTrackerLabel.font.lineHeight))
+        if numberOfLines == 1 {
+            titleOfTrackerLabel.text = "\n\(tracker.name)"
+        }
     }
     
-    private func setupView() {
-        titleOfTrackerLabel.numberOfLines = 2
-        titleOfTrackerLabel.font = UIFont.systemFont(ofSize: Constants.textSizeOfLabels, weight: .medium)
-        titleOfTrackerLabel.textColor = .white
-        pinTrackerImageView.tintColor = .white
-        pinTrackerImageView.contentMode = .center
-        emojiLabel.font = UIFont.systemFont(ofSize: Constants.textSizeOfLabels, weight: .medium)
-        emojiLabel.textAlignment = .center
-        emojiLabel.backgroundColor = Constants.colorOfBackgroundColorForEmoji
-        emojiLabel.layer.masksToBounds = true
-        emojiLabel.layer.cornerRadius = Constants.CornerRadius.ofEmojiLabel
-        cardTracker.layer.cornerRadius = Constants.CornerRadius.ofCard
+    // MARK: - Private methods
+
+    private func setupViewsAndConstraintsInCell() {
+        let views = [cardTracker, emojiLabel, pinTrackerImageView, titleOfTrackerLabel, countDaysLabel, completeButton]
+        contentView.addSubviews(views)
         NSLayoutConstraint.activate([
             cardTracker.topAnchor.constraint(equalTo: contentView.topAnchor),
             cardTracker.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -93,22 +167,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
             titleOfTrackerLabel.bottomAnchor.constraint(equalTo: cardTracker.bottomAnchor, constant: -12.0),
             titleOfTrackerLabel.leadingAnchor.constraint(equalTo: cardTracker.leadingAnchor, constant: 12.0),
             titleOfTrackerLabel.trailingAnchor.constraint(equalTo: cardTracker.trailingAnchor, constant: -12.0),
-            titleOfTrackerLabel.heightAnchor.constraint(equalToConstant: Constants.Height.ofTitleLabel)
-        ])
-    }
-    
-    private func setupQuantityManagment() {
-        completeButton.addAction(
-            UIAction(handler: { [weak self] _ in
-                guard let self else { return }
-                self.delegate?.didTappedButtonInTracker(self)
-            }),
-            for: .touchUpInside)
-        completeButton.setImage(Constants.Image.ofButtonWithPlus, for: .normal)
-        countDaysLabel.textColor = .ypBlack
-        countDaysLabel.font = UIFont.systemFont(ofSize: Constants.textSizeOfLabels, weight: .medium)
-        countDaysLabel.text = "0 дней"
-        NSLayoutConstraint.activate([
+            titleOfTrackerLabel.heightAnchor.constraint(equalToConstant: Constants.Height.ofTitleLabel),
             completeButton.topAnchor.constraint(equalTo: cardTracker.bottomAnchor, constant: 8.0),
             completeButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16.0),
             completeButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12.0),

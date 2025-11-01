@@ -1,13 +1,14 @@
 import UIKit
 
-final class CreateEventViewController: UIViewController {
+final class CreateHabbitViewController: UIViewController {
     
     // MARK: - Constants
     
     private enum Constants {
         enum Sizes {
             static let heightOfLabel: CGFloat = 22.0
-            static let heightOfTableAndCellAndField: CGFloat = 75.0
+            static let heightOfCellAndField: CGFloat = 75.0
+            static let heightOfTable: CGFloat = 2.0 * heightOfCellAndField
             static let heightOfButton: CGFloat = 60.0
         }
         enum Fonts {
@@ -23,7 +24,7 @@ final class CreateEventViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Новое нерегулярное событие"
+        label.text = "Новая привычка"
         label.textAlignment = .center
         label.font = Constants.Fonts.fontForButtonsAndTitle
         return label
@@ -121,7 +122,7 @@ final class CreateEventViewController: UIViewController {
     // MARK: - Private properties
     
     private var constraintsOfErrorLabel: [NSLayoutConstraint] = []
-    private var selectedParameter: String? = nil
+    private var selectedParameters: [String?] = [nil, nil]
     private let cellTitles = ["Категория", "Расписание"]
     
     // MARK: - Lifecycle
@@ -143,13 +144,16 @@ final class CreateEventViewController: UIViewController {
         dismiss(animated: true)
     }
     
-    private func createTracker() {
+    func createTracker() {
         guard let name = nameOfTracker.text,
-              let category = selectedParameter
+              let category = selectedParameters[0],
+              let stringTimetable = selectedParameters[1]
         else {
             return
         }
-        let timetable: [Weekday] = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
+        let timetable: [Weekday] = stringTimetable == "Каждый день"
+        ? [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
+        : stringTimetable.split(separator: ", ").map { Weekday.convert(from: String($0)) }
         dismiss(animated: true, completion: { [weak self] in
             guard let self else { return }
             self.delegate?.addNewTracker(Tracker(
@@ -205,11 +209,11 @@ final class CreateEventViewController: UIViewController {
             nameOfTracker.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24.0),
             nameOfTracker.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             nameOfTracker.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
-            nameOfTracker.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfTableAndCellAndField),
+            nameOfTracker.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfCellAndField),
             tableView.topAnchor.constraint(equalTo: nameOfTracker.bottomAnchor, constant: 24.0),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
-            tableView.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfTableAndCellAndField),
+            tableView.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfTable),
             cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.0),
             cancelButton.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfButton),
@@ -230,7 +234,7 @@ final class CreateEventViewController: UIViewController {
     private func activateButton() {
         if let inputedText = nameOfTracker.text,
            !inputedText.isEmpty,
-           selectedParameter != nil {
+           selectedParameters.allSatisfy( { $0 != nil }) {
             createTrackerButton.isEnabled = true
             createTrackerButton.backgroundColor = .ypBlack
         } else {
@@ -252,25 +256,21 @@ final class CreateEventViewController: UIViewController {
     }
 }
 
-// MARK: - CreateEventViewController + CreateHabbitViewControllerDelegate
+// MARK: - CreateHabbitViewController + CreateHabbitViewControllerDelegate
 
-extension CreateEventViewController: CreateHabbitViewControllerDelegate {
+extension CreateHabbitViewController: CreateHabbitViewControllerDelegate {
     func updateCell(at index: Int, by description: String) {
         guard let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CreateHabbitTableViewCell else { return }
-        cell.descriptionLabel.text = description
+        cell.descriptionOfParameter = description
         cell.update()
-        selectedParameter = !description.isEmpty ? description : nil
+        selectedParameters[index] = !description.isEmpty ? description : nil
         activateButton()
     }
 }
 
-// MARK: - CreateEventViewController + UITableViewDataSource
+// MARK: - CreateHabbitViewController + UITableViewDataSource
 
-extension CreateEventViewController: UITableViewDataSource {
-    private func config(_ cell: CreateHabbitTableViewCell, at indexPath: IndexPath) {
-        cell.titleLabel.text = cellTitles[indexPath.row]
-    }
-    
+extension CreateHabbitViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cellTitles.count
     }
@@ -279,20 +279,23 @@ extension CreateEventViewController: UITableViewDataSource {
         guard let currentCell = tableView.dequeueReusableCell(withIdentifier: CreateHabbitTableViewCell.identifier, for: indexPath) as? CreateHabbitTableViewCell else {
             return UITableViewCell()
         }
-        config(currentCell, at: indexPath)
+        let currentTitle = cellTitles[indexPath.row]
+        currentCell.configCell(with: currentTitle)
         return currentCell
     }
 }
 
-// MARK: - CreateEventViewController + UITableViewDelegate
+// MARK: - CreateHabbitViewController + UITableViewDelegate
 
-extension CreateEventViewController: UITableViewDelegate {
+extension CreateHabbitViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return Constants.Sizes.heightOfTableAndCellAndField
+        return Constants.Sizes.heightOfCellAndField
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+        if indexPath.row == cellTitles.count - 1 {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -304,10 +307,15 @@ extension CreateEventViewController: UITableViewDelegate {
             let navigationController = UINavigationController(rootViewController: categoryViewController)
             present(navigationController, animated: true)
             guard let cell = tableView.cellForRow(at: indexPath) as? CreateHabbitTableViewCell,
-                  let selectedCategory = cell.descriptionLabel.text else {
+                  let selectedCategory = cell.descriptionOfParameter else {
                 return
             }
             categoryViewController.selectedCategory = selectedCategory
+        case 1:
+            let timetableViewController = TimetableViewController()
+            timetableViewController.delegate = self
+            let navigationController = UINavigationController(rootViewController: timetableViewController)
+            present(navigationController, animated: true)
         default:
             return
         }
