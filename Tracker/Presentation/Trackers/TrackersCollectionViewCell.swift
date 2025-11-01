@@ -118,6 +118,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         countDaysLabel.text = "0 дней"
         NSLayoutConstraint.activate([
             completeButton.topAnchor.constraint(equalTo: cardTracker.bottomAnchor, constant: 8.0),
+            completeButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16.0),
             completeButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12.0),
             completeButton.heightAnchor.constraint(equalToConstant: Size.ofButton),
             completeButton.widthAnchor.constraint(equalToConstant: Size.ofButton),

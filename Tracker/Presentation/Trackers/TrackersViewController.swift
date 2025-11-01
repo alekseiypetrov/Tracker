@@ -5,14 +5,14 @@ final class TrackersViewController: UIViewController {
     // MARK: - Constants
     
     private enum Constants {
-        static let imageAddTrackerButton = UIImage(named: "add_tracker_image")
+        static let imageAddTrackerButton = UIImage(named: "add_tracker_image")?
+            .withTintColor(.ypBlack, renderingMode: .alwaysOriginal)
         static let imageOfEmptyList = UIImage(named: "empty_list_image")
         static let imageOfButtonWithPlus = UIImage(systemName: "plus.circle.fill")?
             .withConfiguration(UIImage.SymbolConfiguration(pointSize: Constants.sizeOfButtonInCell))
-            .withTintColor(.ypBlack)
         static let imageOfButtonWithCheckmark = UIImage(systemName: "checkmark.circle.fill")?
             .withConfiguration(UIImage.SymbolConfiguration(pointSize: Constants.sizeOfButtonInCell))
-        static let sizeOfButtonInCell: CGFloat = 24.0
+        static let sizeOfButtonInCell: CGFloat = 34.0
         static let addTrackerButtonSize: CGFloat = 42.0
         static let titleTrackerSizeOfText: CGFloat = 34.0
         static let titleTrackerLabelSize: CGSize = CGSize(width: 254.0, height: 41.0)
