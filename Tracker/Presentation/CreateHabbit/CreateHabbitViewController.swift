@@ -153,7 +153,7 @@ final class CreateHabbitViewController: UIViewController {
         }
         let timetable: [Weekday] = stringTimetable == "Каждый день"
         ? [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
-        : stringTimetable.split(separator: ", ").map { Day.convert(from: String($0)) }
+        : stringTimetable.split(separator: ", ").map { Weekday.convert(from: String($0)) }
         dismiss(animated: true, completion: { [weak self] in
             guard let self else { return }
             self.delegate?.addNewTracker(Tracker(

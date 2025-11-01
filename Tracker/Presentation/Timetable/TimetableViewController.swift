@@ -24,8 +24,8 @@ final class TimetableViewController: UIViewController {
     
     // MARK: - Private properties
     
-    private let week: [Day] = (2...7).map { Day(weekday: Weekday(rawValue: $0)) } + [Day(weekday: Weekday(rawValue: 1))]
-    private var acceptedDays: [Day] = []
+    private let week: [Weekday] = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
+    private var acceptedDays: [Weekday] = []
     
     // MARK: - UI-elements
     
