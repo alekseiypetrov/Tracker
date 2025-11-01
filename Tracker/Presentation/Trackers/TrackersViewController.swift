@@ -127,7 +127,6 @@ final class TrackersViewController: UIViewController {
     
     // MARK: - Actions
     
-    @objc
     private func addTracker() {
         let createTrackerViewController = CreateTrackerViewController()
         createTrackerViewController.delegate = self
@@ -203,13 +202,14 @@ extension TrackersViewController: TrackersViewControllerDelegate {
         collectionView.reloadData()
     }
     
-    func showViewController(whichName name: String) {
+    func showViewController(whichName name: ViewController) {
         var navigationController: UINavigationController
-        if name == "habbit" {
+        switch name {
+        case .habbit:
             let viewController = CreateHabbitViewController()
             viewController.delegate = self
             navigationController = UINavigationController(rootViewController: viewController)
-        } else {
+        case .event:
             let viewController = CreateEventViewController()
             viewController.delegate = self
             navigationController = UINavigationController(rootViewController: viewController)
@@ -305,8 +305,8 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     private func config(_ header: HeaderSupplementaryView, at indexPath: IndexPath) {
-        let category = filteredCategories[indexPath.section]
-        header.titleLabel.text = category.title
+        let categoryTitle = filteredCategories[indexPath.section].title
+        header.configHeader(withTitle: categoryTitle)
     }
     
     private func filterCategories() {

@@ -140,12 +140,11 @@ final class CreateHabbitViewController: UIViewController {
         view.endEditing(true)
     }
     
-    @objc
     private func cancelOfCreation() {
         dismiss(animated: true)
     }
     
-    @objc func createTracker() {
+    func createTracker() {
         guard let name = nameOfTracker.text,
               let category = selectedParameters[0],
               let stringTimetable = selectedParameters[1]

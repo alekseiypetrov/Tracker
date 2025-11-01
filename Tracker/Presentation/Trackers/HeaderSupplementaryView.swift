@@ -6,9 +6,9 @@ final class HeaderSupplementaryView: UICollectionReusableView {
     
     static let identifier = "Header"
     
-    // MARK: - Public properties
+    // MARK: - Private properties
     
-    var titleLabel = UILabel()
+    private let titleLabel = UILabel()
     
     // MARK: - Initializers
     
@@ -30,5 +30,11 @@ final class HeaderSupplementaryView: UICollectionReusableView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Public methods
+    
+    func configHeader(withTitle title: String) {
+        titleLabel.text = title
     }
 }

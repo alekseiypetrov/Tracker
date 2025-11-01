@@ -134,17 +134,16 @@ final class CreateEventViewController: UIViewController {
     
     // MARK: - Actions
     
-    @objc 
+    @objc
     private func hideKeyboard() {
         view.endEditing(true)
     }
     
-    @objc
     private func cancelOfCreation() {
         dismiss(animated: true)
     }
     
-    @objc func createTracker() {
+    private func createTracker() {
         guard let name = nameOfTracker.text,
               let category = selectedParameter
         else {

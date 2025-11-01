@@ -22,6 +22,7 @@
 		97CFCA9C2EB4D3560090FD9C /* TrackersViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA9B2EB4D3560090FD9C /* TrackersViewControllerDelegate.swift */; };
 		97CFCAA02EB5056A0090FD9C /* CreateTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA9F2EB5056A0090FD9C /* CreateTrackerViewController.swift */; };
 		97CFCAA22EB5059A0090FD9C /* CreateEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCAA12EB5059A0090FD9C /* CreateEventViewController.swift */; };
+		97CFCAA62EB65DE80090FD9C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCAA52EB65DE80090FD9C /* ViewController.swift */; };
 		97F381F62EABAC990013F66B /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F52EABAC990013F66B /* Tracker.swift */; };
 		97F381F82EABACA50013F66B /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F72EABACA50013F66B /* TrackerCategory.swift */; };
 		97F381FA2EABACB50013F66B /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F92EABACB50013F66B /* TrackerRecord.swift */; };
@@ -54,6 +55,7 @@
 		97CFCA9B2EB4D3560090FD9C /* TrackersViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewControllerDelegate.swift; sourceTree = "<group>"; };
 		97CFCA9F2EB5056A0090FD9C /* CreateTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerViewController.swift; sourceTree = "<group>"; };
 		97CFCAA12EB5059A0090FD9C /* CreateEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateEventViewController.swift; sourceTree = "<group>"; };
+		97CFCAA52EB65DE80090FD9C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		97F381F52EABAC990013F66B /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		97F381F72EABACA50013F66B /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		97F381F92EABACB50013F66B /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				97F381F92EABACB50013F66B /* TrackerRecord.swift */,
 				97F381FB2EABAE330013F66B /* Weekday.swift */,
 				97CFCA862EB22C180090FD9C /* Day.swift */,
+				97CFCAA52EB65DE80090FD9C /* ViewController.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -320,6 +323,7 @@
 				97F381FA2EABACB50013F66B /* TrackerRecord.swift in Sources */,
 				97F381FC2EABAE330013F66B /* Weekday.swift in Sources */,
 				97CFCA8A2EB22FB00090FD9C /* CreateHabbitTableViewCell.swift in Sources */,
+				97CFCAA62EB65DE80090FD9C /* ViewController.swift in Sources */,
 				97CFCA852EB205540090FD9C /* TimetableTableViewCell.swift in Sources */,
 				97F9FC472EA667BE0034200A /* SceneDelegate.swift in Sources */,
 				97F382052EAF94FD0013F66B /* HeaderSupplementaryView.swift in Sources */,

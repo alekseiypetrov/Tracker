@@ -92,7 +92,6 @@ final class ChooseCategoryViewController: UIViewController {
     
     // MARK: - Actions
     
-    @objc
     private func addCategory() {
         let newCategoryViewController = NewCategoryViewController()
         newCategoryViewController.delegate = self

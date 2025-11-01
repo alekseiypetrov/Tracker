@@ -119,7 +119,6 @@ final class NewCategoryViewController: UIViewController {
         }
     }
     
-    @objc
     private func addCategory() {
         guard let newCategory = nameOfCategory.text else { return }
         dismiss(animated: true, completion: { [weak self] in

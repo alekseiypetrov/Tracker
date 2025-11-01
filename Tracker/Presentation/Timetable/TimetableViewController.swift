@@ -70,7 +70,6 @@ final class TimetableViewController: UIViewController {
     
     // MARK: - Actions
     
-    @objc
     private func acceptTimetable() {
         var acceptedDaysInString: String
         if acceptedDays.count == week.count {

@@ -65,19 +65,17 @@ final class CreateTrackerViewController: UIViewController {
     
     // MARK: - Actions
     
-    @objc
     private func createHabbit() {
         dismiss(animated: true, completion: { [weak self] in
             guard let self else { return }
-            self.delegate?.showViewController(whichName: "habbit")
+            self.delegate?.showViewController(whichName: .habbit)
         })
     }
     
-    @objc
     private func createEvent() {
         dismiss(animated: true, completion: { [weak self] in
             guard let self else { return }
-            self.delegate?.showViewController(whichName: "event")
+            self.delegate?.showViewController(whichName: .event)
         })
     }
     
