@@ -5,12 +5,16 @@ final class NewCategoryViewController: UIViewController {
     // MARK: - Constants
     
     private enum Constants {
-        static let heightOfLabel: CGFloat = 22.0
-        static let heightOfField: CGFloat = 75.0
-        static let heightOfButton: CGFloat = 60.0
+        enum Sizes {
+            static let heightOfLabel: CGFloat = 22.0
+            static let heightOfField: CGFloat = 75.0
+            static let heightOfButton: CGFloat = 60.0
+        }
+        enum Fonts {
+            static let fontForButtonAndTitle = UIFont.systemFont(ofSize: 16.0, weight: .medium)
+            static let fontForTextField = UIFont.systemFont(ofSize: 17.0, weight: .regular)
+        }
         static let cornerRadiusOfUIElements: CGFloat = 16.0
-        static let fontForButtonAndTitle = UIFont.systemFont(ofSize: 16.0, weight: .medium)
-        static let fontForTextField = UIFont.systemFont(ofSize: 17.0, weight: .regular)
         static let maximumLenghtOfText: Int = 38
     }
     
@@ -21,14 +25,14 @@ final class NewCategoryViewController: UIViewController {
         label.text = "Новая категория"
         label.textColor = .ypBlack
         label.textAlignment = .center
-        label.font = Constants.fontForButtonAndTitle
+        label.font = Constants.Fonts.fontForButtonAndTitle
         return label
     }()
     
     private lazy var nameOfCategory: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Введите название категории"
-        textField.font = Constants.fontForTextField
+        textField.font = Constants.Fonts.fontForTextField
         textField.textColor = .ypBlack
         textField.backgroundColor = .ypBackground
         textField.addTarget(self, action: #selector(textChanged), for: .allEditingEvents)
@@ -63,7 +67,7 @@ final class NewCategoryViewController: UIViewController {
         label.text = "Ограничение 38 символов"
         label.textColor = .ypRed
         label.textAlignment = .center
-        label.font = Constants.fontForTextField
+        label.font = Constants.Fonts.fontForTextField
         return label
     }()
     
@@ -71,11 +75,11 @@ final class NewCategoryViewController: UIViewController {
         let button = UIButton()
         button.setAttributedTitle(NSAttributedString(
             string: "Готово",
-            attributes: [.font: Constants.fontForButtonAndTitle,
+            attributes: [.font: Constants.Fonts.fontForButtonAndTitle,
                          .foregroundColor: UIColor.ypWhite]),
                                   for: .normal)
         button.addAction(UIAction(handler: { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.addCategory()
         }),
                          for: .touchUpInside)
@@ -119,7 +123,7 @@ final class NewCategoryViewController: UIViewController {
     private func addCategory() {
         guard let newCategory = nameOfCategory.text else { return }
         dismiss(animated: true, completion: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.delegate?.addCell(withCategory: newCategory)
         })
     }
@@ -137,18 +141,18 @@ final class NewCategoryViewController: UIViewController {
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 28.0),
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            titleLabel.heightAnchor.constraint(equalToConstant: Constants.heightOfLabel),
+            titleLabel.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfLabel),
             nameOfCategory.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24.0),
             nameOfCategory.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             nameOfCategory.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
-            nameOfCategory.heightAnchor.constraint(equalToConstant: Constants.heightOfField),
+            nameOfCategory.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfField),
             errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             errorLabel.topAnchor.constraint(equalTo: nameOfCategory.bottomAnchor, constant: 8.0),
-            errorLabel.heightAnchor.constraint(equalToConstant: Constants.heightOfLabel),
+            errorLabel.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfLabel),
             createCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16.0),
             createCategoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.0),
             createCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.0),
-            createCategoryButton.heightAnchor.constraint(equalToConstant: Constants.heightOfButton),
+            createCategoryButton.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfButton),
         ])
     }
     

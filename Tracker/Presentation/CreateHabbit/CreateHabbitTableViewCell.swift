@@ -4,7 +4,7 @@ final class CreateHabbitTableViewCell: UITableViewCell {
     
     // MARK: - Static properties
     
-    static let identifier = "cell"
+    static let identifier = "parameterOfNewTrackerCellIdentifier"
     
     // MARK: - Constants
     

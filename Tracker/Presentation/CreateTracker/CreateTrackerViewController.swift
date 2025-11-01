@@ -25,7 +25,7 @@ final class CreateTrackerViewController: UIViewController {
     private lazy var chooseHabbitButton: UIButton = {
         let button = UIButton()
         button.addAction(UIAction(handler: { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.createHabbit()
         }),
                          for: .touchUpInside)
@@ -40,7 +40,7 @@ final class CreateTrackerViewController: UIViewController {
     private lazy var chooseEventButton: UIButton = {
         let button = UIButton()
         button.addAction(UIAction(handler: { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.createEvent()
         }),
                          for: .touchUpInside)
@@ -68,7 +68,7 @@ final class CreateTrackerViewController: UIViewController {
     @objc
     private func createHabbit() {
         dismiss(animated: true, completion: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.delegate?.showViewController(whichName: "habbit")
         })
     }
@@ -76,7 +76,7 @@ final class CreateTrackerViewController: UIViewController {
     @objc
     private func createEvent() {
         dismiss(animated: true, completion: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.delegate?.showViewController(whichName: "event")
         })
     }

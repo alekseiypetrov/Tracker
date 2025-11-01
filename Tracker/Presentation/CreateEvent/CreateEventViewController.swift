@@ -5,13 +5,17 @@ final class CreateEventViewController: UIViewController {
     // MARK: - Constants
     
     private enum Constants {
-        static let heightOfLabel: CGFloat = 22.0
-        static let heightOfTableAndCellAndField: CGFloat = 75.0
-        static let heightOfButton: CGFloat = 60.0
+        enum Sizes {
+            static let heightOfLabel: CGFloat = 22.0
+            static let heightOfTableAndCellAndField: CGFloat = 75.0
+            static let heightOfButton: CGFloat = 60.0
+        }
+        enum Fonts {
+            static let fontForButtonsAndTitle = UIFont.systemFont(ofSize: 16.0, weight: .medium)
+            static let fontForCellsAndTextField = UIFont.systemFont(ofSize: 17.0, weight: .regular)
+        }
         static let cornerRadiusOfUIElements: CGFloat = 16.0
         static let borderWidth: CGFloat = 1.0
-        static let fontForButtonsAndTitle = UIFont.systemFont(ofSize: 16.0, weight: .medium)
-        static let fontForCellsAndTextField = UIFont.systemFont(ofSize: 17.0, weight: .regular)
         static let maximumLenghtOfText = 38
     }
     
@@ -21,14 +25,14 @@ final class CreateEventViewController: UIViewController {
         let label = UILabel()
         label.text = "Новое нерегулярное событие"
         label.textAlignment = .center
-        label.font = Constants.fontForButtonsAndTitle
+        label.font = Constants.Fonts.fontForButtonsAndTitle
         return label
     }()
     
     private lazy var nameOfTracker: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Введите название трекера"
-        textField.font = Constants.fontForCellsAndTextField
+        textField.font = Constants.Fonts.fontForCellsAndTextField
         textField.textColor = .ypBlack
         textField.backgroundColor = .ypBackground
         textField.addTarget(self, action: #selector(textChanged), for: .allEditingEvents)
@@ -63,7 +67,7 @@ final class CreateEventViewController: UIViewController {
         label.text = "Ограничение 38 символов"
         label.textColor = .ypRed
         label.textAlignment = .center
-        label.font = Constants.fontForCellsAndTextField
+        label.font = Constants.Fonts.fontForCellsAndTextField
         return label
     }()
     
@@ -79,13 +83,13 @@ final class CreateEventViewController: UIViewController {
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
         button.addAction(UIAction(handler: { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.cancelOfCreation()
         }),
                          for: .touchUpInside)
         button.setAttributedTitle(NSAttributedString(
             string: "Отменить",
-            attributes: [.font: Constants.fontForButtonsAndTitle,
+            attributes: [.font: Constants.Fonts.fontForButtonsAndTitle,
                          .foregroundColor: UIColor.ypRed]),
                                   for: .normal)
         button.layer.borderWidth = Constants.borderWidth
@@ -97,13 +101,13 @@ final class CreateEventViewController: UIViewController {
     private lazy var createTrackerButton: UIButton = {
         let button = UIButton()
         button.addAction(UIAction(handler: { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.createTracker()
         }),
                          for: .touchUpInside)
         button.setAttributedTitle(NSAttributedString(
             string: "Создать",
-            attributes: [.font: Constants.fontForButtonsAndTitle,
+            attributes: [.font: Constants.Fonts.fontForButtonsAndTitle,
                          .foregroundColor: UIColor.ypWhite]),
                                   for: .normal)
         button.layer.cornerRadius = Constants.cornerRadiusOfUIElements
@@ -188,7 +192,7 @@ final class CreateEventViewController: UIViewController {
         errorLabel.isHidden = true
         constraintsOfErrorLabel = [
             errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            errorLabel.heightAnchor.constraint(equalToConstant: Constants.heightOfLabel),
+            errorLabel.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfLabel),
             errorLabel.topAnchor.constraint(equalTo: nameOfTracker.bottomAnchor, constant: 8.0),
             errorLabel.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: -32.0),
         ]
@@ -198,22 +202,22 @@ final class CreateEventViewController: UIViewController {
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 28.0),
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            titleLabel.heightAnchor.constraint(equalToConstant: Constants.heightOfLabel),
+            titleLabel.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfLabel),
             nameOfTracker.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24.0),
             nameOfTracker.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             nameOfTracker.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
-            nameOfTracker.heightAnchor.constraint(equalToConstant: Constants.heightOfTableAndCellAndField),
+            nameOfTracker.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfTableAndCellAndField),
             tableView.topAnchor.constraint(equalTo: nameOfTracker.bottomAnchor, constant: 24.0),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
-            tableView.heightAnchor.constraint(equalToConstant: Constants.heightOfTableAndCellAndField),
+            tableView.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfTableAndCellAndField),
             cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.0),
-            cancelButton.heightAnchor.constraint(equalToConstant: Constants.heightOfButton),
+            cancelButton.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfButton),
             createTrackerButton.bottomAnchor.constraint(equalTo: cancelButton.bottomAnchor),
             createTrackerButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.0),
             createTrackerButton.leadingAnchor.constraint(equalTo: cancelButton.trailingAnchor, constant: 8.0),
-            createTrackerButton.heightAnchor.constraint(equalToConstant: Constants.heightOfButton),
+            createTrackerButton.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfButton),
             createTrackerButton.widthAnchor.constraint(equalTo: cancelButton.widthAnchor),
         ])
     }
@@ -285,7 +289,7 @@ extension CreateEventViewController: UITableViewDataSource {
 
 extension CreateEventViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return Constants.heightOfTableAndCellAndField
+        return Constants.Sizes.heightOfTableAndCellAndField
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

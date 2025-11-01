@@ -4,7 +4,7 @@ final class ChooseCategoryTableViewCell: UITableViewCell {
     
     // MARK: - Static properties
     
-    static let identifier = "cell"
+    static let identifier = "categoryCellIdentifier"
     
     // MARK: - Constants
     

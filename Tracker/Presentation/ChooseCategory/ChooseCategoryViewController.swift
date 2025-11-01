@@ -5,18 +5,22 @@ final class ChooseCategoryViewController: UIViewController {
     // MARK: - Constants
     
     private enum Constants {
+        enum Sizes {
+            static let heightOfTitle: CGFloat = 22.0
+            static let imageViewOfEmptyListSize: CGFloat = 80.0
+            static let titleOfEmptyListLabelHeight: CGFloat = 36.0
+            static let heightOfCell: CGFloat = 75.0
+            static let heightOfButton: CGFloat = 60.0
+        }
+        enum Fonts {
+            static let fontOfLabelUnderImage = UIFont.systemFont(ofSize: 12.0, weight: .medium)
+            static let fontOfButtonAndTitle = UIFont.systemFont(ofSize: 16.0, weight: .medium)
+            static let fontOfCell = UIFont.systemFont(ofSize: 17.0, weight: .regular)
+        }
         static let imageOfEmptyList = UIImage(named: "empty_list_image")
-        static let heightOfTitle: CGFloat = 22.0
-        static let imageViewOfEmptyListSize: CGFloat = 80.0
         static let cornerRadius: CGFloat = 16.0
-        static let titleOfEmptyListLabelHeight: CGFloat = 36.0
-        static let heightOfCell: CGFloat = 75.0
-        static let heightOfButton: CGFloat = 60.0
-        static let fontOfLabelUnderImage = UIFont.systemFont(ofSize: 12.0, weight: .medium)
-        static let fontOfButtonAndTitle = UIFont.systemFont(ofSize: 16.0, weight: .medium)
-        static let fontOfCell = UIFont.systemFont(ofSize: 17.0, weight: .regular)
         static let titleForButton = NSAttributedString(string: "Добавить категорию",
-                                                       attributes: [.font: fontOfButtonAndTitle,
+                                                       attributes: [.font: Fonts.fontOfButtonAndTitle,
                                                                     .foregroundColor: UIColor.ypWhite])
     }
     
@@ -27,7 +31,7 @@ final class ChooseCategoryViewController: UIViewController {
         label.text = "Категория"
         label.textColor = .ypBlack
         label.textAlignment = .center
-        label.font = Constants.fontOfButtonAndTitle
+        label.font = Constants.Fonts.fontOfButtonAndTitle
         return label
     }()
     
@@ -41,7 +45,7 @@ final class ChooseCategoryViewController: UIViewController {
         label.text = "Привычки и события можно\nобъединить по смыслу"
         label.textColor = .ypBlack
         label.textAlignment = .center
-        label.font = Constants.fontOfLabelUnderImage
+        label.font = Constants.Fonts.fontOfLabelUnderImage
         return label
     }()
     
@@ -59,7 +63,7 @@ final class ChooseCategoryViewController: UIViewController {
     private lazy var addCategoryButton: UIButton = {
         let button = UIButton()
         button.addAction(UIAction(handler: { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.addCategory()
         }),
                          for: .touchUpInside)
@@ -103,26 +107,26 @@ final class ChooseCategoryViewController: UIViewController {
         view.addSubviews(views)
         view.backgroundColor = .ypWhite
         
-        let heightOfTable = CGFloat(categories.count) * Constants.heightOfCell
+        let heightOfTable = CGFloat(categories.count) * Constants.Sizes.heightOfCell
         tableViewHeightConstraint = tableView.heightAnchor.constraint(equalToConstant: heightOfTable)
         guard let tableViewHeightConstraint = tableViewHeightConstraint else { return }
         
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 28.0),
-            titleLabel.heightAnchor.constraint(equalToConstant: Constants.heightOfTitle),
+            titleLabel.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfTitle),
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24.0),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
             tableViewHeightConstraint,
             imageViewOfEmptyList.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageViewOfEmptyList.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -20.0),
-            imageViewOfEmptyList.heightAnchor.constraint(equalToConstant: Constants.imageViewOfEmptyListSize),
-            imageViewOfEmptyList.widthAnchor.constraint(equalToConstant: Constants.imageViewOfEmptyListSize),
+            imageViewOfEmptyList.heightAnchor.constraint(equalToConstant: Constants.Sizes.imageViewOfEmptyListSize),
+            imageViewOfEmptyList.widthAnchor.constraint(equalToConstant: Constants.Sizes.imageViewOfEmptyListSize),
             titleOfEmptyListLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             titleOfEmptyListLabel.topAnchor.constraint(equalTo: imageViewOfEmptyList.bottomAnchor, constant: 8.0),
-            titleOfEmptyListLabel.heightAnchor.constraint(equalToConstant: Constants.titleOfEmptyListLabelHeight),
-            addCategoryButton.heightAnchor.constraint(equalToConstant: Constants.heightOfButton),
+            titleOfEmptyListLabel.heightAnchor.constraint(equalToConstant: Constants.Sizes.titleOfEmptyListLabelHeight),
+            addCategoryButton.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfButton),
             addCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16.0),
             addCategoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.0),
             addCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.0),
@@ -149,7 +153,7 @@ extension ChooseCategoryViewController: ChooseCategoryViewControllerDelegate {
         tableView.performBatchUpdates {
             tableView.insertRows(at: [IndexPath(row: oldCount, section: 0)], with: .automatic)
         } completion: { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.updateTableViewHeight()
         }
     }
@@ -157,7 +161,7 @@ extension ChooseCategoryViewController: ChooseCategoryViewControllerDelegate {
     private func updateTableViewHeight() {
         tableView.layoutIfNeeded()
         let contentHeight = tableView.contentSize.height
-        let maxHeight = view.safeAreaLayoutGuide.layoutFrame.height - Constants.heightOfButton - 28.0
+        let maxHeight = view.safeAreaLayoutGuide.layoutFrame.height - Constants.Sizes.heightOfButton - 28.0
         
         guard let tableViewHeightConstraint else { return }
         if contentHeight > maxHeight {
@@ -169,7 +173,7 @@ extension ChooseCategoryViewController: ChooseCategoryViewControllerDelegate {
         }
         
         UIView.animate(withDuration: 0.3) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.view.layoutIfNeeded()
         }
     }
@@ -213,7 +217,7 @@ extension ChooseCategoryViewController: UITableViewDataSource {
 
 extension ChooseCategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return Constants.heightOfCell
+        return Constants.Sizes.heightOfCell
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -227,8 +231,7 @@ extension ChooseCategoryViewController: UITableViewDelegate {
         guard let cell = tableView.cellForRow(at: indexPath) as? ChooseCategoryTableViewCell else { return }
         cell.imageViewOfCheckmark.isHidden = false
         let chosenCategory = categories[indexPath.row]
-        dismiss(animated: true, completion: { [weak self] in
-            guard let self = self else { return }
+        dismiss(animated: true, completion: {
             self.delegate?.updateCell(at: 0, by: chosenCategory)
         })
     }

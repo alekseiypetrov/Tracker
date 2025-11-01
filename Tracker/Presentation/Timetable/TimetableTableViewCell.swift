@@ -4,15 +4,17 @@ final class TimetableTableViewCell: UITableViewCell {
     
     // MARK: - Static properties
     
-    static let identifier = "cell"
+    static let identifier = "dayOfTheWeekCellIdentifier"
     
     // MARK: - Constants
     
     private enum Constants {
-        static let sizeOfText: CGFloat = 17.0
-        static let heightOfLabel: CGFloat = 22.0
-        static let sizeOfSwitchBar: CGSize = CGSize(width: 51.0, height: 31.0)
-        static let fontForLabel = UIFont.systemFont(ofSize: Constants.sizeOfText, weight: .regular)
+        enum Sizes {
+            static let sizeOfText: CGFloat = 17.0
+            static let heightOfLabel: CGFloat = 22.0
+            static let sizeOfSwitchBar: CGSize = CGSize(width: 51.0, height: 31.0)
+        }
+        static let fontForLabel = UIFont.systemFont(ofSize: Sizes.sizeOfText, weight: .regular)
     }
     
     // MARK: - UI-elements
@@ -66,12 +68,12 @@ final class TimetableTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             dayLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             dayLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16.0),
-            dayLabel.heightAnchor.constraint(equalToConstant: Constants.heightOfLabel),
+            dayLabel.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfLabel),
             switchBar.centerYAnchor.constraint(equalTo: dayLabel.centerYAnchor),
             switchBar.leadingAnchor.constraint(equalTo: dayLabel.trailingAnchor, constant: 16.0),
             switchBar.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16.0),
-            switchBar.widthAnchor.constraint(equalToConstant: Constants.sizeOfSwitchBar.width),
-            switchBar.heightAnchor.constraint(equalToConstant: Constants.sizeOfSwitchBar.height),
+            switchBar.widthAnchor.constraint(equalToConstant: Constants.Sizes.sizeOfSwitchBar.width),
+            switchBar.heightAnchor.constraint(equalToConstant: Constants.Sizes.sizeOfSwitchBar.height),
         ])
     }
 }

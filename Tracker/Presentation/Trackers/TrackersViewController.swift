@@ -5,35 +5,41 @@ final class TrackersViewController: UIViewController {
     // MARK: - Constants
     
     private enum Constants {
-        static let imageAddTrackerButton = UIImage(named: "add_tracker_image")?
-            .withTintColor(.ypBlack, renderingMode: .alwaysOriginal)
-        static let imageOfEmptyList = UIImage(named: "empty_list_image")
-        static let imageOfButtonWithPlus = UIImage(systemName: "plus.circle.fill")?
-            .withConfiguration(UIImage.SymbolConfiguration(pointSize: Constants.sizeOfButtonInCell))
-        static let imageOfButtonWithCheckmark = UIImage(systemName: "checkmark.circle.fill")?
-            .withConfiguration(UIImage.SymbolConfiguration(pointSize: Constants.sizeOfButtonInCell))
-        static let sizeOfButtonInCell: CGFloat = 34.0
-        static let addTrackerButtonSize: CGFloat = 42.0
-        static let titleTrackerSizeOfText: CGFloat = 34.0
-        static let titleTrackerLabelSize: CGSize = CGSize(width: 254.0, height: 41.0)
-        static let imageViewOfEmptyListSize: CGFloat = 80.0
-        static let titleOfEmptyListSizeOfText: CGFloat = 12.0
-        static let titleOfEmptyListLabelHeight: CGFloat = 18.0
-        static let datePickerSize: CGSize = CGSize(width: 97.0, height: 34.0)
-        static let searchBarHeight: CGFloat = 36.0
-        static let heightOfCell: CGFloat = 148.0
+        enum Images {
+            static let imageAddTrackerButton = UIImage(named: "add_tracker_image")?
+                .withTintColor(.ypBlack, renderingMode: .alwaysOriginal)
+            static let imageOfEmptyList = UIImage(named: "empty_list_image")
+            static let imageOfButtonWithPlus = UIImage(systemName: "plus.circle.fill")?
+                .withConfiguration(UIImage.SymbolConfiguration(pointSize: Sizes.sizeOfButtonInCell))
+            static let imageOfButtonWithCheckmark = UIImage(systemName: "checkmark.circle.fill")?
+                .withConfiguration(UIImage.SymbolConfiguration(pointSize: Sizes.sizeOfButtonInCell))
+        }
+        enum Sizes {
+            static let sizeOfButtonInCell: CGFloat = 34.0
+            static let addTrackerButtonSize: CGFloat = 42.0
+            static let titleTrackerSizeOfText: CGFloat = 34.0
+            static let titleTrackerLabelSize: CGSize = CGSize(width: 254.0, height: 41.0)
+            static let imageViewOfEmptyListSize: CGFloat = 80.0
+            static let titleOfEmptyListSizeOfText: CGFloat = 12.0
+            static let titleOfEmptyListLabelHeight: CGFloat = 18.0
+            static let datePickerSize: CGSize = CGSize(width: 97.0, height: 34.0)
+            static let searchBarHeight: CGFloat = 36.0
+            static let heightOfCell: CGFloat = 148.0
+        }
+        enum Spacing {
+            static let verticalSpacing: CGFloat = 0.0
+            static let horizontalSpacing: CGFloat = 9.0
+        }
         static let edgeInsetsForSection: UIEdgeInsets = UIEdgeInsets(top: 0.0, left: 12.0, bottom: 0.0, right: 12.0)
-        static let verticalSpacing: CGFloat = 0.0
-        static let horizontalSpacing: CGFloat = 9.0
     }
     
     // MARK: - UI-elements
     
     private lazy var addTrackerButton: UIButton = {
         let button = UIButton()
-        button.setImage(Constants.imageAddTrackerButton, for: .normal)
+        button.setImage(Constants.Images.imageAddTrackerButton, for: .normal)
         button.addAction(UIAction(handler: { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.addTracker()
         }),
                          for: .touchUpInside)
@@ -53,7 +59,7 @@ final class TrackersViewController: UIViewController {
     
     private lazy var titleTrackerLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: Constants.titleTrackerSizeOfText)
+        label.font = UIFont.boldSystemFont(ofSize: Constants.Sizes.titleTrackerSizeOfText)
         label.text = "Трекеры"
         return label
     }()
@@ -78,12 +84,12 @@ final class TrackersViewController: UIViewController {
     }()
     
     private lazy var imageViewOfEmptyList: UIImageView = {
-        UIImageView(image: Constants.imageOfEmptyList)
+        UIImageView(image: Constants.Images.imageOfEmptyList)
     }()
     
     private lazy var titleOfEmptyListLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: Constants.titleOfEmptyListSizeOfText)
+        label.font = UIFont.systemFont(ofSize: Constants.Sizes.titleOfEmptyListSizeOfText)
         label.text = "Что будем отслеживать?"
         label.textAlignment = .center
         return label
@@ -152,28 +158,28 @@ final class TrackersViewController: UIViewController {
         NSLayoutConstraint.activate([
             addTrackerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 6.0),
             addTrackerButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1.0),
-            addTrackerButton.widthAnchor.constraint(equalToConstant: Constants.addTrackerButtonSize),
-            addTrackerButton.heightAnchor.constraint(equalToConstant: Constants.addTrackerButtonSize),
+            addTrackerButton.widthAnchor.constraint(equalToConstant: Constants.Sizes.addTrackerButtonSize),
+            addTrackerButton.heightAnchor.constraint(equalToConstant: Constants.Sizes.addTrackerButtonSize),
             datePicker.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
             datePicker.centerYAnchor.constraint(equalTo: addTrackerButton.centerYAnchor),
-            datePicker.widthAnchor.constraint(equalToConstant: Constants.datePickerSize.width),
-            datePicker.heightAnchor.constraint(equalToConstant: Constants.datePickerSize.height),
+            datePicker.widthAnchor.constraint(equalToConstant: Constants.Sizes.datePickerSize.width),
+            datePicker.heightAnchor.constraint(equalToConstant: Constants.Sizes.datePickerSize.height),
             titleTrackerLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             titleTrackerLabel.topAnchor.constraint(equalTo: addTrackerButton.bottomAnchor, constant: 1.0),
-            titleTrackerLabel.widthAnchor.constraint(equalToConstant: Constants.titleTrackerLabelSize.width),
-            titleTrackerLabel.heightAnchor.constraint(equalToConstant: Constants.titleTrackerLabelSize.height),
+            titleTrackerLabel.widthAnchor.constraint(equalToConstant: Constants.Sizes.titleTrackerLabelSize.width),
+            titleTrackerLabel.heightAnchor.constraint(equalToConstant: Constants.Sizes.titleTrackerLabelSize.height),
             searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             searchBar.topAnchor.constraint(equalTo: titleTrackerLabel.bottomAnchor, constant: 7.0),
             searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
-            searchBar.heightAnchor.constraint(equalToConstant: Constants.searchBarHeight),
+            searchBar.heightAnchor.constraint(equalToConstant: Constants.Sizes.searchBarHeight),
             collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 8.0),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             imageViewOfEmptyList.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             imageViewOfEmptyList.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageViewOfEmptyList.widthAnchor.constraint(equalToConstant: Constants.imageViewOfEmptyListSize),
-            imageViewOfEmptyList.heightAnchor.constraint(equalToConstant: Constants.imageViewOfEmptyListSize),
+            imageViewOfEmptyList.widthAnchor.constraint(equalToConstant: Constants.Sizes.imageViewOfEmptyListSize),
+            imageViewOfEmptyList.heightAnchor.constraint(equalToConstant: Constants.Sizes.imageViewOfEmptyListSize),
             titleOfEmptyListLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             titleOfEmptyListLabel.topAnchor.constraint(equalTo: imageViewOfEmptyList.bottomAnchor, constant: 8.0),
             titleOfEmptyListLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
@@ -235,7 +241,7 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
     private func setButtonImageAtTracker(with id: UInt) -> UIImage? {
         let currentDateAtDatePicker = datePicker.date
         let formattedCurrentDate = dateFormatter.string(from: currentDateAtDatePicker)
-        return isTrackerDone(atThisDate: formattedCurrentDate, with: id) ? Constants.imageOfButtonWithCheckmark : Constants.imageOfButtonWithPlus
+        return isTrackerDone(atThisDate: formattedCurrentDate, with: id) ? Constants.Images.imageOfButtonWithCheckmark : Constants.Images.imageOfButtonWithPlus
     }
     
     private func isTrackerDone(atThisDate date: String, with id: UInt) -> Bool {
@@ -371,8 +377,8 @@ extension TrackersViewController: UICollectionViewDataSource {
 
 extension TrackersViewController: UICollectionViewDelegateFlowLayout & UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let cellWidth = (collectionView.frame.width - Constants.horizontalSpacing - 2 * Constants.edgeInsetsForSection.left) / 2
-        return CGSize(width: cellWidth, height: Constants.heightOfCell)
+        let cellWidth = (collectionView.frame.width - Constants.Spacing.horizontalSpacing - 2 * Constants.edgeInsetsForSection.left) / 2
+        return CGSize(width: cellWidth, height: Constants.Sizes.heightOfCell)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -380,11 +386,11 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout & UICollect
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return Constants.horizontalSpacing
+        return Constants.Spacing.horizontalSpacing
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return Constants.verticalSpacing
+        return Constants.Spacing.verticalSpacing
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {

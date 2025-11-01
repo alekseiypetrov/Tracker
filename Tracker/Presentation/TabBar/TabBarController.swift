@@ -5,15 +5,17 @@ final class TabBarController: UITabBarController {
     // MARK: - Constants
     
     private enum Constants {
-        static let trackerBarItemImage = UIImage(named: "tracker_bar_item")?
-            .withTintColor(.ypGray)
-        static let trackerBarItemImageFilled = UIImage(named: "tracker_bar_item")?
-            .withTintColor(.ypBlue)
-        static let statisticsBarItemImage = UIImage(named: "statistics_bar_item")?
-            .withTintColor(.ypGray)
-        static let statisticsBarItemImageFilled = UIImage(named: "statistics_bar_item")?
-            .withTintColor(.ypBlue)
-        static let separatorColor = UIColor(named: "SeparatorColor")
+        enum Images {
+            static let trackerBarItemImage = UIImage(named: "tracker_bar_item")?
+                .withTintColor(.ypGray)
+            static let trackerBarItemImageFilled = UIImage(named: "tracker_bar_item")?
+                .withTintColor(.ypBlue)
+            static let statisticsBarItemImage = UIImage(named: "statistics_bar_item")?
+                .withTintColor(.ypGray)
+            static let statisticsBarItemImageFilled = UIImage(named: "statistics_bar_item")?
+                .withTintColor(.ypBlue)
+        }
+        static let separatorColor: UIColor = .colorAboveTabbar
     }
     
     // MARK: - Separator
@@ -51,14 +53,14 @@ final class TabBarController: UITabBarController {
         let trackerVC = TrackersViewController()
         trackerVC.tabBarItem = UITabBarItem(
             title: "Трекеры",
-            image: Constants.trackerBarItemImageFilled,
-            selectedImage: Constants.trackerBarItemImage)
+            image: Constants.Images.trackerBarItemImageFilled,
+            selectedImage: Constants.Images.trackerBarItemImage)
         
         let statisticsVC = StatisticsViewController()
         statisticsVC.tabBarItem = UITabBarItem(
             title: "Статистика",
-            image: Constants.statisticsBarItemImageFilled,
-            selectedImage: Constants.statisticsBarItemImage)
+            image: Constants.Images.statisticsBarItemImageFilled,
+            selectedImage: Constants.Images.statisticsBarItemImage)
         
         self.viewControllers = [trackerVC, statisticsVC]
     }

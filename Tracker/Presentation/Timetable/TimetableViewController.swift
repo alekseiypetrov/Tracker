@@ -5,10 +5,12 @@ final class TimetableViewController: UIViewController {
     // MARK: - Constants
     
     private enum Constants {
+        enum Sizes {
+            static let heightOfAcceptButton: CGFloat = 60.0
+            static let heightOfCellInTable: CGFloat = 75.0
+            static let heightOfTable: CGFloat = 7.0 * heightOfCellInTable
+        }
         static let cornerRadiusOfButtonAndTable: CGFloat = 16.0
-        static let heightOfAcceptButton: CGFloat = 60.0
-        static let heightOfCellInTable: CGFloat = 75.0
-        static let heightOfTable: CGFloat = 7.0 * heightOfCellInTable
         static let fontForLabels = UIFont.systemFont(ofSize: 16.0, weight: .medium)
         static let titleForButton = NSAttributedString(
             string: "Готово",
@@ -49,7 +51,7 @@ final class TimetableViewController: UIViewController {
         let button = UIButton()
         button.addAction(UIAction(title: "Готово",
                                   handler: { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.acceptTimetable()
         }),
                          for: .touchUpInside)
@@ -78,7 +80,7 @@ final class TimetableViewController: UIViewController {
             acceptedDaysInString = acceptedDays.map { $0.shortName }.joined(separator: ", ")
         }
         dismiss(animated: true, completion: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.delegate?.updateCell(at: 1, by: acceptedDaysInString)
         })
     }
@@ -97,8 +99,8 @@ final class TimetableViewController: UIViewController {
             tableView.topAnchor.constraint(equalTo: timetableLabel.bottomAnchor, constant: 30.0),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
-            tableView.heightAnchor.constraint(equalToConstant: Constants.heightOfTable),
-            acceptButton.heightAnchor.constraint(equalToConstant: Constants.heightOfAcceptButton),
+            tableView.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfTable),
+            acceptButton.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfAcceptButton),
             acceptButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16.0),
             acceptButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.0),
             acceptButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.0),
@@ -151,6 +153,6 @@ extension TimetableViewController: UITableViewDataSource {
 
 extension TimetableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return Constants.heightOfCellInTable
+        return Constants.Sizes.heightOfCellInTable
     }
 }
