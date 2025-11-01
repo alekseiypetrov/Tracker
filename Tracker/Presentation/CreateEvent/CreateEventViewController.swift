@@ -22,7 +22,6 @@ final class CreateEventViewController: UIViewController {
         label.text = "Новое нерегулярное событие"
         label.textAlignment = .center
         label.font = Constants.fontForButtonsAndTitle
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -56,7 +55,6 @@ final class CreateEventViewController: UIViewController {
         textField.rightView = rightView
         textField.rightViewMode = .whileEditing
         
-        textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
     
@@ -66,7 +64,6 @@ final class CreateEventViewController: UIViewController {
         label.textColor = .ypRed
         label.textAlignment = .center
         label.font = Constants.fontForCellsAndTextField
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -76,7 +73,6 @@ final class CreateEventViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.layer.cornerRadius = Constants.cornerRadiusOfUIElements
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
@@ -95,7 +91,6 @@ final class CreateEventViewController: UIViewController {
         button.layer.borderWidth = Constants.borderWidth
         button.layer.borderColor = UIColor.ypRed.cgColor
         button.layer.cornerRadius = Constants.cornerRadiusOfUIElements
-        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
@@ -112,7 +107,6 @@ final class CreateEventViewController: UIViewController {
                          .foregroundColor: UIColor.ypWhite]),
                                   for: .normal)
         button.layer.cornerRadius = Constants.cornerRadiusOfUIElements
-        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     

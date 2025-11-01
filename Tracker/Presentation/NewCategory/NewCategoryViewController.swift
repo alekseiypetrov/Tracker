@@ -22,7 +22,6 @@ final class NewCategoryViewController: UIViewController {
         label.textColor = .ypBlack
         label.textAlignment = .center
         label.font = Constants.fontForButtonAndTitle
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -56,7 +55,6 @@ final class NewCategoryViewController: UIViewController {
         textField.rightView = rightView
         textField.rightViewMode = .whileEditing
         
-        textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
     
@@ -66,7 +64,6 @@ final class NewCategoryViewController: UIViewController {
         label.textColor = .ypRed
         label.textAlignment = .center
         label.font = Constants.fontForTextField
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -83,7 +80,6 @@ final class NewCategoryViewController: UIViewController {
         }),
                          for: .touchUpInside)
         button.layer.cornerRadius = Constants.cornerRadiusOfUIElements
-        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     

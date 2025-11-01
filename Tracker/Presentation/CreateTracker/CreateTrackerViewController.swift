@@ -19,7 +19,6 @@ final class CreateTrackerViewController: UIViewController {
         label.text = "Создание трекера"
         label.textAlignment = .center
         label.font = Constants.fontForLabels
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -35,7 +34,6 @@ final class CreateTrackerViewController: UIViewController {
         button.setAttributedTitle(NSAttributedString(string: "Привычка",
                                                      attributes: Constants.attributesForString),
                                   for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
@@ -51,7 +49,6 @@ final class CreateTrackerViewController: UIViewController {
         button.setAttributedTitle(NSAttributedString(string: "Нерегулярное событие",
                                                      attributes: Constants.attributesForString),
                                   for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     

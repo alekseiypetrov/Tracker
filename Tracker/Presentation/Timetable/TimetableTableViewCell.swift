@@ -21,7 +21,6 @@ final class TimetableTableViewCell: UITableViewCell {
         let label = UILabel()
         label.text = ""
         label.font = Constants.fontForLabel
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -31,7 +30,6 @@ final class TimetableTableViewCell: UITableViewCell {
         switchBar.onTintColor = .ypBlue
         switchBar.isOn = false
         switchBar.addTarget(self, action: #selector(switchIsToggled), for: .valueChanged)
-        switchBar.translatesAutoresizingMaskIntoConstraints = false
         return switchBar
     }()
     

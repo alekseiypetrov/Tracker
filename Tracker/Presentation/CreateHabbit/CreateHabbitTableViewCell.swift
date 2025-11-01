@@ -21,7 +21,6 @@ final class CreateHabbitTableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = Constants.fontForLabel
         label.textColor = .ypBlack
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -34,10 +33,7 @@ final class CreateHabbitTableViewCell: UITableViewCell {
     }()
     
     lazy var imageViewOfChevron: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = Constants.imageOfChevron
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
+        UIImageView(image: Constants.imageOfChevron)
     }()
     
     // MARK: - Private properties

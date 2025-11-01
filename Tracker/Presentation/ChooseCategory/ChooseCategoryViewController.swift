@@ -28,14 +28,11 @@ final class ChooseCategoryViewController: UIViewController {
         label.textColor = .ypBlack
         label.textAlignment = .center
         label.font = Constants.fontOfButtonAndTitle
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var imageViewOfEmptyList: UIImageView = {
-        let imageView = UIImageView(image: Constants.imageOfEmptyList)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
+        UIImageView(image: Constants.imageOfEmptyList)
     }()
     
     private lazy var titleOfEmptyListLabel: UILabel = {
@@ -45,7 +42,6 @@ final class ChooseCategoryViewController: UIViewController {
         label.textColor = .ypBlack
         label.textAlignment = .center
         label.font = Constants.fontOfLabelUnderImage
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -57,7 +53,6 @@ final class ChooseCategoryViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(ChooseCategoryTableViewCell.self, forCellReuseIdentifier: ChooseCategoryTableViewCell.identifier)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
@@ -71,7 +66,6 @@ final class ChooseCategoryViewController: UIViewController {
         button.layer.cornerRadius = Constants.cornerRadius
         button.backgroundColor = .ypBlack
         button.setAttributedTitle(Constants.titleForButton, for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     

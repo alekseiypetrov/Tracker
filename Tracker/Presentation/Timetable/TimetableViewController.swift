@@ -32,7 +32,6 @@ final class TimetableViewController: UIViewController {
         label.text = "Расписание"
         label.textAlignment = .center
         label.font = Constants.fontForLabels
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -43,7 +42,6 @@ final class TimetableViewController: UIViewController {
         tableView.register(TimetableTableViewCell.self, forCellReuseIdentifier: TimetableTableViewCell.identifier)
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
@@ -58,7 +56,6 @@ final class TimetableViewController: UIViewController {
         button.backgroundColor = .ypBlack
         button.layer.cornerRadius = Constants.cornerRadiusOfButtonAndTable
         button.setAttributedTitle(Constants.titleForButton, for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     

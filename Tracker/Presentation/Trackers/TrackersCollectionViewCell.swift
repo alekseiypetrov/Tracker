@@ -67,7 +67,6 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     
     private func setupCell() {
         let views = [cardTracker, emojiLabel, pinTrackerImageView, titleOfTrackerLabel, countDaysLabel, completeButton]
-        views.forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         contentView.addSubviews(views)
         setupView()
         setupQuantityManagment()

@@ -2,8 +2,8 @@ import UIKit
 
 extension UIView {
     func addSubviews(_ views: [UIView]) {
-        views.forEach { [weak self] in
-            guard let self = self else { return }
+        views.forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
             self.addSubview($0)
         }
     }

@@ -21,15 +21,12 @@ final class ChooseCategoryTableViewCell: UITableViewCell {
         label.font = Constants.fontForLabel
         label.textColor = .ypBlack
         label.textAlignment = .left
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     lazy var imageViewOfCheckmark: UIImageView = {
-        let imageView = UIImageView(image: UIImage(systemName: "checkmark")?
-        .withTintColor(.ypBlue, renderingMode: .alwaysOriginal))
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
+        UIImageView(image: UIImage(systemName: "checkmark")?
+            .withTintColor(.ypBlue, renderingMode: .alwaysOriginal))
     }()
     
     // MARK: - Initializers

@@ -37,7 +37,6 @@ final class TrackersViewController: UIViewController {
             self.addTracker()
         }),
                          for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
@@ -46,7 +45,6 @@ final class TrackersViewController: UIViewController {
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .compact
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
         var calendar = Calendar(identifier: .gregorian)
         calendar.firstWeekday = 2
         datePicker.calendar = calendar
@@ -57,7 +55,6 @@ final class TrackersViewController: UIViewController {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: Constants.titleTrackerSizeOfText)
         label.text = "Трекеры"
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -67,7 +64,6 @@ final class TrackersViewController: UIViewController {
         searchBar.barTintColor = .ypWhite
         searchBar.backgroundColor = .ypWhite
         searchBar.backgroundImage = UIImage()
-        searchBar.translatesAutoresizingMaskIntoConstraints = false
         return searchBar
     }()
     
@@ -78,15 +74,11 @@ final class TrackersViewController: UIViewController {
         collectionView.delegate = self
         collectionView.register(TrackersCollectionViewCell.self, forCellWithReuseIdentifier: TrackersCollectionViewCell.identifier)
         collectionView.register(HeaderSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderSupplementaryView.identifier)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
     
     private lazy var imageViewOfEmptyList: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = Constants.imageOfEmptyList
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
+        UIImageView(image: Constants.imageOfEmptyList)
     }()
     
     private lazy var titleOfEmptyListLabel: UILabel = {
@@ -94,7 +86,6 @@ final class TrackersViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: Constants.titleOfEmptyListSizeOfText)
         label.text = "Что будем отслеживать?"
         label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     

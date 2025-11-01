@@ -23,7 +23,6 @@ final class CreateHabbitViewController: UIViewController {
         label.text = "Новая привычка"
         label.textAlignment = .center
         label.font = Constants.fontForButtonsAndTitle
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -57,7 +56,6 @@ final class CreateHabbitViewController: UIViewController {
         textField.rightView = rightView
         textField.rightViewMode = .whileEditing
         
-        textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
     
@@ -67,7 +65,6 @@ final class CreateHabbitViewController: UIViewController {
         label.textColor = .ypRed
         label.textAlignment = .center
         label.font = Constants.fontForCellsAndTextField
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -77,7 +74,6 @@ final class CreateHabbitViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.layer.cornerRadius = Constants.cornerRadiusOfUIElements
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
@@ -96,7 +92,6 @@ final class CreateHabbitViewController: UIViewController {
         button.layer.borderWidth = Constants.borderWidth
         button.layer.borderColor = UIColor.ypRed.cgColor
         button.layer.cornerRadius = Constants.cornerRadiusOfUIElements
-        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
@@ -113,7 +108,6 @@ final class CreateHabbitViewController: UIViewController {
                          .foregroundColor: UIColor.ypWhite]),
                                   for: .normal)
         button.layer.cornerRadius = Constants.cornerRadiusOfUIElements
-        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
