@@ -216,6 +216,10 @@ extension TrackersViewController: TrackersViewControllerDelegate {
         }
         present(navigationController, animated: true)
     }
+    
+    func getNumberOfTrackers() -> UInt {
+        UInt(categories.reduce(0, { $0 + $1.trackers.count }))
+    }
 }
 
 // MARK: - TrackersViewController + TrackersCollectionViewCellDelegate

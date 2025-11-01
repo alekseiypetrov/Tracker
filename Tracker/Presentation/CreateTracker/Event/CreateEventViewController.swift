@@ -145,7 +145,8 @@ final class CreateEventViewController: UIViewController {
     
     private func createTracker() {
         guard let name = nameOfTracker.text,
-              let category = selectedParameter
+              let category = selectedParameter,
+              let lastId = self.delegate?.getNumberOfTrackers()
         else {
             return
         }
@@ -153,7 +154,7 @@ final class CreateEventViewController: UIViewController {
         dismiss(animated: true, completion: { [weak self] in
             guard let self else { return }
             self.delegate?.addNewTracker(Tracker(
-                id: 1,
+                id: lastId + 1,
                 name: name,
                 color: .ypRed,
                 emoji: "",

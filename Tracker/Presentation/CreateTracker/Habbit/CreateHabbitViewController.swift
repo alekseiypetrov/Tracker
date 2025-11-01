@@ -147,7 +147,8 @@ final class CreateHabbitViewController: UIViewController {
     func createTracker() {
         guard let name = nameOfTracker.text,
               let category = selectedParameters[0],
-              let stringTimetable = selectedParameters[1]
+              let stringTimetable = selectedParameters[1],
+              let lastId = self.delegate?.getNumberOfTrackers()
         else {
             return
         }
@@ -157,7 +158,7 @@ final class CreateHabbitViewController: UIViewController {
         dismiss(animated: true, completion: { [weak self] in
             guard let self else { return }
             self.delegate?.addNewTracker(Tracker(
-                id: 1,
+                id: lastId + 1,
                 name: name,
                 color: .ypRed,
                 emoji: "",
