@@ -127,7 +127,7 @@ final class CreateHabbitTableViewCell: UITableViewCell {
     private func hideDescriptionLabel() {
         guard hasDescription else { return }
         
-        contentView.willRemoveSubview(descriptionLabel)
+        descriptionLabel.removeFromSuperview()
         
         guard let centerYConstraint = centerYConstraint,
               let topConstraint = topConstraint

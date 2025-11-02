@@ -30,6 +30,7 @@ final class CreateTrackerViewController: UIViewController {
         }),
                          for: .touchUpInside)
         button.backgroundColor = .ypBlack
+        button.layer.masksToBounds = true
         button.layer.cornerRadius = Constants.cornerRadiusOfButtonAndTable
         button.setAttributedTitle(NSAttributedString(string: "Привычка",
                                                      attributes: Constants.attributesForString),
@@ -45,6 +46,7 @@ final class CreateTrackerViewController: UIViewController {
         }),
                          for: .touchUpInside)
         button.backgroundColor = .ypBlack
+        button.layer.masksToBounds = true
         button.layer.cornerRadius = Constants.cornerRadiusOfButtonAndTable
         button.setAttributedTitle(NSAttributedString(string: "Нерегулярное событие",
                                                      attributes: Constants.attributesForString),

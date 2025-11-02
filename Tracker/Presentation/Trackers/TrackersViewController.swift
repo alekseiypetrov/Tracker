@@ -257,10 +257,8 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
     func didTappedButtonInTracker(_ tracker: TrackersCollectionViewCell) {
         let currentDateAtDatePicker = datePicker.date
         let isItAFuture = currentDateAtDatePicker.timeIntervalSinceNow > 0
-        if isItAFuture {
-            return
-        }
-        guard let indexPath = collectionView.indexPath(for: tracker) else {
+        guard !isItAFuture,
+              let indexPath = collectionView.indexPath(for: tracker) else {
             return
         }
         let formattedCurrentDate = dateFormatter.string(from: currentDateAtDatePicker)
@@ -333,21 +331,30 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        var id: String
+        var id: String?
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             id = HeaderSupplementaryView.identifier
         default:
-            id = ""
+            id = nil
         }
         
-        guard let header = collectionView
-            .dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? HeaderSupplementaryView else {
+        guard let id = id else {
             return UICollectionReusableView()
         }
+        
+        let header = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: id,
+                for: indexPath
+            )
+            
+        guard let headerSupplementaryView = header as? HeaderSupplementaryView else {
+            return header
+        }
         let categoryTitle = filteredCategories[indexPath.section].title
-        header.configHeader(withTitle: categoryTitle)
-        return header
+        headerSupplementaryView.configHeader(withTitle: categoryTitle)
+        return headerSupplementaryView
     }
 }
 
@@ -372,12 +379,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout & UICollect
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        let indexPath = IndexPath(row: 0, section: section)
-        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
-        return headerView.systemLayoutSizeFitting(
-            CGSize(width: collectionView.frame.width,
-                   height: 20.0),
-            withHorizontalFittingPriority: .required,
-            verticalFittingPriority: .fittingSizeLevel)
+        return CGSize(width: collectionView.frame.width,
+                   height: 46.0)
     }
 }

@@ -39,6 +39,7 @@ final class TimetableViewController: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
+        tableView.layer.masksToBounds = true
         tableView.layer.cornerRadius = Constants.cornerRadiusOfButtonAndTable
         tableView.allowsSelection = false
         tableView.register(TimetableTableViewCell.self, forCellReuseIdentifier: TimetableTableViewCell.identifier)
@@ -56,6 +57,7 @@ final class TimetableViewController: UIViewController {
         }),
                          for: .touchUpInside)
         button.backgroundColor = .ypBlack
+        button.layer.masksToBounds = true
         button.layer.cornerRadius = Constants.cornerRadiusOfButtonAndTable
         button.setAttributedTitle(Constants.titleForButton, for: .normal)
         return button

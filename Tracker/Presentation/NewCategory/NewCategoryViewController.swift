@@ -36,6 +36,7 @@ final class NewCategoryViewController: UIViewController {
         textField.textColor = .ypBlack
         textField.backgroundColor = .ypBackground
         textField.addTarget(self, action: #selector(textChanged), for: .allEditingEvents)
+        textField.layer.masksToBounds = true
         textField.layer.cornerRadius = Constants.cornerRadiusOfUIElements
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 1))
         textField.leftViewMode = .always
@@ -83,6 +84,7 @@ final class NewCategoryViewController: UIViewController {
             self.addCategory()
         }),
                          for: .touchUpInside)
+        button.layer.masksToBounds = true
         button.layer.cornerRadius = Constants.cornerRadiusOfUIElements
         return button
     }()

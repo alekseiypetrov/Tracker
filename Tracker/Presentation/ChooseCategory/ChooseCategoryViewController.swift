@@ -53,6 +53,7 @@ final class ChooseCategoryViewController: UIViewController {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.backgroundColor = .ypBackground
         tableView.allowsMultipleSelection = false
+        tableView.layer.masksToBounds = true
         tableView.layer.cornerRadius = Constants.cornerRadius
         tableView.delegate = self
         tableView.dataSource = self
@@ -67,6 +68,7 @@ final class ChooseCategoryViewController: UIViewController {
             self.addCategory()
         }),
                          for: .touchUpInside)
+        button.layer.masksToBounds = true
         button.layer.cornerRadius = Constants.cornerRadius
         button.backgroundColor = .ypBlack
         button.setAttributedTitle(Constants.titleForButton, for: .normal)

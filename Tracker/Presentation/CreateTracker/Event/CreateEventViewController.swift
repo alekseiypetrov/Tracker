@@ -36,6 +36,7 @@ final class CreateEventViewController: UIViewController {
         textField.textColor = .ypBlack
         textField.backgroundColor = .ypBackground
         textField.addTarget(self, action: #selector(textChanged), for: .allEditingEvents)
+        textField.layer.masksToBounds = true
         textField.layer.cornerRadius = Constants.cornerRadiusOfUIElements
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 1))
         textField.leftViewMode = .always
@@ -76,6 +77,7 @@ final class CreateEventViewController: UIViewController {
         tableView.register(CreateHabbitTableViewCell.self, forCellReuseIdentifier: CreateHabbitTableViewCell.identifier)
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.layer.masksToBounds = true
         tableView.layer.cornerRadius = Constants.cornerRadiusOfUIElements
         return tableView
     }()
@@ -94,6 +96,7 @@ final class CreateEventViewController: UIViewController {
                                   for: .normal)
         button.layer.borderWidth = Constants.borderWidth
         button.layer.borderColor = UIColor.ypRed.cgColor
+        button.layer.masksToBounds = true
         button.layer.cornerRadius = Constants.cornerRadiusOfUIElements
         return button
     }()
@@ -110,6 +113,7 @@ final class CreateEventViewController: UIViewController {
             attributes: [.font: Constants.Fonts.fontForButtonsAndTitle,
                          .foregroundColor: UIColor.ypWhite]),
                                   for: .normal)
+        button.layer.masksToBounds = true
         button.layer.cornerRadius = Constants.cornerRadiusOfUIElements
         return button
     }()
@@ -185,7 +189,7 @@ final class CreateEventViewController: UIViewController {
     // MARK: - Private methods
     
     private func setupViewsAndConstraints() {
-        let views = [titleLabel, nameOfTracker, tableView, cancelButton, createTrackerButton]
+        let views = [titleLabel, nameOfTracker, errorLabel, tableView, cancelButton, createTrackerButton]
         view.addSubviews(views)
         view.backgroundColor = .ypWhite
         
@@ -194,7 +198,6 @@ final class CreateEventViewController: UIViewController {
             errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             errorLabel.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfLabel),
             errorLabel.topAnchor.constraint(equalTo: nameOfTracker.bottomAnchor, constant: 8.0),
-            errorLabel.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: -32.0),
         ]
         activateButton()
         
@@ -242,14 +245,22 @@ final class CreateEventViewController: UIViewController {
     
     private func showErrorLabel() {
         errorLabel.isHidden = false
-        view.addSubview(errorLabel)
         NSLayoutConstraint.activate(constraintsOfErrorLabel)
+        if let tableViewTopConstraint = view.constraints.first(where: {
+            $0.firstItem as? UITableView == tableView && $0.firstAttribute == .top
+        }) {
+            tableViewTopConstraint.constant = 24.0 + Constants.Sizes.heightOfLabel + 8.0
+        }
     }
     
     private func hideErrorLabel() {
         errorLabel.isHidden = true
-        errorLabel.removeFromSuperview()
         NSLayoutConstraint.deactivate(constraintsOfErrorLabel)
+        if let tableViewTopConstraint = view.constraints.first(where: {
+            $0.firstItem as? UITableView == tableView && $0.firstAttribute == .top
+        }) {
+            tableViewTopConstraint.constant = 24.0
+        }
     }
 }
 
