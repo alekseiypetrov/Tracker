@@ -6,7 +6,7 @@ final class HeaderSupplementaryView: UICollectionReusableView {
     
     static let identifier = "headerOfCollectionView"
     
-    // MARK: - Private properties
+    // MARK: - UI-elements
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -15,6 +15,10 @@ final class HeaderSupplementaryView: UICollectionReusableView {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
+    // MARK: - Private properties
+    
+    private var verticalConstraints: [NSLayoutConstraint] = []
     
     // MARK: - Initializers
     
@@ -33,16 +37,28 @@ final class HeaderSupplementaryView: UICollectionReusableView {
         titleLabel.text = title
     }
     
+    func changeVerticalConstraints(flag: Bool) {
+        if flag {
+            NSLayoutConstraint.deactivate(verticalConstraints)
+        } else {
+            NSLayoutConstraint.activate(verticalConstraints)
+        }
+    }
+    
     // MARK: - Private methods
     
     private func setupViewAndConstraints() {
         addSubview(titleLabel)
         
-        NSLayoutConstraint.activate([
+        verticalConstraints = [
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16.0),
             titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12.0),
+        ]
+        
+        NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28.0),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
+        NSLayoutConstraint.activate(verticalConstraints)
     }
 }

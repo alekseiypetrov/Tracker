@@ -105,14 +105,14 @@ final class TrackersViewController: UIViewController {
     private var categories: [TrackerCategory] = [
         TrackerCategory(title: "Домашний уют",
                         trackers: [
-                            Tracker(id: 1, name: "Поливать растения", color: .ypRed, emoji: "❤️", timetable: [.monday]),
-                            Tracker(id: 2, name: "Помыть полы", color: .ypBlue, emoji: "😇", timetable: [.tuesday, .friday]),
+                            Tracker(id: 1, name: "Поливать растения", color: .sectionColor1, emoji: "❤️", timetable: [.monday]),
+                            Tracker(id: 2, name: "Помыть полы", color: .sectionColor14, emoji: "😇", timetable: [.tuesday, .friday]),
                         ]),
         TrackerCategory(title: "Проект разгром",
                         trackers: [
-                            Tracker(id: 3, name: "Сварить мыло", color: .ypGray, emoji: "🧼", timetable: [.thursday]),
-                            Tracker(id: 4, name: "Уничтожить предмет искусства", color: .orange, emoji: "🧨", timetable: [.saturday, .tuesday]),
-                            Tracker(id: 5, name: "Подраться с незнакомцем", color: .cyan, emoji: "👊🏻", timetable: [.friday, .sunday]),
+                            Tracker(id: 3, name: "Сварить мыло", color: .sectionColor7, emoji: "🧼", timetable: [.thursday]),
+                            Tracker(id: 4, name: "Уничтожить предмет искусства", color: .sectionColor2, emoji: "🧨", timetable: [.saturday, .tuesday]),
+                            Tracker(id: 5, name: "Подраться с незнакомцем", color: .sectionColor8, emoji: "👊🏻", timetable: [.friday, .sunday]),
                         ])
     ]
     private var filteredCategories: [TrackerCategory] = []

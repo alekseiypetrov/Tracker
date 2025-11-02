@@ -5,6 +5,26 @@ final class CreateEventViewController: UIViewController {
     // MARK: - Constants
     
     private enum Constants {
+        enum DataForCollections {
+            static let emojies: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱",
+                                  "😇", "😡", "🥶", "🤔", "🙌", "🍔",
+                                  "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"
+            ]
+            static let colors: [UIColor] = [UIColor.sectionColor1, UIColor.sectionColor2, UIColor.sectionColor3,
+                                            UIColor.sectionColor4, UIColor.sectionColor5, .sectionColor6,
+                                            UIColor.sectionColor7, UIColor.sectionColor8, UIColor.sectionColor9,
+                                            UIColor.sectionColor10, UIColor.sectionColor11, UIColor.sectionColor12,
+                                            UIColor.sectionColor13, UIColor.sectionColor14, UIColor.sectionColor15,
+                                            UIColor.sectionColor16, UIColor.sectionColor17, UIColor.sectionColor18
+                                
+            ]
+            static let numberOfElements: Int = emojies.count
+            static let numberOfCellsInRow: Int = 6
+            static let minimumSizeOfColorCell: CGFloat = 48.0
+            static let maximumSizeOfColorCell: CGFloat = 52.0
+            static let heightOfHeader: CGFloat = 18.0
+            static let sectionEdgeInsets = UIEdgeInsets(top: 24.0, left: 16.0, bottom: 24.0, right: 16.0)
+        }
         enum Sizes {
             static let heightOfLabel: CGFloat = 22.0
             static let heightOfTableAndCellAndField: CGFloat = 75.0
@@ -80,6 +100,28 @@ final class CreateEventViewController: UIViewController {
         tableView.layer.masksToBounds = true
         tableView.layer.cornerRadius = Constants.cornerRadiusOfUIElements
         return tableView
+    }()
+    
+    private lazy var emojiesCollectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.accessibilityIdentifier = "emojiesCollectionView"
+        collectionView.allowsMultipleSelection = false
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(EmojiCollectionViewCell.self, forCellWithReuseIdentifier: EmojiCollectionViewCell.identifier)
+        collectionView.register(HeaderSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderSupplementaryView.identifier)
+        return collectionView
+    }()
+    
+    private lazy var colorsCollectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.accessibilityIdentifier = "colorsCollectionView"
+        collectionView.allowsMultipleSelection = false
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(ColorCollectionViewCell.self, forCellWithReuseIdentifier: ColorCollectionViewCell.identifier)
+        collectionView.register(HeaderSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderSupplementaryView.identifier)
+        return collectionView
     }()
     
     private lazy var cancelButton: UIButton = {
@@ -189,7 +231,7 @@ final class CreateEventViewController: UIViewController {
     // MARK: - Private methods
     
     private func setupViewsAndConstraints() {
-        let views = [titleLabel, nameOfTracker, errorLabel, tableView, cancelButton, createTrackerButton]
+        let views = [titleLabel, nameOfTracker, errorLabel, tableView, emojiesCollectionView, colorsCollectionView, cancelButton, createTrackerButton]
         view.addSubviews(views)
         view.backgroundColor = .ypWhite
         
@@ -214,6 +256,14 @@ final class CreateEventViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
             tableView.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfTableAndCellAndField),
+            emojiesCollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32.0),
+            emojiesCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            emojiesCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+//            emojiesCollectionView.heightAnchor.constraint(equalToConstant: 0.0),
+            colorsCollectionView.topAnchor.constraint(equalTo: emojiesCollectionView.bottomAnchor, constant: 16.0),
+            colorsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            colorsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            colorsCollectionView.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: -16.0),
             cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.0),
             cancelButton.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfButton),
@@ -320,5 +370,124 @@ extension CreateEventViewController: UITableViewDelegate {
         default:
             return
         }
+    }
+}
+
+// MARK: - CreateEventViewController + UICollectionViewDataSource
+
+extension CreateEventViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return Constants.DataForCollections.numberOfElements
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        var currentCell: UICollectionViewCell
+        guard let collectionIdentifier = collectionView.accessibilityIdentifier,
+              let collection = Collection(rawValue: collectionIdentifier)
+        else {
+            return UICollectionViewCell()
+        }
+        switch collection {
+        case .emojies:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EmojiCollectionViewCell.identifier, for: indexPath) as? EmojiCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            cell.configCell(with: Constants.DataForCollections.emojies[indexPath.row])
+            currentCell = cell
+        case .colors:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ColorCollectionViewCell.identifier, for: indexPath) as? ColorCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            let size = calculateCellSize(for: collectionView).width
+            cell.configCell(with: Constants.DataForCollections.colors[indexPath.row], sizeOfView: size)
+            currentCell = cell
+        }
+        return currentCell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        var id: String?
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
+            id = HeaderSupplementaryView.identifier
+        default:
+            id = nil
+        }
+        
+        guard let id else { return UICollectionReusableView() }
+        
+        let header = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: id,
+            for: indexPath)
+        
+        guard let headerSupplementaryView = header as? HeaderSupplementaryView,
+              let collectionIdentifier = collectionView.accessibilityIdentifier,
+              let collection = Collection(rawValue: collectionIdentifier)
+        else {
+            return header
+        }
+        switch collection {
+        case .emojies:
+            headerSupplementaryView.configHeader(withTitle: "Emoji")
+        case .colors:
+            headerSupplementaryView.configHeader(withTitle: "Цвет")
+        }
+        headerSupplementaryView.changeVerticalConstraints(flag: true)
+        return headerSupplementaryView
+    }
+}
+
+// MARK: - CreateEventViewController + UICollectionViewFlowLayoutDelegate
+
+extension CreateEventViewController: UICollectionViewDelegateFlowLayout {
+    private func getPaddingWidth(from width: CGFloat, sizeOfCell cellSize: CGFloat) -> CGFloat {
+        return (width - 2 * Constants.DataForCollections.sectionEdgeInsets.left) / CGFloat(Constants.DataForCollections.numberOfCellsInRow) - cellSize
+    }
+    
+    private func calculateCellSize(for collectionView: UICollectionView) -> CGSize {
+        let paddingWidth = getPaddingWidth(from: collectionView.frame.width,
+                                           sizeOfCell: Constants.DataForCollections.maximumSizeOfColorCell)
+        if paddingWidth < 1.0 {
+            return CGSize(width: Constants.DataForCollections.minimumSizeOfColorCell,
+                          height: Constants.DataForCollections.minimumSizeOfColorCell)
+        }
+        return CGSize(width: Constants.DataForCollections.maximumSizeOfColorCell,
+                      height: Constants.DataForCollections.maximumSizeOfColorCell)
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return calculateCellSize(for: collectionView)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        let paddingWidth = getPaddingWidth(from: collectionView.frame.width,
+                                           sizeOfCell: Constants.DataForCollections.maximumSizeOfColorCell)
+        if paddingWidth < 1.0 {
+            return 0.0
+        }
+        return paddingWidth
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return Constants.DataForCollections.sectionEdgeInsets
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.frame.width,
+                      height: Constants.DataForCollections.heightOfHeader)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // TODO: - Will be done later (update UI in selected cell)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        // TODO: - Will be done later (update UI in deselected cell)
     }
 }
