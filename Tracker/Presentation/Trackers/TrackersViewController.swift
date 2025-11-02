@@ -128,7 +128,7 @@ final class TrackersViewController: UIViewController {
     // MARK: - Actions
     
     private func addTracker() {
-        let createTrackerViewController = CreateTrackerViewController()
+        let createTrackerViewController = ChooseKindOfNewTrackerViewController()
         createTrackerViewController.delegate = self
         let navigationController = UINavigationController(rootViewController: createTrackerViewController)
         present(navigationController, animated: true)

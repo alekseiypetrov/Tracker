@@ -74,7 +74,7 @@ final class CreateEventViewController: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.register(CreateHabbitTableViewCell.self, forCellReuseIdentifier: CreateHabbitTableViewCell.identifier)
+        tableView.register(CreateTrackerTableViewCell.self, forCellReuseIdentifier: CreateTrackerTableViewCell.identifier)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.layer.masksToBounds = true
@@ -266,9 +266,9 @@ final class CreateEventViewController: UIViewController {
 
 // MARK: - CreateEventViewController + CreateHabbitViewControllerDelegate
 
-extension CreateEventViewController: CreateHabbitViewControllerDelegate {
+extension CreateEventViewController: CreateTrackerViewControllerDelegate {
     func updateCell(at index: Int, by description: String) {
-        guard let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CreateHabbitTableViewCell else { return }
+        guard let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CreateTrackerTableViewCell else { return }
         cell.descriptionOfParameter = description
         cell.update()
         selectedParameter = !description.isEmpty ? description : nil
@@ -284,7 +284,7 @@ extension CreateEventViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let currentCell = tableView.dequeueReusableCell(withIdentifier: CreateHabbitTableViewCell.identifier, for: indexPath) as? CreateHabbitTableViewCell else {
+        guard let currentCell = tableView.dequeueReusableCell(withIdentifier: CreateTrackerTableViewCell.identifier, for: indexPath) as? CreateTrackerTableViewCell else {
             return UITableViewCell()
         }
         let currentTitle = cellTitles[indexPath.row]
@@ -312,7 +312,7 @@ extension CreateEventViewController: UITableViewDelegate {
             categoryViewController.delegate = self
             let navigationController = UINavigationController(rootViewController: categoryViewController)
             present(navigationController, animated: true)
-            guard let cell = tableView.cellForRow(at: indexPath) as? CreateHabbitTableViewCell,
+            guard let cell = tableView.cellForRow(at: indexPath) as? CreateTrackerTableViewCell,
                   let selectedCategory = cell.descriptionOfParameter else {
                 return
             }

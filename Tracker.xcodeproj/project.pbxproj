@@ -11,15 +11,15 @@
 		97CFCA812EB202F60090FD9C /* CreateHabbitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA802EB202F60090FD9C /* CreateHabbitViewController.swift */; };
 		97CFCA832EB2030C0090FD9C /* TimetableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA822EB2030C0090FD9C /* TimetableViewController.swift */; };
 		97CFCA852EB205540090FD9C /* TimetableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA842EB205540090FD9C /* TimetableTableViewCell.swift */; };
-		97CFCA8A2EB22FB00090FD9C /* CreateHabbitTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA892EB22FAF0090FD9C /* CreateHabbitTableViewCell.swift */; };
+		97CFCA8A2EB22FB00090FD9C /* CreateTrackerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA892EB22FAF0090FD9C /* CreateTrackerTableViewCell.swift */; };
 		97CFCA8D2EB22FEC0090FD9C /* ChooseCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA8C2EB22FEC0090FD9C /* ChooseCategoryViewController.swift */; };
 		97CFCA8F2EB246D60090FD9C /* TimetableTableViewCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA8E2EB246D60090FD9C /* TimetableTableViewCellDelegate.swift */; };
-		97CFCA932EB2B27B0090FD9C /* CreateHabbitViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA922EB2B27B0090FD9C /* CreateHabbitViewControllerDelegate.swift */; };
+		97CFCA932EB2B27B0090FD9C /* CreateTrackerViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA922EB2B27B0090FD9C /* CreateTrackerViewControllerDelegate.swift */; };
 		97CFCA962EB369D90090FD9C /* NewCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA952EB369D90090FD9C /* NewCategoryViewController.swift */; };
 		97CFCA982EB36C7F0090FD9C /* ChooseCategoryViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA972EB36C7F0090FD9C /* ChooseCategoryViewControllerDelegate.swift */; };
 		97CFCA9A2EB3F76F0090FD9C /* ChooseCategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA992EB3F76F0090FD9C /* ChooseCategoryTableViewCell.swift */; };
 		97CFCA9C2EB4D3560090FD9C /* TrackersViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA9B2EB4D3560090FD9C /* TrackersViewControllerDelegate.swift */; };
-		97CFCAA02EB5056A0090FD9C /* CreateTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA9F2EB5056A0090FD9C /* CreateTrackerViewController.swift */; };
+		97CFCAA02EB5056A0090FD9C /* ChooseKindOfNewTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA9F2EB5056A0090FD9C /* ChooseKindOfNewTrackerViewController.swift */; };
 		97CFCAA22EB5059A0090FD9C /* CreateEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCAA12EB5059A0090FD9C /* CreateEventViewController.swift */; };
 		97CFCAA62EB65DE80090FD9C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCAA52EB65DE80090FD9C /* ViewController.swift */; };
 		97F381F62EABAC990013F66B /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F52EABAC990013F66B /* Tracker.swift */; };
@@ -43,15 +43,15 @@
 		97CFCA802EB202F60090FD9C /* CreateHabbitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateHabbitViewController.swift; sourceTree = "<group>"; };
 		97CFCA822EB2030C0090FD9C /* TimetableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableViewController.swift; sourceTree = "<group>"; };
 		97CFCA842EB205540090FD9C /* TimetableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableTableViewCell.swift; sourceTree = "<group>"; };
-		97CFCA892EB22FAF0090FD9C /* CreateHabbitTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateHabbitTableViewCell.swift; sourceTree = "<group>"; };
+		97CFCA892EB22FAF0090FD9C /* CreateTrackerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerTableViewCell.swift; sourceTree = "<group>"; };
 		97CFCA8C2EB22FEC0090FD9C /* ChooseCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCategoryViewController.swift; sourceTree = "<group>"; };
 		97CFCA8E2EB246D60090FD9C /* TimetableTableViewCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableTableViewCellDelegate.swift; sourceTree = "<group>"; };
-		97CFCA922EB2B27B0090FD9C /* CreateHabbitViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateHabbitViewControllerDelegate.swift; sourceTree = "<group>"; };
+		97CFCA922EB2B27B0090FD9C /* CreateTrackerViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerViewControllerDelegate.swift; sourceTree = "<group>"; };
 		97CFCA952EB369D90090FD9C /* NewCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCategoryViewController.swift; sourceTree = "<group>"; };
 		97CFCA972EB36C7F0090FD9C /* ChooseCategoryViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCategoryViewControllerDelegate.swift; sourceTree = "<group>"; };
 		97CFCA992EB3F76F0090FD9C /* ChooseCategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCategoryTableViewCell.swift; sourceTree = "<group>"; };
 		97CFCA9B2EB4D3560090FD9C /* TrackersViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewControllerDelegate.swift; sourceTree = "<group>"; };
-		97CFCA9F2EB5056A0090FD9C /* CreateTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerViewController.swift; sourceTree = "<group>"; };
+		97CFCA9F2EB5056A0090FD9C /* ChooseKindOfNewTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseKindOfNewTrackerViewController.swift; sourceTree = "<group>"; };
 		97CFCAA12EB5059A0090FD9C /* CreateEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateEventViewController.swift; sourceTree = "<group>"; };
 		97CFCAA52EB65DE80090FD9C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		97F381F52EABAC990013F66B /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
@@ -87,8 +87,6 @@
 			isa = PBXGroup;
 			children = (
 				97CFCA802EB202F60090FD9C /* CreateHabbitViewController.swift */,
-				97CFCA892EB22FAF0090FD9C /* CreateHabbitTableViewCell.swift */,
-				97CFCA922EB2B27B0090FD9C /* CreateHabbitViewControllerDelegate.swift */,
 			);
 			path = Habbit;
 			sourceTree = "<group>";
@@ -132,9 +130,11 @@
 		97CFCA9E2EB4E2640090FD9C /* CreateTracker */ = {
 			isa = PBXGroup;
 			children = (
+				97CFCA9F2EB5056A0090FD9C /* ChooseKindOfNewTrackerViewController.swift */,
+				97CFCA922EB2B27B0090FD9C /* CreateTrackerViewControllerDelegate.swift */,
+				97CFCA892EB22FAF0090FD9C /* CreateTrackerTableViewCell.swift */,
 				97CFCA9D2EB4E21E0090FD9C /* Event */,
 				97CFCA7F2EB202D90090FD9C /* Habbit */,
-				97CFCA9F2EB5056A0090FD9C /* CreateTrackerViewController.swift */,
 			);
 			path = CreateTracker;
 			sourceTree = "<group>";
@@ -302,7 +302,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				97CFCAA02EB5056A0090FD9C /* CreateTrackerViewController.swift in Sources */,
+				97CFCAA02EB5056A0090FD9C /* ChooseKindOfNewTrackerViewController.swift in Sources */,
 				97CFCA8D2EB22FEC0090FD9C /* ChooseCategoryViewController.swift in Sources */,
 				97F382032EAF8F760013F66B /* UIView+addSubviews.swift in Sources */,
 				97CFCAA22EB5059A0090FD9C /* CreateEventViewController.swift in Sources */,
@@ -319,7 +319,7 @@
 				97CFCA962EB369D90090FD9C /* NewCategoryViewController.swift in Sources */,
 				97F381FA2EABACB50013F66B /* TrackerRecord.swift in Sources */,
 				97F381FC2EABAE330013F66B /* Weekday.swift in Sources */,
-				97CFCA8A2EB22FB00090FD9C /* CreateHabbitTableViewCell.swift in Sources */,
+				97CFCA8A2EB22FB00090FD9C /* CreateTrackerTableViewCell.swift in Sources */,
 				97CFCAA62EB65DE80090FD9C /* ViewController.swift in Sources */,
 				97CFCA852EB205540090FD9C /* TimetableTableViewCell.swift in Sources */,
 				97F9FC472EA667BE0034200A /* SceneDelegate.swift in Sources */,
@@ -327,7 +327,7 @@
 				97CFCA9C2EB4D3560090FD9C /* TrackersViewControllerDelegate.swift in Sources */,
 				97F9FC612EA675A90034200A /* TrackersViewController.swift in Sources */,
 				97CFCA832EB2030C0090FD9C /* TimetableViewController.swift in Sources */,
-				97CFCA932EB2B27B0090FD9C /* CreateHabbitViewControllerDelegate.swift in Sources */,
+				97CFCA932EB2B27B0090FD9C /* CreateTrackerViewControllerDelegate.swift in Sources */,
 				97F381F62EABAC990013F66B /* Tracker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
