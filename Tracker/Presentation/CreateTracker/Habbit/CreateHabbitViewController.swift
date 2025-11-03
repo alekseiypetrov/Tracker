@@ -107,6 +107,7 @@ final class CreateHabbitViewController: UIViewController {
     
     private lazy var сollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.backgroundColor = .ypWhite
         collectionView.allowsMultipleSelection = true
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -172,6 +173,9 @@ final class CreateHabbitViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (self: Self, previousTraitCollection: UITraitCollection) in
+            self.сollectionView.reloadData()
+        }
         configureScreenTapEvent()
         setupViewsAndConstraints()
     }
