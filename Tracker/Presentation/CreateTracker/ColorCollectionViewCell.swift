@@ -2,12 +2,18 @@ import UIKit
 
 final class ColorCollectionViewCell: UICollectionViewCell {
     
+    // MARK: - Static properties
+    
     static let identifier = "ColorCollectionViewCell"
+    
+    // MARK: - Constants
     
     private enum Constants {
         static let cornerRadius: CGFloat = 8.0
         static let borderWidth: CGFloat = 3.0
     }
+    
+    // MARK: - UI-elements
     
     private lazy var colorView: UIView = {
         let view = UIView()
@@ -18,7 +24,22 @@ final class ColorCollectionViewCell: UICollectionViewCell {
         return view
     }()
     
+    // MARK: - Public properties
+    
+    var color: UIColor? {
+        get {
+            return colorView.backgroundColor
+        }
+        set {
+            colorView.backgroundColor = newValue
+        }
+    }
+    
+    // MARK: - Private properties
+    
     private var sizeConstraints: [NSLayoutConstraint] = []
+    
+    // MARK: - Initializers
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -30,18 +51,27 @@ final class ColorCollectionViewCell: UICollectionViewCell {
         fatalError("Error in init?(coder:)")
     }
     
-    func configCell(with color: UIColor, sizeOfView size: CGFloat) {
-        colorView.backgroundColor = color
+    // MARK: - Public methods
+    
+    func configCell(sizeOfView size: CGFloat) {
         sizeConstraints.forEach { $0.constant = size - 2 * Constants.borderWidth }
         UIView.animate(withDuration: 0.3) {
             self.layoutIfNeeded()
         }
     }
     
+    func updateCell(toSelected flag: Bool) {
+        let colorWithLowerAlpha = color?.withAlphaComponent(0.5)
+        let color = flag ? colorWithLowerAlpha?.cgColor : UIColor.ypWhite.cgColor
+        contentView.layer.borderColor = color
+    }
+    
+    // MARK: - Private methods
+    
     private func setupContentView() {
         contentView.backgroundColor = .ypWhite
         contentView.layer.masksToBounds = true
-        contentView.layer.cornerRadius = 2 * Constants.cornerRadius
+        contentView.layer.cornerRadius = Constants.cornerRadius
         contentView.layer.borderWidth = Constants.borderWidth
         contentView.layer.borderColor = UIColor.ypWhite.cgColor
     }

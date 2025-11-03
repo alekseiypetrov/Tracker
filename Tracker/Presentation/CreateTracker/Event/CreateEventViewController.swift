@@ -6,17 +6,18 @@ final class CreateEventViewController: UIViewController {
     
     private enum Constants {
         enum DataForCollections {
-            static let emojies: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱",
-                                  "😇", "😡", "🥶", "🤔", "🙌", "🍔",
-                                  "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"
+            static let emojies: [String] = [
+                "🙂", "😻", "🌺", "🐶", "❤️", "😱",
+                "😇", "😡", "🥶", "🤔", "🙌", "🍔",
+                "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"
             ]
-            static let colors: [UIColor] = [UIColor.sectionColor1, UIColor.sectionColor2, UIColor.sectionColor3,
-                                            UIColor.sectionColor4, UIColor.sectionColor5, .sectionColor6,
-                                            UIColor.sectionColor7, UIColor.sectionColor8, UIColor.sectionColor9,
-                                            UIColor.sectionColor10, UIColor.sectionColor11, UIColor.sectionColor12,
-                                            UIColor.sectionColor13, UIColor.sectionColor14, UIColor.sectionColor15,
-                                            UIColor.sectionColor16, UIColor.sectionColor17, UIColor.sectionColor18
-                                
+            static let colors: [UIColor] = [
+                UIColor.sectionColor1, UIColor.sectionColor2, UIColor.sectionColor3,
+                UIColor.sectionColor4, UIColor.sectionColor5, .sectionColor6,
+                UIColor.sectionColor7, UIColor.sectionColor8, UIColor.sectionColor9,
+                UIColor.sectionColor10, UIColor.sectionColor11, UIColor.sectionColor12,
+                UIColor.sectionColor13, UIColor.sectionColor14, UIColor.sectionColor15,
+                UIColor.sectionColor16, UIColor.sectionColor17, UIColor.sectionColor18
             ]
             static let headers: [String] = ["Emoji", "Цвет"]
             static let numberOfElements: Int = emojies.count
@@ -108,9 +109,13 @@ final class CreateEventViewController: UIViewController {
         collectionView.allowsMultipleSelection = true
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(EmojiCollectionViewCell.self, forCellWithReuseIdentifier: EmojiCollectionViewCell.identifier)
-        collectionView.register(ColorCollectionViewCell.self, forCellWithReuseIdentifier: ColorCollectionViewCell.identifier)
-        collectionView.register(HeaderSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderSupplementaryView.identifier)
+        collectionView.register(EmojiCollectionViewCell.self, 
+                                forCellWithReuseIdentifier: EmojiCollectionViewCell.identifier)
+        collectionView.register(ColorCollectionViewCell.self,
+                                forCellWithReuseIdentifier: ColorCollectionViewCell.identifier)
+        collectionView.register(HeaderSupplementaryView.self, 
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: HeaderSupplementaryView.identifier)
         return collectionView
     }()
     
@@ -157,7 +162,9 @@ final class CreateEventViewController: UIViewController {
     // MARK: - Private properties
     
     private var constraintsOfErrorLabel: [NSLayoutConstraint] = []
-    private var selectedParameter: String? = nil
+    private var selectedParameters: [String?] = Array(repeating: nil, count: 2)
+    private var selectedColor: UIColor?
+    private var selectedCells: [IndexPath?] = Array(repeating: nil, count: 2)
     private let cellTitles = ["Категория", "Расписание"]
     
     // MARK: - Lifecycle
@@ -181,7 +188,9 @@ final class CreateEventViewController: UIViewController {
     
     private func createTracker() {
         guard let name = nameOfTracker.text,
-              let category = selectedParameter,
+              let category = selectedParameters[0],
+              let emoji = selectedParameters[1],
+              let color = selectedColor,
               let lastId = self.delegate?.getNumberOfTrackers()
         else {
             return
@@ -192,8 +201,8 @@ final class CreateEventViewController: UIViewController {
             self.delegate?.addNewTracker(Tracker(
                 id: lastId + 1,
                 name: name,
-                color: .ypRed,
-                emoji: "",
+                color: color,
+                emoji: emoji,
                 timetable: timetable),
                                          ofCategory: category)
         })
@@ -272,7 +281,7 @@ final class CreateEventViewController: UIViewController {
     private func activateButton() {
         if let inputedText = nameOfTracker.text,
            !inputedText.isEmpty,
-           selectedParameter != nil {
+           selectedParameters.allSatisfy({ $0 != nil }) {
             createTrackerButton.isEnabled = true
             createTrackerButton.backgroundColor = .ypBlack
         } else {
@@ -309,7 +318,7 @@ extension CreateEventViewController: CreateTrackerViewControllerDelegate {
         guard let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CreateTrackerTableViewCell else { return }
         cell.descriptionOfParameter = description
         cell.update()
-        selectedParameter = !description.isEmpty ? description : nil
+        selectedParameters[0] = !description.isEmpty ? description : nil
         activateButton()
     }
 }
@@ -379,14 +388,15 @@ extension CreateEventViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EmojiCollectionViewCell.identifier, for: indexPath) as? EmojiCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            cell.configCell(with: Constants.DataForCollections.emojies[indexPath.row])
+            cell.emoji = Constants.DataForCollections.emojies[indexPath.row]
             currentCell = cell
         case 1:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ColorCollectionViewCell.identifier, for: indexPath) as? ColorCollectionViewCell else {
                 return UICollectionViewCell()
             }
             let size = calculateCellSize(for: collectionView).width
-            cell.configCell(with: Constants.DataForCollections.colors[indexPath.row], sizeOfView: size)
+            cell.color = Constants.DataForCollections.colors[indexPath.row]
+            cell.configCell(sizeOfView: size)
             currentCell = cell
         default:
             currentCell = UICollectionViewCell()
@@ -468,9 +478,46 @@ extension CreateEventViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // TODO: - Will be done later (update UI in selected cell)
+        guard let cell = collectionView.cellForItem(at: indexPath) else { return }
+        switch indexPath.section {
+        case 0:
+            guard let currentCell = cell as? EmojiCollectionViewCell else { return }
+            currentCell.updateCell(toSelected: true)
+            if let oldIndexPath = selectedCells[0],
+               let oldCell = collectionView.cellForItem(at: oldIndexPath) as? EmojiCollectionViewCell {
+                oldCell.updateCell(toSelected: false)
+            }
+            selectedParameters[1] = currentCell.emoji
+            selectedCells[0] = indexPath
+        case 1:
+            guard let currentCell = cell as? ColorCollectionViewCell else { return }
+            currentCell.updateCell(toSelected: true)
+            if let oldIndexPath = selectedCells[1],
+               let oldCell = collectionView.cellForItem(at: oldIndexPath) as? ColorCollectionViewCell {
+                oldCell.updateCell(toSelected: false)
+            }
+            selectedColor = currentCell.color
+            selectedCells[1] = indexPath
+        default: return
+        }
+        activateButton()
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        // TODO: - Will be done later (update UI in deselected cell)
+        guard let cell = collectionView.cellForItem(at: indexPath) else { return }
+        switch indexPath.section {
+        case 0:
+            guard let oldCell = cell as? EmojiCollectionViewCell else { return }
+            oldCell.updateCell(toSelected: false)
+            selectedParameters[1] = nil
+            selectedCells[0] = nil
+        case 1:
+            guard let oldCell = cell as? ColorCollectionViewCell else { return }
+            oldCell.updateCell(toSelected: false)
+            selectedColor = nil
+            selectedCells[1] = nil
+        default: return
+        }
+        activateButton()
     }
 }
