@@ -19,8 +19,6 @@ final class ColorCollectionViewCell: UICollectionViewCell {
         let view = UIView()
         view.layer.masksToBounds = true
         view.layer.cornerRadius = Constants.cornerRadius
-        view.layer.borderWidth = Constants.borderWidth
-        view.layer.borderColor = UIColor.ypWhite.cgColor
         return view
     }()
     
@@ -54,8 +52,8 @@ final class ColorCollectionViewCell: UICollectionViewCell {
     // MARK: - Public methods
     
     func configCell(sizeOfView size: CGFloat) {
-        sizeConstraints.forEach { $0.constant = size - 2 * Constants.borderWidth }
-        UIView.animate(withDuration: 0.3) {
+        sizeConstraints.forEach { $0.constant = size - 4 * Constants.borderWidth }
+        UIView.animate(withDuration: 0.1) {
             self.layoutIfNeeded()
         }
     }
@@ -69,9 +67,9 @@ final class ColorCollectionViewCell: UICollectionViewCell {
     // MARK: - Private methods
     
     private func setupContentView() {
-        contentView.backgroundColor = .ypWhite
+        contentView.backgroundColor = .clear
         contentView.layer.masksToBounds = true
-        contentView.layer.cornerRadius = Constants.cornerRadius
+        contentView.layer.cornerRadius = 1.5 * Constants.cornerRadius
         contentView.layer.borderWidth = Constants.borderWidth
         contentView.layer.borderColor = UIColor.ypWhite.cgColor
     }
