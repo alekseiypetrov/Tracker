@@ -10,7 +10,7 @@ final class EmojiCollectionViewCell: UICollectionViewCell {
     
     private enum Constants {
         static let cornerRadius: CGFloat = 16.0
-        static let sizeOfLabel: CGSize = CGSize(width: 32.0, height: 38.0)
+        static let sizeOfLabel: CGSize = CGSize(width: 38.0, height: 38.0)
         static let fontForLabel = UIFont.boldSystemFont(ofSize: 32.0)
     }
     
@@ -21,8 +21,6 @@ final class EmojiCollectionViewCell: UICollectionViewCell {
         label.font = Constants.fontForLabel
         label.text = ""
         label.textAlignment = .center
-        label.layer.masksToBounds = true
-        label.layer.cornerRadius = Constants.cornerRadius
         return label
     }()
     

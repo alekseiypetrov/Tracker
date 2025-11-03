@@ -389,6 +389,8 @@ extension CreateEventViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             cell.emoji = Constants.DataForCollections.emojies[indexPath.row]
+            let isSelected = (indexPath == selectedCells[indexPath.section])
+            cell.updateCell(toSelected: isSelected)
             currentCell = cell
         case 1:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ColorCollectionViewCell.identifier, for: indexPath) as? ColorCollectionViewCell else {
@@ -397,6 +399,8 @@ extension CreateEventViewController: UICollectionViewDataSource {
             let size = calculateCellSize(for: collectionView).width
             cell.color = Constants.DataForCollections.colors[indexPath.row]
             cell.configCell(sizeOfView: size)
+            let isSelected = (indexPath == selectedCells[indexPath.section])
+            cell.updateCell(toSelected: isSelected)
             currentCell = cell
         default:
             currentCell = UICollectionViewCell()
@@ -486,6 +490,7 @@ extension CreateEventViewController: UICollectionViewDelegateFlowLayout {
             if let oldIndexPath = selectedCells[0],
                let oldCell = collectionView.cellForItem(at: oldIndexPath) as? EmojiCollectionViewCell {
                 oldCell.updateCell(toSelected: false)
+                collectionView.deselectItem(at: oldIndexPath, animated: false)
             }
             selectedParameters[1] = currentCell.emoji
             selectedCells[0] = indexPath
@@ -495,6 +500,7 @@ extension CreateEventViewController: UICollectionViewDelegateFlowLayout {
             if let oldIndexPath = selectedCells[1],
                let oldCell = collectionView.cellForItem(at: oldIndexPath) as? ColorCollectionViewCell {
                 oldCell.updateCell(toSelected: false)
+                collectionView.deselectItem(at: oldIndexPath, animated: false)
             }
             selectedColor = currentCell.color
             selectedCells[1] = indexPath
