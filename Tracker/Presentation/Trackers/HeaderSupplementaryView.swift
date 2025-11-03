@@ -18,7 +18,7 @@ final class HeaderSupplementaryView: UICollectionReusableView {
     
     // MARK: - Private properties
     
-    private var verticalConstraints: [NSLayoutConstraint] = []
+    private var bottomConstraint: NSLayoutConstraint?
     
     // MARK: - Initializers
     
@@ -39,9 +39,9 @@ final class HeaderSupplementaryView: UICollectionReusableView {
     
     func changeVerticalConstraints(flag: Bool) {
         if flag {
-            NSLayoutConstraint.deactivate(verticalConstraints)
+            bottomConstraint?.constant = 0.0
         } else {
-            NSLayoutConstraint.activate(verticalConstraints)
+            bottomConstraint?.constant = -12.0
         }
     }
     
@@ -50,15 +50,14 @@ final class HeaderSupplementaryView: UICollectionReusableView {
     private func setupViewAndConstraints() {
         addSubview(titleLabel)
         
-        verticalConstraints = [
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16.0),
-            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12.0),
-        ]
+        bottomConstraint = titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12.0)
+        guard let bottomConstraint else { return }
         
         NSLayoutConstraint.activate([
+            bottomConstraint,
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16.0),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28.0),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
-        NSLayoutConstraint.activate(verticalConstraints)
     }
 }

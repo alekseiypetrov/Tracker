@@ -22,6 +22,7 @@ final class ColorCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupContentView()
         setupViewAndConstraints()
     }
     
@@ -31,10 +32,18 @@ final class ColorCollectionViewCell: UICollectionViewCell {
     
     func configCell(with color: UIColor, sizeOfView size: CGFloat) {
         colorView.backgroundColor = color
-        sizeConstraints.forEach { $0.constant = size }
+        sizeConstraints.forEach { $0.constant = size - 2 * Constants.borderWidth }
         UIView.animate(withDuration: 0.3) {
             self.layoutIfNeeded()
         }
+    }
+    
+    private func setupContentView() {
+        contentView.backgroundColor = .ypWhite
+        contentView.layer.masksToBounds = true
+        contentView.layer.cornerRadius = 2 * Constants.cornerRadius
+        contentView.layer.borderWidth = Constants.borderWidth
+        contentView.layer.borderColor = UIColor.ypWhite.cgColor
     }
     
     private func setupViewAndConstraints() {

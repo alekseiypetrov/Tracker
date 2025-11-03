@@ -18,11 +18,12 @@ final class CreateEventViewController: UIViewController {
                                             UIColor.sectionColor16, UIColor.sectionColor17, UIColor.sectionColor18
                                 
             ]
+            static let headers: [String] = ["Emoji", "Цвет"]
             static let numberOfElements: Int = emojies.count
             static let numberOfCellsInRow: Int = 6
             static let minimumSizeOfColorCell: CGFloat = 48.0
             static let maximumSizeOfColorCell: CGFloat = 52.0
-            static let heightOfHeader: CGFloat = 18.0
+            static let heightOfHeader: CGFloat = 34.0
             static let sectionEdgeInsets = UIEdgeInsets(top: 24.0, left: 16.0, bottom: 24.0, right: 16.0)
         }
         enum Sizes {
@@ -102,23 +103,12 @@ final class CreateEventViewController: UIViewController {
         return tableView
     }()
     
-    private lazy var emojiesCollectionView: UICollectionView = {
+    private lazy var сollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collectionView.accessibilityIdentifier = "emojiesCollectionView"
-        collectionView.allowsMultipleSelection = false
+        collectionView.allowsMultipleSelection = true
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(EmojiCollectionViewCell.self, forCellWithReuseIdentifier: EmojiCollectionViewCell.identifier)
-        collectionView.register(HeaderSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderSupplementaryView.identifier)
-        return collectionView
-    }()
-    
-    private lazy var colorsCollectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collectionView.accessibilityIdentifier = "colorsCollectionView"
-        collectionView.allowsMultipleSelection = false
-        collectionView.dataSource = self
-        collectionView.delegate = self
         collectionView.register(ColorCollectionViewCell.self, forCellWithReuseIdentifier: ColorCollectionViewCell.identifier)
         collectionView.register(HeaderSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderSupplementaryView.identifier)
         return collectionView
@@ -231,7 +221,9 @@ final class CreateEventViewController: UIViewController {
     // MARK: - Private methods
     
     private func setupViewsAndConstraints() {
-        let views = [titleLabel, nameOfTracker, errorLabel, tableView, emojiesCollectionView, colorsCollectionView, cancelButton, createTrackerButton]
+        let views = [titleLabel, nameOfTracker, errorLabel, tableView, 
+                     сollectionView,
+                     cancelButton, createTrackerButton]
         view.addSubviews(views)
         view.backgroundColor = .ypWhite
         
@@ -256,14 +248,10 @@ final class CreateEventViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
             tableView.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfTableAndCellAndField),
-            emojiesCollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32.0),
-            emojiesCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            emojiesCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//            emojiesCollectionView.heightAnchor.constraint(equalToConstant: 0.0),
-            colorsCollectionView.topAnchor.constraint(equalTo: emojiesCollectionView.bottomAnchor, constant: 16.0),
-            colorsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            colorsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            colorsCollectionView.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: -16.0),
+            сollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 16.0),
+            сollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            сollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            сollectionView.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: -16.0),
             cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.0),
             cancelButton.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfButton),
@@ -376,31 +364,32 @@ extension CreateEventViewController: UITableViewDelegate {
 // MARK: - CreateEventViewController + UICollectionViewDataSource
 
 extension CreateEventViewController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return Constants.DataForCollections.headers.count
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return Constants.DataForCollections.numberOfElements
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         var currentCell: UICollectionViewCell
-        guard let collectionIdentifier = collectionView.accessibilityIdentifier,
-              let collection = Collection(rawValue: collectionIdentifier)
-        else {
-            return UICollectionViewCell()
-        }
-        switch collection {
-        case .emojies:
+        switch indexPath.section {
+        case 0:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EmojiCollectionViewCell.identifier, for: indexPath) as? EmojiCollectionViewCell else {
                 return UICollectionViewCell()
             }
             cell.configCell(with: Constants.DataForCollections.emojies[indexPath.row])
             currentCell = cell
-        case .colors:
+        case 1:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ColorCollectionViewCell.identifier, for: indexPath) as? ColorCollectionViewCell else {
                 return UICollectionViewCell()
             }
             let size = calculateCellSize(for: collectionView).width
             cell.configCell(with: Constants.DataForCollections.colors[indexPath.row], sizeOfView: size)
             currentCell = cell
+        default:
+            currentCell = UICollectionViewCell()
         }
         return currentCell
     }
@@ -422,17 +411,11 @@ extension CreateEventViewController: UICollectionViewDataSource {
             for: indexPath)
         
         guard let headerSupplementaryView = header as? HeaderSupplementaryView,
-              let collectionIdentifier = collectionView.accessibilityIdentifier,
-              let collection = Collection(rawValue: collectionIdentifier)
+              indexPath.section < Constants.DataForCollections.headers.count
         else {
             return header
         }
-        switch collection {
-        case .emojies:
-            headerSupplementaryView.configHeader(withTitle: "Emoji")
-        case .colors:
-            headerSupplementaryView.configHeader(withTitle: "Цвет")
-        }
+        headerSupplementaryView.configHeader(withTitle: Constants.DataForCollections.headers[indexPath.section])
         headerSupplementaryView.changeVerticalConstraints(flag: true)
         return headerSupplementaryView
     }
