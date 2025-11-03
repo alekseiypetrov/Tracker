@@ -20,7 +20,7 @@ final class CreateEventViewController: UIViewController {
                 UIColor.sectionColor16, UIColor.sectionColor17, UIColor.sectionColor18
             ]
             static let headers: [String] = ["Emoji", "Цвет"]
-            static let numberOfElements: Int = emojies.count
+            static let numberOfElements: Int = 18
             static let numberOfCellsInRow: Int = 6
             static let minimumSizeOfColorCell: CGFloat = 48.0
             static let maximumSizeOfColorCell: CGFloat = 52.0
@@ -165,7 +165,7 @@ final class CreateEventViewController: UIViewController {
     private var selectedParameters: [String?] = Array(repeating: nil, count: 2)
     private var selectedColor: UIColor?
     private var selectedCells: [IndexPath?] = Array(repeating: nil, count: 2)
-    private let cellTitles = ["Категория", "Расписание"]
+    private let cellTitles = ["Категория"]
     
     // MARK: - Lifecycle
     
@@ -231,8 +231,7 @@ final class CreateEventViewController: UIViewController {
     
     private func setupViewsAndConstraints() {
         let views = [titleLabel, nameOfTracker, errorLabel, tableView, 
-                     сollectionView,
-                     cancelButton, createTrackerButton]
+                     сollectionView, cancelButton, createTrackerButton]
         view.addSubviews(views)
         view.backgroundColor = .ypWhite
         
@@ -281,7 +280,8 @@ final class CreateEventViewController: UIViewController {
     private func activateButton() {
         if let inputedText = nameOfTracker.text,
            !inputedText.isEmpty,
-           selectedParameters.allSatisfy({ $0 != nil }) {
+           selectedParameters.allSatisfy({ $0 != nil }),
+           selectedColor != nil {
             createTrackerButton.isEnabled = true
             createTrackerButton.backgroundColor = .ypBlack
         } else {
@@ -481,7 +481,6 @@ extension CreateEventViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // TODO: - Will be done later (update UI in selected cell)
         guard let cell = collectionView.cellForItem(at: indexPath) else { return }
         switch indexPath.section {
         case 0:

@@ -24,7 +24,6 @@
 		97CFCAA62EB65DE80090FD9C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCAA52EB65DE80090FD9C /* ViewController.swift */; };
 		97CFCAA82EB78ECD0090FD9C /* EmojiCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCAA72EB78ECD0090FD9C /* EmojiCollectionViewCell.swift */; };
 		97CFCAAA2EB78EDC0090FD9C /* ColorCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCAA92EB78EDC0090FD9C /* ColorCollectionViewCell.swift */; };
-		97CFCAAE2EB7A5200090FD9C /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCAAD2EB7A5200090FD9C /* Collection.swift */; };
 		97F381F62EABAC990013F66B /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F52EABAC990013F66B /* Tracker.swift */; };
 		97F381F82EABACA50013F66B /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F72EABACA50013F66B /* TrackerCategory.swift */; };
 		97F381FA2EABACB50013F66B /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F92EABACB50013F66B /* TrackerRecord.swift */; };
@@ -59,7 +58,6 @@
 		97CFCAA52EB65DE80090FD9C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		97CFCAA72EB78ECD0090FD9C /* EmojiCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCollectionViewCell.swift; sourceTree = "<group>"; };
 		97CFCAA92EB78EDC0090FD9C /* ColorCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCollectionViewCell.swift; sourceTree = "<group>"; };
-		97CFCAAD2EB7A5200090FD9C /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		97F381F52EABAC990013F66B /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		97F381F72EABACA50013F66B /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		97F381F92EABACB50013F66B /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
@@ -155,7 +153,6 @@
 				97F381F92EABACB50013F66B /* TrackerRecord.swift */,
 				97F381FB2EABAE330013F66B /* Weekday.swift */,
 				97CFCAA52EB65DE80090FD9C /* ViewController.swift */,
-				97CFCAAD2EB7A5200090FD9C /* Collection.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -332,7 +329,6 @@
 				97CFCA8A2EB22FB00090FD9C /* CreateTrackerTableViewCell.swift in Sources */,
 				97CFCAA62EB65DE80090FD9C /* ViewController.swift in Sources */,
 				97CFCA852EB205540090FD9C /* TimetableTableViewCell.swift in Sources */,
-				97CFCAAE2EB7A5200090FD9C /* Collection.swift in Sources */,
 				97F9FC472EA667BE0034200A /* SceneDelegate.swift in Sources */,
 				97F382052EAF94FD0013F66B /* HeaderSupplementaryView.swift in Sources */,
 				97CFCA9C2EB4D3560090FD9C /* TrackersViewControllerDelegate.swift in Sources */,
