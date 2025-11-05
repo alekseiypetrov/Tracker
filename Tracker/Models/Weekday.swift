@@ -1,4 +1,4 @@
-enum Weekday: Int {
+enum Weekday: Int, Codable {
     case monday = 2
     case tuesday
     case wednesday
