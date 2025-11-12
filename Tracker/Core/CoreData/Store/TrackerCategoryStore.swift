@@ -1,12 +1,13 @@
 import CoreData
 import UIKit
 
-enum CoreDataError: Error {
-    case duplicatingValue(String)
+protocol TrackerCategoryStoreProtocol: AnyObject {
+    func getCategory(withTitle title: String) throws -> TrackerCategoryCoreData
 }
 
-final class TrackerCategoryStore: NSObject {
+final class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
     
+    // weak var delegate: TrackerCategoryStoreDelegate?
     private let context: NSManagedObjectContext
     private lazy var fetchResultsController: NSFetchedResultsController<TrackerCategoryCoreData> = {
         let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
@@ -37,25 +38,35 @@ final class TrackerCategoryStore: NSObject {
         return objects.compactMap( { $0.title } )
     }
     
-    func addCategory(withTitle title: String) throws {
-        if findExistingCategory(withTitle: title) {
-            throw CoreDataError.duplicatingValue("Категория с таким именем уже существует!")
+    func addCategory(withTitle title: String, handler: ((Result<Void, Error>)) -> ()) {
+        switch findExistingCategory(withTitle: title) {
+        case .failure(_):
+            var newTrackerCategory = TrackerCategoryCoreData(context: context)
+            newTrackerCategory.title = title
+            try? context.save()
+            handler(.success(Void()))
+        case .success(_):
+            handler(.failure(CoreDataError.duplicatingValue("Категория с таким именем уже существует")))
         }
-        var newTrackerCategory = TrackerCategoryCoreData(context: context)
-        newTrackerCategory.title = title
-        try? context.save()
     }
     
-    private func findExistingCategory(withTitle title: String) -> Bool {
+    private func findExistingCategory(withTitle title: String) -> Result<TrackerCategoryCoreData, CoreDataError> {
         let request: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
         request.predicate = NSPredicate(format: "title == %@", title)
         if let existingCategory = try? context.fetch(request).first {
-            return true
+            return .success(existingCategory)
         }
-        return false
+        return .failure(CoreDataError.nonExistantValue("Категория с таким именем не существует"))
     }
 }
 
-extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
-    
+extension TrackerCategoryStore: TrackerCategoryStoreProtocol {
+    func getCategory(withTitle title: String) throws -> TrackerCategoryCoreData {
+        switch findExistingCategory(withTitle: title) {
+        case .failure(let error):
+            throw error
+        case .success(let category):
+            return category
+        }
+    }
 }
