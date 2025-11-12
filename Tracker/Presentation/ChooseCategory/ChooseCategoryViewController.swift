@@ -83,7 +83,7 @@ final class ChooseCategoryViewController: UIViewController {
     // MARK: - Private properties
     
     private var tableViewHeightConstraint: NSLayoutConstraint?
-    private var categories: [String] = ["Домашний уют", "Проект разгром"]
+    private var categoryStore = TrackerCategoryStore()
     
     // MARK: - Lifecycle
     
@@ -108,7 +108,8 @@ final class ChooseCategoryViewController: UIViewController {
         view.addSubviews(views)
         view.backgroundColor = .ypWhite
         
-        let heightOfTable = CGFloat(categories.count) * Constants.Sizes.heightOfCell
+        let count = categoryStore.getNumberOfCategories()
+        let heightOfTable = CGFloat(count) * Constants.Sizes.heightOfCell
         tableViewHeightConstraint = tableView.heightAnchor.constraint(equalToConstant: heightOfTable)
         guard let tableViewHeightConstraint = tableViewHeightConstraint else { return }
         
@@ -149,14 +150,32 @@ final class ChooseCategoryViewController: UIViewController {
 
 extension ChooseCategoryViewController: ChooseCategoryViewControllerDelegate {
     func addCell(withCategory category: String) {
-        let oldCount = categories.count
-        categories.append(category)
-        tableView.performBatchUpdates {
-            tableView.insertRows(at: [IndexPath(row: oldCount, section: 0)], with: .automatic)
-        } completion: { [weak self] _ in
+        categoryStore.addCategory(withTitle: category, handler: { [weak self] result in
             guard let self else { return }
-            self.updateTableViewHeight()
-        }
+            switch result {
+            case .failure(let error):
+                let message: String
+                if let coreDataError = error as? CoreDataError {
+                    message = coreDataError.localizedDescription
+                } else {
+                    message = "Возникла непредвиденная ошибка"
+                }
+                let alert = UIAlertController(title: "Внимание",
+                                              message: message,
+                                              preferredStyle: .alert)
+                let action = UIAlertAction(title: "OK", style: .cancel)
+                alert.addAction(action)
+                self.present(alert, animated: true)
+            case .success(let insertedIndex):
+                self.tableView.performBatchUpdates {
+                    let insertedIndexPath = [IndexPath(item: insertedIndex, section: 0)]
+                    self.tableView.insertRows(at: insertedIndexPath, with: .automatic)
+                } completion: { [weak self] _ in
+                    guard let self else { return }
+                    self.updateTableViewHeight()
+                }
+            }
+        })
     }
     
     private func updateTableViewHeight() {
@@ -184,26 +203,24 @@ extension ChooseCategoryViewController: ChooseCategoryViewControllerDelegate {
 
 extension ChooseCategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if categories.isEmpty {
+        let number = categoryStore.getNumberOfCategories()
+        if number == 0 {
             hideTable()
-            return 0
         } else {
             showTable()
-            return categories.count
         }
+        return number
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let currentCell = tableView.dequeueReusableCell(withIdentifier: ChooseCategoryTableViewCell.identifier, for: indexPath) as? ChooseCategoryTableViewCell
+        guard let currentCell = tableView.dequeueReusableCell(withIdentifier: ChooseCategoryTableViewCell.identifier, for: indexPath) as? ChooseCategoryTableViewCell,
+              let currentCategory = categoryStore.object(at: indexPath).title
         else {
             return UITableViewCell()
         }
-        let currentCategory = categories[indexPath.row]
-        let isSelected = selectedCategory == nil
-        ? false
-        : currentCategory == selectedCategory
+        let isSelected = selectedCategory == nil ? false : currentCategory == selectedCategory
         currentCell.configCell(in: currentCategory,
-                               isSelected: isSelected)
+                                   isSelected: isSelected)
         return currentCell
     }
 }
@@ -216,16 +233,18 @@ extension ChooseCategoryViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row == categories.count - 1 {
+        let number = categoryStore.getNumberOfCategories()
+        if indexPath.row == number - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard let cell = tableView.cellForRow(at: indexPath) as? ChooseCategoryTableViewCell else { return }
+        guard let cell = tableView.cellForRow(at: indexPath) as? ChooseCategoryTableViewCell,
+              let chosenCategory = categoryStore.object(at: indexPath).title
+        else { return }
         cell.showCheckmark()
-        let chosenCategory = categories[indexPath.row]
         dismiss(animated: true, completion: {
             self.delegate?.updateCell(at: 0, by: chosenCategory)
         })

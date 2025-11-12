@@ -5,11 +5,13 @@ protocol TrackerCategoryStoreProtocol: AnyObject {
     func getCategory(withTitle title: String) throws -> TrackerCategoryCoreData
 }
 
-final class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
+final class TrackerCategoryStore: NSObject {
     
+    private var insertedIndex: Int?
     private let context: NSManagedObjectContext
     private lazy var fetchResultsController: NSFetchedResultsController<TrackerCategoryCoreData> = {
-        let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         
         let fetchResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
@@ -32,18 +34,22 @@ final class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
         return objects.compactMap( { TrackerCategory.convert(from: $0) } )
     }
     
+    func getNumberOfCategories() -> Int {
+        fetchResultsController.fetchedObjects?.count ?? 0
+    }
+    
     func getTitlesOfCategories() -> [String] {
         guard let objects = fetchResultsController.fetchedObjects else { return [] }
         return objects.compactMap( { $0.title } )
     }
     
-    func addCategory(withTitle title: String, handler: ((Result<Void, Error>)) -> ()) {
+    func addCategory(withTitle title: String, handler: @escaping ((Result<Int, Error>)) -> ()) {
         switch findExistingCategory(withTitle: title) {
         case .failure(_):
-            var newTrackerCategory = TrackerCategoryCoreData(context: context)
+            let newTrackerCategory = TrackerCategoryCoreData(context: context)
             newTrackerCategory.title = title
             try? context.save()
-            handler(.success(Void()))
+            handler(.success(insertedIndex!))
         case .success(_):
             handler(.failure(CoreDataError.duplicatingValue("Категория с таким именем уже существует")))
         }
@@ -67,5 +73,23 @@ extension TrackerCategoryStore: TrackerCategoryStoreProtocol {
         case .success(let category):
             return category
         }
+    }
+}
+
+extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            guard let indexPath = newIndexPath else { fatalError() }
+            insertedIndex = indexPath.item
+        case .update:
+            return
+        default:
+            fatalError()
+        }
+    }
+    
+    func object(at indexPath: IndexPath) -> TrackerCategoryCoreData {
+        fetchResultsController.object(at: indexPath)
     }
 }

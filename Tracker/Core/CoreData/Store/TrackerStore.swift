@@ -1,17 +1,22 @@
 import CoreData
 import UIKit
 
-final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
+final class TrackerStore: NSObject {
     
+    private var insertionHandler: ((Result<IndexPath, Error>) -> Void)?
     private let categoryStore: TrackerCategoryStoreProtocol
     private let context: NSManagedObjectContext
     private lazy var fetchResultsController: NSFetchedResultsController<TrackerCoreData> = {
-        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        let fetchRequest = TrackerCoreData.fetchRequest()
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: "category.title", ascending: true),
+            NSSortDescriptor(key: "name", ascending: true),
+        ]
         
         let fetchResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
-            sectionNameKeyPath: nil,
+            sectionNameKeyPath: "category.title",
             cacheName: nil)
         fetchResultsController.delegate = self
         try? fetchResultsController.performFetch()
@@ -25,29 +30,30 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
         super.init()
     }
     
-    func addTracker(fromObject tracker: Tracker, toCategory category: String, handler: ((Result<Void, Error>)) -> ()) {
+    func addTracker(fromObject tracker: Tracker, toCategory category: String, handler: @escaping ((Result<IndexPath, Error>)) -> ()) {
         switch findExistingTracker(withTitle: tracker.name) {
         case .success(_):
             handler(.failure(CoreDataError.duplicatingValue("Категория с таким именем уже существует!")))
         case .failure(_):
             do {
-                var category = try categoryStore.getCategory(withTitle: category)
-                var newTracker = TrackerCoreData(context: context)
+                let category = try categoryStore.getCategory(withTitle: category)
+                let newTracker = TrackerCoreData(context: context)
                 newTracker.id = Int64(tracker.id)
                 newTracker.name = tracker.name
                 newTracker.emoji = tracker.emoji
                 newTracker.color = tracker.color
                 newTracker.category = category
+                self.insertionHandler = handler
                 try? context.save()
-                handler(.success(Void()))
             } catch {
                 handler(.failure(error))
+                return
             }
         }
     }
     
-    func getNumberOfTrackers(inSection section: Int) -> Int {
-        fetchResultsController.sections?[section].numberOfObjects ?? 0
+    func getNumberOfAllTrackers() -> Int? {
+        fetchResultsController.sections?.reduce(0, { $0 + $1.numberOfObjects })
     }
     
     private func findExistingTracker(withTitle title: String) -> Result<TrackerCoreData, CoreDataError> {
@@ -58,5 +64,18 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
             return .failure(CoreDataError.nonExistantValue("Трекер с таким именем не существует"))
         }
         return .success(existingTracker)
+    }
+}
+
+extension TrackerStore: NSFetchedResultsControllerDelegate {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            guard let indexPath = newIndexPath else { fatalError() }
+            insertionHandler?(.success(indexPath))
+            insertionHandler = nil
+        default:
+            fatalError()
+        }
     }
 }

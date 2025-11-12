@@ -1,7 +1,7 @@
 import CoreData
 import UIKit
 
-final class TrackerRecordStore: NSObject, NSFetchedResultsControllerDelegate {
+final class TrackerRecordStore: NSObject {
     
     private let context: NSManagedObjectContext
     
@@ -18,7 +18,7 @@ final class TrackerRecordStore: NSObject, NSFetchedResultsControllerDelegate {
         try? context.save()
     }
     
-    func deleteRecord(fromObjectWithId id: UInt, atDate date: String, handler: ((Result<Void, Error>)) -> ()) {
+    func deleteRecord(fromObjectWithId id: UInt, atDate date: String, handler: @escaping ((Result<Void, Error>)) -> ()) {
         if let record = getSpecificRecord(withId: id, atDate: date) {
             context.delete(record)
             try? context.save()
@@ -28,21 +28,21 @@ final class TrackerRecordStore: NSObject, NSFetchedResultsControllerDelegate {
     }
     
     func getNumberOfRecords(ofTrackerWithId id: UInt) -> Int {
-        let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
+        let fetchRequest = TrackerRecordCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
         guard let numberOfRecords = try? context.fetch(fetchRequest).count
         else { return 0 }
         return numberOfRecords
     }
     
-    func getStatusOfTracker(withId id: UInt, atDate date: String, handler: (Bool) -> ()) {
-        guard let record = getSpecificRecord(withId: id, atDate: date)
+    func getStatusOfTracker(withId id: UInt, atDate date: String, handler: @escaping (Bool) -> ()) {
+        guard getSpecificRecord(withId: id, atDate: date) != nil
         else { return handler(false) }
         return handler(true)
     }
     
     private func getSpecificRecord(withId id: UInt, atDate date: String) -> TrackerRecordCoreData? {
-        let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
+        let fetchRequest = TrackerRecordCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %ld AND date == %K", id,
                                              #keyPath(TrackerRecordCoreData.date), date)
         guard let result = try? context.fetch(fetchRequest)

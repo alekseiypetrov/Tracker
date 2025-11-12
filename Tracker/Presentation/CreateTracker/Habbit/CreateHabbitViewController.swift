@@ -163,6 +163,7 @@ final class CreateHabbitViewController: UIViewController {
     
     // MARK: - Private properties
     
+    private var trackerStore = TrackerStore()
     private var constraintsOfErrorLabel: [NSLayoutConstraint] = []
     private var selectedParameters: [String?] = Array(repeating: nil, count: 3)
     private var selectedColor: UIColor?
@@ -197,7 +198,7 @@ final class CreateHabbitViewController: UIViewController {
               let stringTimetable = selectedParameters[1],
               let emoji = selectedParameters[2],
               let color = selectedColor,
-              let lastId = self.delegate?.getNumberOfTrackers()
+              let lastId = trackerStore.getNumberOfAllTrackers()
         else {
             return
         }
@@ -207,7 +208,7 @@ final class CreateHabbitViewController: UIViewController {
         dismiss(animated: true, completion: { [weak self] in
             guard let self else { return }
             self.delegate?.addNewTracker(Tracker(
-                id: lastId + 1,
+                id: UInt(lastId) + 1,
                 name: name,
                 color: color,
                 emoji: emoji,
