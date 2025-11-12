@@ -102,27 +102,25 @@ final class TrackersViewController: UIViewController {
         dateFormatter.dateFormat = "dd.MM.yy"
         return dateFormatter
     }()
-    private var categories: [TrackerCategory] = [
-        TrackerCategory(title: "Домашний уют",
-                        trackers: [
-                            Tracker(id: 1, name: "Поливать растения", color: .sectionColor1, emoji: "❤️", timetable: [.monday]),
-                            Tracker(id: 2, name: "Помыть полы", color: .sectionColor14, emoji: "😇", timetable: [.tuesday, .friday]),
-                        ]),
-        TrackerCategory(title: "Проект разгром",
-                        trackers: [
-                            Tracker(id: 3, name: "Сварить мыло", color: .sectionColor7, emoji: "🧼", timetable: [.thursday]),
-                            Tracker(id: 4, name: "Уничтожить предмет искусства", color: .sectionColor2, emoji: "🧨", timetable: [.saturday, .tuesday]),
-                            Tracker(id: 5, name: "Подраться с незнакомцем", color: .sectionColor8, emoji: "👊🏻", timetable: [.friday, .sunday]),
-                        ])
-    ]
+    private var categories: [TrackerCategory] = []
     private var filteredCategories: [TrackerCategory] = []
-    private var completedTrackers: [TrackerRecord] = []
+    private var categoryStore: TrackerCategoryStore?
+    private var recordStore: TrackerRecordStore?
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSubviewsAndConstraints()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        categories = self.categoryStore?.getCategories() ?? []
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.collectionView.reloadData()
+        }
     }
     
     // MARK: - Actions
@@ -225,7 +223,7 @@ extension TrackersViewController: TrackersViewControllerDelegate {
 // MARK: - TrackersViewController + TrackersCollectionViewCellDelegate
 
 extension TrackersViewController: TrackersCollectionViewCellDelegate {
-    func setDaysAtTracker(with id: UInt) -> String {
+    private func setDaysAtTracker(with id: UInt) -> String {
         let numberOfDays = numberOfTimesCompleted(byTrackerWith: id)
         var resultString: String
         if numberOfDays % 10 == 1 && numberOfDays % 100 != 11 {
@@ -239,19 +237,22 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
     }
     
     private func numberOfTimesCompleted(byTrackerWith id: UInt) -> Int {
-        completedTrackers.filter { $0.id == id }.count
+        recordStore?.getNumberOfRecords(ofTrackerWithId: id) ?? 0
     }
 
-    func setButtonImageAtTracker(with id: UInt) -> UIImage? {
+    private func setButtonImageAtTracker(with id: UInt) -> UIImage? {
         let currentDateAtDatePicker = datePicker.date
         let formattedCurrentDate = dateFormatter.string(from: currentDateAtDatePicker)
-        return isTrackerDone(atThisDate: formattedCurrentDate, with: id) ? Constants.Images.imageOfButtonWithCheckmark : Constants.Images.imageOfButtonWithPlus
-    }
-    
-    private func isTrackerDone(atThisDate date: String, with id: UInt) -> Bool {
-        return !completedTrackers
-            .filter { $0.id == id && $0.date == date }
-            .isEmpty
+        var image: UIImage?
+        recordStore?.getStatusOfTracker(withId: id, atDate: formattedCurrentDate, handler: {
+            switch $0 {
+            case true:
+                image = Constants.Images.imageOfButtonWithCheckmark
+            case false:
+                image = Constants.Images.imageOfButtonWithPlus
+            }
+        })
+        return image
     }
     
     func didTappedButtonInTracker(_ tracker: TrackersCollectionViewCell) {
@@ -263,15 +264,17 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
         }
         let formattedCurrentDate = dateFormatter.string(from: currentDateAtDatePicker)
         let idOfTracker = filteredCategories[indexPath.section].trackers[indexPath.row].id
-        if !isTrackerDone(atThisDate: formattedCurrentDate, with: idOfTracker) {
-            let newRecord = TrackerRecord(id: idOfTracker,
-                                          date: formattedCurrentDate)
-            completedTrackers.append(newRecord)
-        } else if let indexOfTracker = completedTrackers.firstIndex(where: { $0.id == idOfTracker && $0.date == formattedCurrentDate } ) {
-            completedTrackers.remove(at: indexOfTracker)
-        }
+        recordStore?.getStatusOfTracker(withId: idOfTracker, atDate: formattedCurrentDate, handler: {
+            switch $0 {
+            case true:
+                recordStore?.deleteRecord(fromObjectWithId: idOfTracker, atDate: formattedCurrentDate, handler: {_ in })
+                tracker.imageForButton = Constants.Images.imageOfButtonWithPlus
+            case false:
+                recordStore?.addRecord(fromObjectWithId: idOfTracker, atDate: formattedCurrentDate)
+                tracker.imageForButton = Constants.Images.imageOfButtonWithCheckmark
+            }
+        })
         tracker.countDays = setDaysAtTracker(with: idOfTracker)
-        tracker.imageForButton = setButtonImageAtTracker(with: idOfTracker)
     }
 }
 

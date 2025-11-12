@@ -3,19 +3,15 @@ import UIKit
 
 final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
     
-    // weak var delegate: TrackerStoreDelegate?
     private let categoryStore: TrackerCategoryStoreProtocol
     private let context: NSManagedObjectContext
     private lazy var fetchResultsController: NSFetchedResultsController<TrackerCoreData> = {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-        fetchRequest.sortDescriptors = [
-            NSSortDescriptor(key: "category.title", ascending: true)
-        ]
         
         let fetchResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
-            sectionNameKeyPath: "category.title",
+            sectionNameKeyPath: nil,
             cacheName: nil)
         fetchResultsController.delegate = self
         try? fetchResultsController.performFetch()

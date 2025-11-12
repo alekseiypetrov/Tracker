@@ -7,7 +7,6 @@ protocol TrackerCategoryStoreProtocol: AnyObject {
 
 final class TrackerCategoryStore: NSObject, NSFetchedResultsControllerDelegate {
     
-    // weak var delegate: TrackerCategoryStoreDelegate?
     private let context: NSManagedObjectContext
     private lazy var fetchResultsController: NSFetchedResultsController<TrackerCategoryCoreData> = {
         let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")

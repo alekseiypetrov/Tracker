@@ -3,7 +3,6 @@ import UIKit
 
 final class TrackerRecordStore: NSObject, NSFetchedResultsControllerDelegate {
     
-    // weak var delegate: TrackerStoreDelegate?
     private let context: NSManagedObjectContext
     
     override init() {
