@@ -122,11 +122,8 @@ final class NewCategoryViewController: UIViewController {
     }
     
     private func addCategory() {
-        guard let newCategory = nameOfCategory.text else { return }
-        dismiss(animated: true, completion: { [weak self] in
-            guard let self else { return }
-            self.delegate?.addCell(withCategory: newCategory)
-        })
+        guard let titleOfNewCategory = nameOfCategory.text else { return }
+        delegate?.addCategory(withTitle: titleOfNewCategory)
     }
     
     // MARK: - Private methods

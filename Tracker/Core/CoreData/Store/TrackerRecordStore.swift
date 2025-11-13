@@ -4,10 +4,12 @@ import UIKit
 final class TrackerRecordStore: NSObject {
     
     private let context: NSManagedObjectContext
+    private let saveContext: () -> ()
     
     override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        self.context = context
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        self.context = appDelegate.persistentContainer.viewContext
+        self.saveContext = appDelegate.saveContext
         super.init()
     }
     
@@ -15,16 +17,14 @@ final class TrackerRecordStore: NSObject {
         let newRecord = TrackerRecordCoreData(context: context)
         newRecord.id = Int64(id)
         newRecord.date = date
-        try? context.save()
+        saveContext()
     }
     
-    func deleteRecord(fromObjectWithId id: UInt, atDate date: String, handler: @escaping ((Result<Void, Error>)) -> ()) {
-        if let record = getSpecificRecord(withId: id, atDate: date) {
-            context.delete(record)
-            try? context.save()
-            return handler(.success(Void()))
-        }
-        return handler(.failure(CoreDataError.nonExistantValue("Данной записи нет в базе")))
+    func deleteRecord(fromObjectWithId id: UInt, atDate date: String) throws {
+        guard let record = getSpecificRecord(withId: id, atDate: date)
+        else { throw CoreDataError.nonExistantValue("Данной записи нет в базе") }
+        context.delete(record)
+        saveContext()
     }
     
     func getNumberOfRecords(ofTrackerWithId id: UInt) -> Int {
@@ -35,16 +35,13 @@ final class TrackerRecordStore: NSObject {
         return numberOfRecords
     }
     
-    func getStatusOfTracker(withId id: UInt, atDate date: String, handler: @escaping (Bool) -> ()) {
-        guard getSpecificRecord(withId: id, atDate: date) != nil
-        else { return handler(false) }
-        return handler(true)
+    func getStatusOfTracker(withId id: UInt, atDate date: String) -> Bool {
+        getSpecificRecord(withId: id, atDate: date) != nil
     }
     
     private func getSpecificRecord(withId id: UInt, atDate date: String) -> TrackerRecordCoreData? {
         let fetchRequest = TrackerRecordCoreData.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %ld AND date == %K", id,
-                                             #keyPath(TrackerRecordCoreData.date), date)
+        fetchRequest.predicate = NSPredicate(format: "id == %ld AND date == %@", id, date)
         guard let result = try? context.fetch(fetchRequest)
         else { return nil }
         return result.first

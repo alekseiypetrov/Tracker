@@ -163,7 +163,6 @@ final class CreateHabbitViewController: UIViewController {
     
     // MARK: - Private properties
     
-    private var trackerStore = TrackerStore()
     private var constraintsOfErrorLabel: [NSLayoutConstraint] = []
     private var selectedParameters: [String?] = Array(repeating: nil, count: 3)
     private var selectedColor: UIColor?
@@ -197,24 +196,12 @@ final class CreateHabbitViewController: UIViewController {
               let category = selectedParameters[0],
               let stringTimetable = selectedParameters[1],
               let emoji = selectedParameters[2],
-              let color = selectedColor,
-              let lastId = trackerStore.getNumberOfAllTrackers()
-        else {
-            return
-        }
+              let color = selectedColor
+        else { return }
         let timetable: [Weekday] = stringTimetable == "Каждый день"
         ? [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
         : stringTimetable.split(separator: ", ").map { Weekday.convert(from: String($0)) }
-        dismiss(animated: true, completion: { [weak self] in
-            guard let self else { return }
-            self.delegate?.addNewTracker(Tracker(
-                id: UInt(lastId) + 1,
-                name: name,
-                color: color,
-                emoji: emoji,
-                timetable: timetable),
-                                         ofCategory: category)
-        })
+        delegate?.addNewTracker(name: name, color: color, emoji: emoji, timetable: timetable, ofCategory: category)
     }
     
     @objc

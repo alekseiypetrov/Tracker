@@ -1,3 +1,3 @@
 protocol ChooseCategoryViewControllerDelegate: AnyObject {
-    func addCell(withCategory category: String)
+    func addCategory(withTitle title: String)
 }

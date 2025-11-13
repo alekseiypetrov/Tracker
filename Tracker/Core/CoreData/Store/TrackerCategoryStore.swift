@@ -1,14 +1,27 @@
 import CoreData
 import UIKit
 
+protocol TrackerCategoryStoreDelegate: AnyObject {
+    func didUpdated(_ updates: CategoryUpdateValues)
+}
+
 protocol TrackerCategoryStoreProtocol: AnyObject {
     func getCategory(withTitle title: String) throws -> TrackerCategoryCoreData
 }
 
+struct CategoryUpdateValues {
+    let insertedIndexes: [IndexPath]
+    let deletedIndexes: [IndexPath]
+}
+
 final class TrackerCategoryStore: NSObject {
     
-    private var insertedIndex: Int?
+    private var insertedIndexes: [IndexPath]?
+    private var deletedIndexes: [IndexPath]?
+    private let delegate: TrackerCategoryStoreDelegate?
     private let context: NSManagedObjectContext
+    private let saveContext: () -> ()
+    
     private lazy var fetchResultsController: NSFetchedResultsController<TrackerCategoryCoreData> = {
         let fetchRequest = TrackerCategoryCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
@@ -23,10 +36,11 @@ final class TrackerCategoryStore: NSObject {
         return fetchResultsController
     }()
     
-    override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        self.context = context
-        super.init()
+    init(delegate: TrackerCategoryStoreDelegate) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        self.context = appDelegate.persistentContainer.viewContext
+        self.saveContext = appDelegate.saveContext
+        self.delegate = delegate
     }
     
     func getCategories() -> [TrackerCategory] {
@@ -43,15 +57,14 @@ final class TrackerCategoryStore: NSObject {
         return objects.compactMap( { $0.title } )
     }
     
-    func addCategory(withTitle title: String, handler: @escaping ((Result<Int, Error>)) -> ()) {
+    func addCategory(withTitle title: String) throws {
         switch findExistingCategory(withTitle: title) {
         case .failure(_):
             let newTrackerCategory = TrackerCategoryCoreData(context: context)
             newTrackerCategory.title = title
-            try? context.save()
-            handler(.success(insertedIndex!))
+            saveContext()
         case .success(_):
-            handler(.failure(CoreDataError.duplicatingValue("Категория с таким именем уже существует")))
+            throw CoreDataError.duplicatingValue("Категория с таким именем уже существует")
         }
     }
     
@@ -77,15 +90,29 @@ extension TrackerCategoryStore: TrackerCategoryStoreProtocol {
 }
 
 extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        insertedIndexes = []
+        deletedIndexes = []
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        delegate?.didUpdated(CategoryUpdateValues(
+            insertedIndexes: insertedIndexes ?? [],
+            deletedIndexes: deletedIndexes ?? []))
+        insertedIndexes = nil
+        deletedIndexes = nil
+    }
+    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
         case .insert:
-            guard let indexPath = newIndexPath else { fatalError() }
-            insertedIndex = indexPath.item
-        case .update:
-            return
+            guard let indexPath = newIndexPath else { return }
+            insertedIndexes?.append(indexPath)
+        case .delete:
+            guard let indexPath = newIndexPath else { return }
+            deletedIndexes?.append(indexPath)
         default:
-            fatalError()
+            return
         }
     }
     

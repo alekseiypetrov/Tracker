@@ -102,17 +102,19 @@ final class TrackersViewController: UIViewController {
         dateFormatter.dateFormat = "dd.MM.yy"
         return dateFormatter
     }()
+    
     private var filteredCategories: [TrackerCategory] = []
-    private var categoryStore = TrackerCategoryStore()
-    private var recordStore = TrackerRecordStore()
-    private var trackerStore = TrackerStore()
+    private var categoryStore: TrackerCategoryStore?
+    private var recordStore: TrackerRecordStore?
+    private var trackerStore: TrackerStore?
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let libraryURL = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!
-        print("Library path: \(libraryURL.path)")
+        categoryStore = TrackerCategoryStore(delegate: self)
+        trackerStore = TrackerStore(delegate: self)
+        recordStore = TrackerRecordStore()
         setupSubviewsAndConstraints()
     }
     
@@ -131,6 +133,15 @@ final class TrackersViewController: UIViewController {
     }
     
     // MARK: - Private methods
+    
+    private func showAlert(withMessage message: String) {
+        let alert = UIAlertController(title: "Внимание",
+                                      message: message,
+                                      preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK", style: .cancel)
+        alert.addAction(action)
+        present(alert, animated: true)
+    }
     
     private func hideCollection() {
         [imageViewOfEmptyList, titleOfEmptyListLabel].forEach { $0.isHidden = false }
@@ -177,32 +188,52 @@ final class TrackersViewController: UIViewController {
     }
 }
 
+// MARK: - TrackersViewController + TrackerCategoryStoreDelegate
+
+extension TrackersViewController: TrackerCategoryStoreDelegate {
+    func didUpdated(_ updates: CategoryUpdateValues) { return }
+}
+
+// MARK: - TrackersViewController + TrackerStoreDelegate
+
+extension TrackersViewController: TrackerStoreDelegate {
+    func didUpdated() {
+        collectionView.reloadData()
+    }
+}
+
 // MARK: - TrackersViewController + TrackersViewControllerDelegate
 
 extension TrackersViewController: TrackersViewControllerDelegate {
-    func addNewTracker(_ tracker: Tracker, ofCategory categoryTitle: String) {
-        trackerStore.addTracker(fromObject: tracker, toCategory: categoryTitle, handler: { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .failure(let error):
-                let message: String
-                if let coreDataError = error as? CoreDataError {
-                    message = coreDataError.localizedDescription
-                } else {
-                    message = "Возникла непредвиденная ошибка"
-                }
-                let alert = UIAlertController(title: "Внимание",
-                                              message: message,
-                                              preferredStyle: .alert)
-                let action = UIAlertAction(title: "OK", style: .cancel)
-                alert.addAction(action)
-                self.present(alert, animated: true)
-            case .success(let insertedIndex):
-                self.collectionView.performBatchUpdates {
-                    self.collectionView.insertItems(at: [insertedIndex])
-                }
+    func addNewTracker(name: String, 
+                       color: UIColor,
+                       emoji: String,
+                       timetable: [Weekday],
+                       ofCategory categoryTitle: String) {
+        do {
+            guard let numberOfTrackers = trackerStore?.getNumberOfAllTrackers(),
+                  let categoryStore
+            else { throw CoreDataError.nonExistantValue("Невозможно получить количество трекеров") }
+            let tracker = Tracker(id: UInt(numberOfTrackers + 1),
+                                  name: name,
+                                  color: color,
+                                  emoji: emoji,
+                                  timetable: timetable)
+            try trackerStore?.addTracker(fromObject: tracker, toCategory: categoryTitle, categoryStore: categoryStore)
+            dismiss(animated: true)
+        } catch CoreDataError.duplicatingValue(let message) {
+            dismiss(animated: true) { [weak self] in
+                self?.showAlert(withMessage: message)
             }
-        })
+        } catch CoreDataError.nonExistantValue(let message) {
+            dismiss(animated: true) { [weak self] in
+                self?.showAlert(withMessage: message)
+            }
+        } catch {
+            dismiss(animated: true) { [weak self] in
+                self?.showAlert(withMessage: "Возникла непредвиденная ошибка")
+            }
+        }
     }
     
     func showViewController(whichName name: ViewController) {
@@ -238,21 +269,19 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
     }
     
     private func numberOfTimesCompleted(byTrackerWith id: UInt) -> Int {
-        recordStore.getNumberOfRecords(ofTrackerWithId: id) 
+        recordStore?.getNumberOfRecords(ofTrackerWithId: id) ?? 0
     }
 
     private func setButtonImageAtTracker(with id: UInt) -> UIImage? {
         let currentDateAtDatePicker = datePicker.date
         let formattedCurrentDate = dateFormatter.string(from: currentDateAtDatePicker)
         var image: UIImage?
-        recordStore.getStatusOfTracker(withId: id, atDate: formattedCurrentDate, handler: {
-            switch $0 {
-            case true:
-                image = Constants.Images.imageOfButtonWithCheckmark
-            case false:
-                image = Constants.Images.imageOfButtonWithPlus
-            }
-        })
+        if let flag = recordStore?.getStatusOfTracker(withId: id, atDate: formattedCurrentDate),
+           flag {
+            image = Constants.Images.imageOfButtonWithCheckmark
+        } else {
+            image = Constants.Images.imageOfButtonWithPlus
+        }
         return image
     }
     
@@ -265,17 +294,20 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
         }
         let formattedCurrentDate = dateFormatter.string(from: currentDateAtDatePicker)
         let idOfTracker = filteredCategories[indexPath.section].trackers[indexPath.row].id
-        recordStore.getStatusOfTracker(withId: idOfTracker, atDate: formattedCurrentDate, handler: { [weak self] in
-            guard let self else { return }
-            switch $0 {
-            case true:
-                self.recordStore.deleteRecord(fromObjectWithId: idOfTracker, atDate: formattedCurrentDate, handler: {_ in })
+        if let flag = recordStore?.getStatusOfTracker(withId: idOfTracker, atDate: formattedCurrentDate),
+           flag {
+            do {
+                try recordStore?.deleteRecord(fromObjectWithId: idOfTracker, atDate: formattedCurrentDate)
                 tracker.imageForButton = Constants.Images.imageOfButtonWithPlus
-            case false:
-                self.recordStore.addRecord(fromObjectWithId: idOfTracker, atDate: formattedCurrentDate)
-                tracker.imageForButton = Constants.Images.imageOfButtonWithCheckmark
+            } catch CoreDataError.nonExistantValue(let message) {
+                showAlert(withMessage: message)
+            } catch {
+                showAlert(withMessage: "Возникла непредвиденная ошибка")
             }
-        })
+        } else {
+            recordStore?.addRecord(fromObjectWithId: idOfTracker, atDate: formattedCurrentDate)
+            tracker.imageForButton = Constants.Images.imageOfButtonWithCheckmark
+        }
         tracker.countDays = setDaysAtTracker(with: idOfTracker)
     }
 }
@@ -286,10 +318,10 @@ extension TrackersViewController: UICollectionViewDataSource {
     private func filterCategories() {
         let currentDateAtDatePicker = datePicker.date
         guard let calendar = datePicker.calendar,
-              let weekday = Weekday(rawValue: calendar.component(.weekday, from: currentDateAtDatePicker)) else {
-            return
-        }
-        filteredCategories = categoryStore.getCategories()
+              let weekday = Weekday(rawValue: calendar.component(.weekday, from: currentDateAtDatePicker)),
+              let categories = categoryStore?.getCategories()
+        else { return }
+        filteredCategories = categories
             .filter {
                 !$0.trackers.filter {
                     $0.timetable.contains(weekday)

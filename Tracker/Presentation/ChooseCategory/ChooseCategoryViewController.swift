@@ -65,7 +65,7 @@ final class ChooseCategoryViewController: UIViewController {
         let button = UIButton()
         button.addAction(UIAction(handler: { [weak self] _ in
             guard let self else { return }
-            self.addCategory()
+            self.addCategoryButtonPushed()
         }),
                          for: .touchUpInside)
         button.layer.masksToBounds = true
@@ -82,19 +82,19 @@ final class ChooseCategoryViewController: UIViewController {
     
     // MARK: - Private properties
     
-    private var tableViewHeightConstraint: NSLayoutConstraint?
-    private var categoryStore = TrackerCategoryStore()
+    private var categoryStore: TrackerCategoryStore?
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        categoryStore = TrackerCategoryStore(delegate: self)
         setupViewsAndConstraints()
     }
     
     // MARK: - Actions
     
-    private func addCategory() {
+    private func addCategoryButtonPushed() {
         let newCategoryViewController = NewCategoryViewController()
         newCategoryViewController.delegate = self
         let navigationController = UINavigationController(rootViewController: newCategoryViewController)
@@ -108,11 +108,6 @@ final class ChooseCategoryViewController: UIViewController {
         view.addSubviews(views)
         view.backgroundColor = .ypWhite
         
-        let count = categoryStore.getNumberOfCategories()
-        let heightOfTable = CGFloat(count) * Constants.Sizes.heightOfCell
-        tableViewHeightConstraint = tableView.heightAnchor.constraint(equalToConstant: heightOfTable)
-        guard let tableViewHeightConstraint = tableViewHeightConstraint else { return }
-        
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 28.0),
@@ -120,7 +115,8 @@ final class ChooseCategoryViewController: UIViewController {
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24.0),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
-            tableViewHeightConstraint,
+            tableView.bottomAnchor.constraint(lessThanOrEqualTo: addCategoryButton.topAnchor, constant: -8.0),
+            tableView.heightAnchor.constraint(equalToConstant: 0.0),
             imageViewOfEmptyList.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageViewOfEmptyList.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -20.0),
             imageViewOfEmptyList.heightAnchor.constraint(equalToConstant: Constants.Sizes.imageViewOfEmptyListSize),
@@ -133,6 +129,7 @@ final class ChooseCategoryViewController: UIViewController {
             addCategoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.0),
             addCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.0),
         ])
+        changeHeightOfTable()
     }
     
     private func hideTable() {
@@ -144,57 +141,62 @@ final class ChooseCategoryViewController: UIViewController {
         [imageViewOfEmptyList, titleOfEmptyListLabel].forEach { $0.isHidden = true }
         tableView.isHidden = false
     }
+    
+    private func getHeightOfTable() -> CGFloat {
+        guard let numberOfCategories = categoryStore?.getNumberOfCategories() else { return 0.0 }
+        return Constants.Sizes.heightOfCell * CGFloat(numberOfCategories)
+    }
+    
+    private func changeHeightOfTable() {
+        let heightOfTable = getHeightOfTable()
+        let maxHeight = view.safeAreaLayoutGuide.layoutFrame.height - Constants.Sizes.heightOfButton - 28.0
+        guard let tableViewHeightConstraint = tableView.constraints.filter({ $0.firstAttribute == .height }).first else { return }
+        tableViewHeightConstraint.constant = min(heightOfTable, maxHeight)
+        tableView.isScrollEnabled = min(heightOfTable, maxHeight) == maxHeight
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self else { return }
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    private func showAlert(withMessage message: String) {
+        let alert = UIAlertController(title: "Внимание",
+                                      message: message,
+                                      preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK", style: .cancel)
+        alert.addAction(action)
+        present(alert, animated: true)
+    }
+}
+
+// MARK: - ChooseCategoryViewController + TrackerCategoryStoreDelegate
+
+extension ChooseCategoryViewController: TrackerCategoryStoreDelegate {
+    func didUpdated(_ updates: CategoryUpdateValues) {
+        tableView.performBatchUpdates {
+            tableView.insertRows(at: updates.insertedIndexes, with: .automatic)
+            tableView.deleteRows(at: updates.deletedIndexes, with: .fade)
+        } completion: { _ in
+            self.changeHeightOfTable()
+        }
+    }
 }
 
 // MARK: - ChooseCategoryViewController + ChooseCategoryViewControllerDelegate
 
 extension ChooseCategoryViewController: ChooseCategoryViewControllerDelegate {
-    func addCell(withCategory category: String) {
-        categoryStore.addCategory(withTitle: category, handler: { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .failure(let error):
-                let message: String
-                if let coreDataError = error as? CoreDataError {
-                    message = coreDataError.localizedDescription
-                } else {
-                    message = "Возникла непредвиденная ошибка"
-                }
-                let alert = UIAlertController(title: "Внимание",
-                                              message: message,
-                                              preferredStyle: .alert)
-                let action = UIAlertAction(title: "OK", style: .cancel)
-                alert.addAction(action)
-                self.present(alert, animated: true)
-            case .success(let insertedIndex):
-                self.tableView.performBatchUpdates {
-                    let insertedIndexPath = [IndexPath(item: insertedIndex, section: 0)]
-                    self.tableView.insertRows(at: insertedIndexPath, with: .automatic)
-                } completion: { [weak self] _ in
-                    guard let self else { return }
-                    self.updateTableViewHeight()
-                }
+    func addCategory(withTitle title: String) {
+        do {
+            try categoryStore?.addCategory(withTitle: title)
+            dismiss(animated: true)
+        } catch CoreDataError.duplicatingValue(let message) {
+            dismiss(animated: true) { [weak self] in
+                self?.showAlert(withMessage: message)
             }
-        })
-    }
-    
-    private func updateTableViewHeight() {
-        tableView.layoutIfNeeded()
-        let contentHeight = tableView.contentSize.height
-        let maxHeight = view.safeAreaLayoutGuide.layoutFrame.height - Constants.Sizes.heightOfButton - 28.0
-        
-        guard let tableViewHeightConstraint else { return }
-        if contentHeight > maxHeight {
-            tableView.isScrollEnabled = true
-            tableViewHeightConstraint.constant = maxHeight
-        } else {
-            tableView.isScrollEnabled = false
-            tableViewHeightConstraint.constant = contentHeight
-        }
-        
-        UIView.animate(withDuration: 0.3) { [weak self] in
-            guard let self else { return }
-            self.view.layoutIfNeeded()
+        } catch {
+            dismiss(animated: true) { [weak self] in
+                self?.showAlert(withMessage: "Возникла непредвиденная ошибка")
+            }
         }
     }
 }
@@ -203,7 +205,7 @@ extension ChooseCategoryViewController: ChooseCategoryViewControllerDelegate {
 
 extension ChooseCategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let number = categoryStore.getNumberOfCategories()
+        let number = categoryStore?.getNumberOfCategories() ?? 0
         if number == 0 {
             hideTable()
         } else {
@@ -214,7 +216,7 @@ extension ChooseCategoryViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let currentCell = tableView.dequeueReusableCell(withIdentifier: ChooseCategoryTableViewCell.identifier, for: indexPath) as? ChooseCategoryTableViewCell,
-              let currentCategory = categoryStore.object(at: indexPath).title
+              let currentCategory = categoryStore?.object(at: indexPath).title
         else {
             return UITableViewCell()
         }
@@ -233,8 +235,8 @@ extension ChooseCategoryViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let number = categoryStore.getNumberOfCategories()
-        if indexPath.row == number - 1 {
+        if let number = categoryStore?.getNumberOfCategories(),
+           indexPath.row == number - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
         }
     }
@@ -242,7 +244,7 @@ extension ChooseCategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         guard let cell = tableView.cellForRow(at: indexPath) as? ChooseCategoryTableViewCell,
-              let chosenCategory = categoryStore.object(at: indexPath).title
+              let chosenCategory = categoryStore?.object(at: indexPath).title
         else { return }
         cell.showCheckmark()
         dismiss(animated: true, completion: {
