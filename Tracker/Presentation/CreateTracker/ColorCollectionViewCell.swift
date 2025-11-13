@@ -46,7 +46,7 @@ final class ColorCollectionViewCell: UICollectionViewCell {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("Error in init?(coder:)")
+        nil
     }
     
     // MARK: - Public methods

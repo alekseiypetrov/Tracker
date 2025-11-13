@@ -38,7 +38,7 @@ final class CreateEventViewController: UIViewController {
         }
         static let cornerRadiusOfUIElements: CGFloat = 16.0
         static let borderWidth: CGFloat = 1.0
-        static let maximumLenghtOfText = 38
+        static let maximumLengthOfText = 38
     }
     
     // MARK: - UI-elements
@@ -210,9 +210,9 @@ final class CreateEventViewController: UIViewController {
     @objc
     private func textChanged() {
         guard let currentTextInField = nameOfTracker.text else { return }
-        if currentTextInField.count > Constants.maximumLenghtOfText {
+        if currentTextInField.count > Constants.maximumLengthOfText {
             showErrorLabel()
-            nameOfTracker.text = String(currentTextInField.prefix(Constants.maximumLenghtOfText))
+            nameOfTracker.text = String(currentTextInField.prefix(Constants.maximumLengthOfText))
         } else {
             hideErrorLabel()
         }

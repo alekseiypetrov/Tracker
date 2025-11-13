@@ -213,7 +213,7 @@ extension TrackersViewController: TrackersViewControllerDelegate {
         do {
             guard let numberOfTrackers = trackerStore?.getNumberOfAllTrackers(),
                   let categoryStore
-            else { throw CoreDataError.nonExistantValue("Невозможно получить количество трекеров") }
+            else { throw CoreDataError.nonExistentValue("Невозможно получить количество трекеров") }
             let tracker = Tracker(id: UInt(numberOfTrackers + 1),
                                   name: name,
                                   color: color,
@@ -225,7 +225,7 @@ extension TrackersViewController: TrackersViewControllerDelegate {
             dismiss(animated: true) { [weak self] in
                 self?.showAlert(withMessage: message)
             }
-        } catch CoreDataError.nonExistantValue(let message) {
+        } catch CoreDataError.nonExistentValue(let message) {
             dismiss(animated: true) { [weak self] in
                 self?.showAlert(withMessage: message)
             }
@@ -299,7 +299,7 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
             do {
                 try recordStore?.deleteRecord(fromObjectWithId: idOfTracker, atDate: formattedCurrentDate)
                 tracker.imageForButton = Constants.Images.imageOfButtonWithPlus
-            } catch CoreDataError.nonExistantValue(let message) {
+            } catch CoreDataError.nonExistentValue(let message) {
                 showAlert(withMessage: message)
             } catch {
                 showAlert(withMessage: "Возникла непредвиденная ошибка")

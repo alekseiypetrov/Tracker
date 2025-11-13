@@ -7,9 +7,8 @@ final class TrackerRecordStore: NSObject {
     private let saveContext: () -> ()
     
     override init() {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        self.context = appDelegate.persistentContainer.viewContext
-        self.saveContext = appDelegate.saveContext
+        self.context = DataBaseStore.shared.persistentContainer.viewContext
+        self.saveContext = DataBaseStore.shared.saveContext
         super.init()
     }
     
@@ -22,7 +21,7 @@ final class TrackerRecordStore: NSObject {
     
     func deleteRecord(fromObjectWithId id: UInt, atDate date: String) throws {
         guard let record = getSpecificRecord(withId: id, atDate: date)
-        else { throw CoreDataError.nonExistantValue("Данной записи нет в базе") }
+        else { throw CoreDataError.nonExistentValue("Данной записи нет в базе") }
         context.delete(record)
         saveContext()
     }

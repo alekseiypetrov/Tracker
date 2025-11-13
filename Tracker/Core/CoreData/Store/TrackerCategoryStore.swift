@@ -37,9 +37,8 @@ final class TrackerCategoryStore: NSObject {
     }()
     
     init(delegate: TrackerCategoryStoreDelegate) {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        self.context = appDelegate.persistentContainer.viewContext
-        self.saveContext = appDelegate.saveContext
+        self.context = DataBaseStore.shared.persistentContainer.viewContext
+        self.saveContext = DataBaseStore.shared.saveContext
         self.delegate = delegate
     }
     
@@ -59,11 +58,11 @@ final class TrackerCategoryStore: NSObject {
     
     func addCategory(withTitle title: String) throws {
         switch findExistingCategory(withTitle: title) {
-        case .failure(_):
+        case .failure:
             let newTrackerCategory = TrackerCategoryCoreData(context: context)
             newTrackerCategory.title = title
             saveContext()
-        case .success(_):
+        case .success:
             throw CoreDataError.duplicatingValue("Категория с таким именем уже существует")
         }
     }
@@ -74,7 +73,7 @@ final class TrackerCategoryStore: NSObject {
         if let existingCategory = try? context.fetch(request).first {
             return .success(existingCategory)
         }
-        return .failure(CoreDataError.nonExistantValue("Категория с таким именем не существует"))
+        return .failure(CoreDataError.nonExistentValue("Категория с таким именем не существует"))
     }
 }
 

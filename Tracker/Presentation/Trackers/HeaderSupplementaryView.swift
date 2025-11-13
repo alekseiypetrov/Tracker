@@ -28,7 +28,7 @@ final class HeaderSupplementaryView: UICollectionReusableView {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        nil
     }
     
     // MARK: - Public methods
@@ -38,11 +38,7 @@ final class HeaderSupplementaryView: UICollectionReusableView {
     }
     
     func changeVerticalConstraints(flag: Bool) {
-        if flag {
-            bottomConstraint?.constant = 0.0
-        } else {
-            bottomConstraint?.constant = -12.0
-        }
+        bottomConstraint?.constant = flag ? 0.0 : -12.0
     }
     
     // MARK: - Private methods

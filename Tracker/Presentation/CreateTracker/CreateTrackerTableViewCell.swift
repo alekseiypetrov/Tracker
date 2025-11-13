@@ -61,7 +61,7 @@ final class CreateTrackerTableViewCell: UITableViewCell {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("Error in init?(coder:)")
+        nil
     }
     
     // MARK: - Public methods

@@ -12,17 +12,16 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
     private let saveContext: () -> ()
     
     init(delegate: TrackerStoreDelegate) {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        self.context = appDelegate.persistentContainer.viewContext
-        self.saveContext = appDelegate.saveContext
+        self.context = DataBaseStore.shared.persistentContainer.viewContext
+        self.saveContext = DataBaseStore.shared.saveContext
         self.delegate = delegate
     }
     
     func addTracker(fromObject tracker: Tracker, toCategory category: String, categoryStore: TrackerCategoryStoreProtocol) throws {
         switch findExistingTracker(withTitle: tracker.name) {
-        case .success(_):
+        case .success:
             throw CoreDataError.duplicatingValue("Трекер с таким именем уже существует!")
-        case .failure(_):
+        case .failure:
             do {
                 let category = try categoryStore.getCategory(withTitle: category)
                 let newTracker = TrackerCoreData(context: context)
@@ -55,7 +54,7 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
         request.predicate = NSPredicate(format: "name == %@", title)
         guard let existingTracker = try? context.fetch(request).first
         else {
-            return .failure(CoreDataError.nonExistantValue("Трекер с таким именем не существует"))
+            return .failure(CoreDataError.nonExistentValue("Трекер с таким именем не существует"))
         }
         return .success(existingTracker)
     }
