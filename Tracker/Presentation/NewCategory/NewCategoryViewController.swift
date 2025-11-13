@@ -15,7 +15,7 @@ final class NewCategoryViewController: UIViewController {
             static let fontForTextField = UIFont.systemFont(ofSize: 17.0, weight: .regular)
         }
         static let cornerRadiusOfUIElements: CGFloat = 16.0
-        static let maximumLenghtOfText: Int = 38
+        static let maximumLengthOfText: Int = 38
     }
     
     // MARK: - UI-elements
@@ -113,20 +113,17 @@ final class NewCategoryViewController: UIViewController {
     private func textChanged() {
         guard let currentTextInField = nameOfCategory.text else { return }
         currentTextInField.isEmpty ? disableButtons() : enableButtons()
-        if currentTextInField.count > Constants.maximumLenghtOfText {
+        if currentTextInField.count > Constants.maximumLengthOfText {
             errorLabel.isHidden = false
-            nameOfCategory.text = String(currentTextInField.prefix(Constants.maximumLenghtOfText))
+            nameOfCategory.text = String(currentTextInField.prefix(Constants.maximumLengthOfText))
         } else {
             errorLabel.isHidden = true
         }
     }
     
     private func addCategory() {
-        guard let newCategory = nameOfCategory.text else { return }
-        dismiss(animated: true, completion: { [weak self] in
-            guard let self else { return }
-            self.delegate?.addCell(withCategory: newCategory)
-        })
+        guard let titleOfNewCategory = nameOfCategory.text else { return }
+        delegate?.addCategory(withTitle: titleOfNewCategory)
     }
     
     // MARK: - Private methods

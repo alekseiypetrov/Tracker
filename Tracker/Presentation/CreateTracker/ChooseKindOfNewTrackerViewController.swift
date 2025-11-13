@@ -1,6 +1,6 @@
 import UIKit
 
-final class CreateTrackerViewController: UIViewController {
+final class ChooseKindOfNewTrackerViewController: UIViewController {
     
     // MARK: - Constants
     

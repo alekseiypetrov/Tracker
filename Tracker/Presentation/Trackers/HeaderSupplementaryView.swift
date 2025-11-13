@@ -6,7 +6,7 @@ final class HeaderSupplementaryView: UICollectionReusableView {
     
     static let identifier = "headerOfCollectionView"
     
-    // MARK: - Private properties
+    // MARK: - UI-elements
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -16,6 +16,10 @@ final class HeaderSupplementaryView: UICollectionReusableView {
         return label
     }()
     
+    // MARK: - Private properties
+    
+    private var bottomConstraint: NSLayoutConstraint?
+    
     // MARK: - Initializers
     
     override init(frame: CGRect) {
@@ -24,7 +28,7 @@ final class HeaderSupplementaryView: UICollectionReusableView {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        nil
     }
     
     // MARK: - Public methods
@@ -33,14 +37,21 @@ final class HeaderSupplementaryView: UICollectionReusableView {
         titleLabel.text = title
     }
     
+    func changeVerticalConstraints(flag: Bool) {
+        bottomConstraint?.constant = flag ? 0.0 : -12.0
+    }
+    
     // MARK: - Private methods
     
     private func setupViewAndConstraints() {
         addSubview(titleLabel)
         
+        bottomConstraint = titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12.0)
+        guard let bottomConstraint else { return }
+        
         NSLayoutConstraint.activate([
+            bottomConstraint,
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16.0),
-            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12.0),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28.0),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])

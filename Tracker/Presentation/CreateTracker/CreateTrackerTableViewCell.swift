@@ -1,6 +1,6 @@
 import UIKit
 
-final class CreateHabbitTableViewCell: UITableViewCell {
+final class CreateTrackerTableViewCell: UITableViewCell {
     
     // MARK: - Static properties
     
@@ -61,7 +61,7 @@ final class CreateHabbitTableViewCell: UITableViewCell {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("Error in init?(coder:)")
+        nil
     }
     
     // MARK: - Public methods
