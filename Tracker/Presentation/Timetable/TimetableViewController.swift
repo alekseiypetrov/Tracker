@@ -20,7 +20,7 @@ final class TimetableViewController: UIViewController {
     
     // MARK: - Public properties
     
-    weak var delegate: CreateHabbitViewController?
+    weak var delegate: CreateTrackerViewControllerDelegate?
     
     // MARK: - Private properties
     

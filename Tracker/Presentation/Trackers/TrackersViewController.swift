@@ -102,33 +102,26 @@ final class TrackersViewController: UIViewController {
         dateFormatter.dateFormat = "dd.MM.yy"
         return dateFormatter
     }()
-    private var categories: [TrackerCategory] = [
-        TrackerCategory(title: "Домашний уют",
-                        trackers: [
-                            Tracker(id: 1, name: "Поливать растения", color: .ypRed, emoji: "❤️", timetable: [.monday]),
-                            Tracker(id: 2, name: "Помыть полы", color: .ypBlue, emoji: "😇", timetable: [.tuesday, .friday]),
-                        ]),
-        TrackerCategory(title: "Проект разгром",
-                        trackers: [
-                            Tracker(id: 3, name: "Сварить мыло", color: .ypGray, emoji: "🧼", timetable: [.thursday]),
-                            Tracker(id: 4, name: "Уничтожить предмет искусства", color: .orange, emoji: "🧨", timetable: [.saturday, .tuesday]),
-                            Tracker(id: 5, name: "Подраться с незнакомцем", color: .cyan, emoji: "👊🏻", timetable: [.friday, .sunday]),
-                        ])
-    ]
+    
     private var filteredCategories: [TrackerCategory] = []
-    private var completedTrackers: [TrackerRecord] = []
+    private var categoryStore: TrackerCategoryStore?
+    private var recordStore: TrackerRecordStore?
+    private var trackerStore: TrackerStore?
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        categoryStore = TrackerCategoryStore(delegate: self)
+        trackerStore = TrackerStore(delegate: self)
+        recordStore = TrackerRecordStore()
         setupSubviewsAndConstraints()
     }
     
     // MARK: - Actions
     
     private func addTracker() {
-        let createTrackerViewController = CreateTrackerViewController()
+        let createTrackerViewController = ChooseKindOfNewTrackerViewController()
         createTrackerViewController.delegate = self
         let navigationController = UINavigationController(rootViewController: createTrackerViewController)
         present(navigationController, animated: true)
@@ -140,6 +133,15 @@ final class TrackersViewController: UIViewController {
     }
     
     // MARK: - Private methods
+    
+    private func showAlert(withMessage message: String) {
+        let alert = UIAlertController(title: "Внимание",
+                                      message: message,
+                                      preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK", style: .cancel)
+        alert.addAction(action)
+        present(alert, animated: true)
+    }
     
     private func hideCollection() {
         [imageViewOfEmptyList, titleOfEmptyListLabel].forEach { $0.isHidden = false }
@@ -186,20 +188,52 @@ final class TrackersViewController: UIViewController {
     }
 }
 
+// MARK: - TrackersViewController + TrackerCategoryStoreDelegate
+
+extension TrackersViewController: TrackerCategoryStoreDelegate {
+    func didUpdated(_ updates: CategoryUpdateValues) { return }
+}
+
+// MARK: - TrackersViewController + TrackerStoreDelegate
+
+extension TrackersViewController: TrackerStoreDelegate {
+    func didUpdated() {
+        collectionView.reloadData()
+    }
+}
+
 // MARK: - TrackersViewController + TrackersViewControllerDelegate
 
 extension TrackersViewController: TrackersViewControllerDelegate {
-    func addNewTracker(_ tracker: Tracker, ofCategory categoryTitle: String) {
-        let index: Int = categories.firstIndex(where: { $0.title == categoryTitle }) ?? categories.count
-        if index < categories.count {
-            let category = categories[index]
-            categories[index] = TrackerCategory(title: categoryTitle,
-                                                trackers: category.trackers + [tracker])
-        } else {
-            categories.append(TrackerCategory(title: categoryTitle,
-                                              trackers: [tracker]))
+    func addNewTracker(name: String, 
+                       color: UIColor,
+                       emoji: String,
+                       timetable: [Weekday],
+                       ofCategory categoryTitle: String) {
+        do {
+            guard let numberOfTrackers = trackerStore?.getNumberOfAllTrackers(),
+                  let categoryStore
+            else { throw CoreDataError.nonExistentValue("Невозможно получить количество трекеров") }
+            let tracker = Tracker(id: UInt(numberOfTrackers + 1),
+                                  name: name,
+                                  color: color,
+                                  emoji: emoji,
+                                  timetable: timetable)
+            try trackerStore?.addTracker(fromObject: tracker, toCategory: categoryTitle, categoryStore: categoryStore)
+            dismiss(animated: true)
+        } catch CoreDataError.duplicatingValue(let message) {
+            dismiss(animated: true) { [weak self] in
+                self?.showAlert(withMessage: message)
+            }
+        } catch CoreDataError.nonExistentValue(let message) {
+            dismiss(animated: true) { [weak self] in
+                self?.showAlert(withMessage: message)
+            }
+        } catch {
+            dismiss(animated: true) { [weak self] in
+                self?.showAlert(withMessage: "Возникла непредвиденная ошибка")
+            }
         }
-        collectionView.reloadData()
     }
     
     func showViewController(whichName name: ViewController) {
@@ -216,16 +250,12 @@ extension TrackersViewController: TrackersViewControllerDelegate {
         }
         present(navigationController, animated: true)
     }
-    
-    func getNumberOfTrackers() -> UInt {
-        UInt(categories.reduce(0, { $0 + $1.trackers.count }))
-    }
 }
 
-// MARK: - TrackersViewController + TrackersCollectionViewCellDelegate
+// MARK: - TrackersViewController + TrackersCollectionViewCell
 
 extension TrackersViewController: TrackersCollectionViewCellDelegate {
-    func setDaysAtTracker(with id: UInt) -> String {
+    private func setDaysAtTracker(with id: UInt) -> String {
         let numberOfDays = numberOfTimesCompleted(byTrackerWith: id)
         var resultString: String
         if numberOfDays % 10 == 1 && numberOfDays % 100 != 11 {
@@ -239,19 +269,20 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
     }
     
     private func numberOfTimesCompleted(byTrackerWith id: UInt) -> Int {
-        completedTrackers.filter { $0.id == id }.count
+        recordStore?.getNumberOfRecords(ofTrackerWithId: id) ?? 0
     }
 
-    func setButtonImageAtTracker(with id: UInt) -> UIImage? {
+    private func setButtonImageAtTracker(with id: UInt) -> UIImage? {
         let currentDateAtDatePicker = datePicker.date
         let formattedCurrentDate = dateFormatter.string(from: currentDateAtDatePicker)
-        return isTrackerDone(atThisDate: formattedCurrentDate, with: id) ? Constants.Images.imageOfButtonWithCheckmark : Constants.Images.imageOfButtonWithPlus
-    }
-    
-    private func isTrackerDone(atThisDate date: String, with id: UInt) -> Bool {
-        return !completedTrackers
-            .filter { $0.id == id && $0.date == date }
-            .isEmpty
+        var image: UIImage?
+        if let flag = recordStore?.getStatusOfTracker(withId: id, atDate: formattedCurrentDate),
+           flag {
+            image = Constants.Images.imageOfButtonWithCheckmark
+        } else {
+            image = Constants.Images.imageOfButtonWithPlus
+        }
+        return image
     }
     
     func didTappedButtonInTracker(_ tracker: TrackersCollectionViewCell) {
@@ -263,15 +294,21 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
         }
         let formattedCurrentDate = dateFormatter.string(from: currentDateAtDatePicker)
         let idOfTracker = filteredCategories[indexPath.section].trackers[indexPath.row].id
-        if !isTrackerDone(atThisDate: formattedCurrentDate, with: idOfTracker) {
-            let newRecord = TrackerRecord(id: idOfTracker,
-                                          date: formattedCurrentDate)
-            completedTrackers.append(newRecord)
-        } else if let indexOfTracker = completedTrackers.firstIndex(where: { $0.id == idOfTracker && $0.date == formattedCurrentDate } ) {
-            completedTrackers.remove(at: indexOfTracker)
+        if let flag = recordStore?.getStatusOfTracker(withId: idOfTracker, atDate: formattedCurrentDate),
+           flag {
+            do {
+                try recordStore?.deleteRecord(fromObjectWithId: idOfTracker, atDate: formattedCurrentDate)
+                tracker.imageForButton = Constants.Images.imageOfButtonWithPlus
+            } catch CoreDataError.nonExistentValue(let message) {
+                showAlert(withMessage: message)
+            } catch {
+                showAlert(withMessage: "Возникла непредвиденная ошибка")
+            }
+        } else {
+            recordStore?.addRecord(fromObjectWithId: idOfTracker, atDate: formattedCurrentDate)
+            tracker.imageForButton = Constants.Images.imageOfButtonWithCheckmark
         }
         tracker.countDays = setDaysAtTracker(with: idOfTracker)
-        tracker.imageForButton = setButtonImageAtTracker(with: idOfTracker)
     }
 }
 
@@ -281,9 +318,9 @@ extension TrackersViewController: UICollectionViewDataSource {
     private func filterCategories() {
         let currentDateAtDatePicker = datePicker.date
         guard let calendar = datePicker.calendar,
-              let weekday = Weekday(rawValue: calendar.component(.weekday, from: currentDateAtDatePicker)) else {
-            return
-        }
+              let weekday = Weekday(rawValue: calendar.component(.weekday, from: currentDateAtDatePicker)),
+              let categories = categoryStore?.getCategories()
+        else { return }
         filteredCategories = categories
             .filter {
                 !$0.trackers.filter {
