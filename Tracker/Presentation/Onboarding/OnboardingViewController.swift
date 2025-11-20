@@ -100,8 +100,12 @@ final class OnboardingViewController: UIPageViewController {
             assertionFailure("Не удалось получить window из SceneDelegate")
             return
         }
-        let tabBarController = TabBarController()
-        window.rootViewController = tabBarController
+        UIView.transition(with: window,
+                          duration: 0.15,
+                          options: .transitionCrossDissolve,
+                          animations: {
+            window.rootViewController = TabBarController()
+        })
     }
     
     // MARK: - Private methods
