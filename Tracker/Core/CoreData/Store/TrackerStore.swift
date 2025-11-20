@@ -7,7 +7,7 @@ protocol TrackerStoreDelegate: AnyObject {
 
 final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
     
-    private let delegate: TrackerStoreDelegate?
+    private weak var delegate: TrackerStoreDelegate?
     private let context: NSManagedObjectContext
     private let saveContext: () -> ()
     

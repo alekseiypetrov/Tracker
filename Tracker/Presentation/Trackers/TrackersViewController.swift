@@ -112,7 +112,8 @@ final class TrackersViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        categoryStore = TrackerCategoryStore(delegate: self)
+        categoryStore = TrackerCategoryStore()
+        categoryStore?.delegate = self
         trackerStore = TrackerStore(delegate: self)
         recordStore = TrackerRecordStore()
         setupSubviewsAndConstraints()

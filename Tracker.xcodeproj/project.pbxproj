@@ -33,6 +33,8 @@
 		97CFCAA82EB78ECD0090FD9C /* EmojiCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCAA72EB78ECD0090FD9C /* EmojiCollectionViewCell.swift */; };
 		97CFCAAA2EB78EDC0090FD9C /* ColorCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCAA92EB78EDC0090FD9C /* ColorCollectionViewCell.swift */; };
 		97EF92362ECC8C200079590B /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EF92352ECC8C200079590B /* OnboardingViewController.swift */; };
+		97EF925A2ECDCBA60079590B /* ChooseCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EF92592ECDCBA60079590B /* ChooseCategoryViewModel.swift */; };
+		97EF925C2ECDCC450079590B /* ChooseCategoryTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EF925B2ECDCC450079590B /* ChooseCategoryTableViewCellViewModel.swift */; };
 		97F381F62EABAC990013F66B /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F52EABAC990013F66B /* Tracker.swift */; };
 		97F381F82EABACA50013F66B /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F72EABACA50013F66B /* TrackerCategory.swift */; };
 		97F381FA2EABACB50013F66B /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F92EABACB50013F66B /* TrackerRecord.swift */; };
@@ -76,6 +78,8 @@
 		97CFCAA72EB78ECD0090FD9C /* EmojiCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCollectionViewCell.swift; sourceTree = "<group>"; };
 		97CFCAA92EB78EDC0090FD9C /* ColorCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCollectionViewCell.swift; sourceTree = "<group>"; };
 		97EF92352ECC8C200079590B /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		97EF92592ECDCBA60079590B /* ChooseCategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCategoryViewModel.swift; sourceTree = "<group>"; };
+		97EF925B2ECDCC450079590B /* ChooseCategoryTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCategoryTableViewCellViewModel.swift; sourceTree = "<group>"; };
 		97F381F52EABAC990013F66B /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		97F381F72EABACA50013F66B /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		97F381F92EABACB50013F66B /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
@@ -179,6 +183,8 @@
 				97CFCA8C2EB22FEC0090FD9C /* ChooseCategoryViewController.swift */,
 				97CFCA972EB36C7F0090FD9C /* ChooseCategoryViewControllerDelegate.swift */,
 				97CFCA992EB3F76F0090FD9C /* ChooseCategoryTableViewCell.swift */,
+				97EF92592ECDCBA60079590B /* ChooseCategoryViewModel.swift */,
+				97EF925B2ECDCC450079590B /* ChooseCategoryTableViewCellViewModel.swift */,
 			);
 			path = ChooseCategory;
 			sourceTree = "<group>";
@@ -386,6 +392,7 @@
 				97CFCAA02EB5056A0090FD9C /* ChooseKindOfNewTrackerViewController.swift in Sources */,
 				972F1EB82EC4915800A5B31B /* ColorValueTransformer.swift in Sources */,
 				97CFCA8D2EB22FEC0090FD9C /* ChooseCategoryViewController.swift in Sources */,
+				97EF925C2ECDCC450079590B /* ChooseCategoryTableViewCellViewModel.swift in Sources */,
 				97F382032EAF8F760013F66B /* UIView+addSubviews.swift in Sources */,
 				97CFCAA22EB5059A0090FD9C /* CreateEventViewController.swift in Sources */,
 				97F382002EAD4D4F0013F66B /* TrackersCollectionViewCell.swift in Sources */,
@@ -409,6 +416,7 @@
 				97EF92362ECC8C200079590B /* OnboardingViewController.swift in Sources */,
 				97CFCA8A2EB22FB00090FD9C /* CreateTrackerTableViewCell.swift in Sources */,
 				97CFCAA62EB65DE80090FD9C /* ViewController.swift in Sources */,
+				97EF925A2ECDCBA60079590B /* ChooseCategoryViewModel.swift in Sources */,
 				97CFCA852EB205540090FD9C /* TimetableTableViewCell.swift in Sources */,
 				97F9FC472EA667BE0034200A /* SceneDelegate.swift in Sources */,
 				9753A8382EBB559F00491D40 /* DaysValueTransformer.swift in Sources */,
