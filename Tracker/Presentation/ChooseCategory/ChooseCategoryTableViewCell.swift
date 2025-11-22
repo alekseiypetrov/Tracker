@@ -28,7 +28,7 @@ final class ChooseCategoryTableViewCell: UITableViewCell {
         UIImageView(image: UIImage(systemName: "checkmark")?
             .withTintColor(.ypBlue, renderingMode: .alwaysOriginal))
     }()
-    
+
     // MARK: - Initializers
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -36,24 +36,17 @@ final class ChooseCategoryTableViewCell: UITableViewCell {
         setupViewsAndConstraints()
     }
     
-    required init?(coder: NSCoder) {
-        nil
-    }
+    required init?(coder: NSCoder) { nil }
     
     // MARK: - Public methods
     
-    func configCell(in category: String, isSelected: Bool) {
-        titleOfCellLabel.text = category
-        imageViewOfCheckmark.isHidden = isSelected ? false : true
-        accessoryView?.backgroundColor = backgroundColor
+    func configCell(withTitle title: String, andState state: Bool) {
+        titleOfCellLabel.text = title
+        imageViewOfCheckmark.isHidden = !state
     }
     
-    func showCheckmark() {
-        imageViewOfCheckmark.isHidden = false
-    }
-    
-    func hideCheckmark() {
-        imageViewOfCheckmark.isHidden = true
+    func setSelected(_ selected: Bool) {
+        imageViewOfCheckmark.isHidden = !selected
     }
     
     // MARK: - Private methods
@@ -62,6 +55,7 @@ final class ChooseCategoryTableViewCell: UITableViewCell {
         let views = [titleOfCellLabel, imageViewOfCheckmark]
         contentView.addSubviews(views)
         contentView.backgroundColor = .ypBackground
+        accessoryView?.backgroundColor = backgroundColor
         imageViewOfCheckmark.isHidden = true
         
         NSLayoutConstraint.activate([

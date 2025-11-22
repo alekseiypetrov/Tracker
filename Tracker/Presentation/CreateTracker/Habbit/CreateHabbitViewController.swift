@@ -353,15 +353,12 @@ extension CreateHabbitViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.row {
         case 0:
-            let categoryViewController = ChooseCategoryViewController()
+            guard let cell = tableView.cellForRow(at: indexPath) as? CreateTrackerTableViewCell
+            else { return }
+            let categoryViewController = ChooseCategoryViewController(selectedCategory: cell.descriptionOfParameter)
             categoryViewController.delegate = self
             let navigationController = UINavigationController(rootViewController: categoryViewController)
             present(navigationController, animated: true)
-            guard let cell = tableView.cellForRow(at: indexPath) as? CreateTrackerTableViewCell,
-                  let selectedCategory = cell.descriptionOfParameter else {
-                return
-            }
-            categoryViewController.selectedCategory = selectedCategory
         case 1:
             let timetableViewController = TimetableViewController()
             timetableViewController.delegate = self

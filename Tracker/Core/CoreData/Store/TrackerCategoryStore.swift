@@ -16,9 +16,9 @@ struct CategoryUpdateValues {
 
 final class TrackerCategoryStore: NSObject {
     
+    weak var delegate: TrackerCategoryStoreDelegate?
     private var insertedIndexes: [IndexPath]?
     private var deletedIndexes: [IndexPath]?
-    private let delegate: TrackerCategoryStoreDelegate?
     private let context: NSManagedObjectContext
     private let saveContext: () -> ()
     
@@ -35,11 +35,11 @@ final class TrackerCategoryStore: NSObject {
         try? fetchResultsController.performFetch()
         return fetchResultsController
     }()
-    
-    init(delegate: TrackerCategoryStoreDelegate) {
+        
+    override init() {
         self.context = DataBaseStore.shared.persistentContainer.viewContext
         self.saveContext = DataBaseStore.shared.saveContext
-        self.delegate = delegate
+        super.init()
     }
     
     func getCategories() -> [TrackerCategory] {

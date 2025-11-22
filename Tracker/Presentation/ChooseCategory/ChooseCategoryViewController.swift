@@ -76,19 +76,34 @@ final class ChooseCategoryViewController: UIViewController {
     }()
     
     // MARK: - Public properties
-    
-    var selectedCategory: String?
+
     weak var delegate: CreateTrackerViewControllerDelegate?
     
     // MARK: - Private properties
     
-    private var categoryStore: TrackerCategoryStore?
+    private var viewModel: ChooseCategoryViewModel
+    private var selectedCategory: String?
+    
+    // MARK: - Initializers
+    
+    init(selectedCategory: String?) {
+        self.selectedCategory = selectedCategory
+        self.viewModel = ChooseCategoryViewModel(categoryStore: TrackerCategoryStore())
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) { nil }
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        categoryStore = TrackerCategoryStore(delegate: self)
+        viewModel.categoriesBinding = { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+                self?.changeHeightOfTable()
+            }
+        }
         setupViewsAndConstraints()
     }
     
@@ -143,8 +158,7 @@ final class ChooseCategoryViewController: UIViewController {
     }
     
     private func getHeightOfTable() -> CGFloat {
-        guard let numberOfCategories = categoryStore?.getNumberOfCategories() else { return 0.0 }
-        return Constants.Sizes.heightOfCell * CGFloat(numberOfCategories)
+        Constants.Sizes.heightOfCell * CGFloat(viewModel.categories.count)
     }
     
     private func changeHeightOfTable() {
@@ -169,25 +183,12 @@ final class ChooseCategoryViewController: UIViewController {
     }
 }
 
-// MARK: - ChooseCategoryViewController + TrackerCategoryStoreDelegate
-
-extension ChooseCategoryViewController: TrackerCategoryStoreDelegate {
-    func didUpdated(_ updates: CategoryUpdateValues) {
-        tableView.performBatchUpdates {
-            tableView.insertRows(at: updates.insertedIndexes, with: .automatic)
-            tableView.deleteRows(at: updates.deletedIndexes, with: .fade)
-        } completion: { _ in
-            self.changeHeightOfTable()
-        }
-    }
-}
-
 // MARK: - ChooseCategoryViewController + ChooseCategoryViewControllerDelegate
 
 extension ChooseCategoryViewController: ChooseCategoryViewControllerDelegate {
     func addCategory(withTitle title: String) {
         do {
-            try categoryStore?.addCategory(withTitle: title)
+            try viewModel.addCategory(withTitle: title)
             dismiss(animated: true)
         } catch CoreDataError.duplicatingValue(let message) {
             dismiss(animated: true) { [weak self] in
@@ -205,24 +206,18 @@ extension ChooseCategoryViewController: ChooseCategoryViewControllerDelegate {
 
 extension ChooseCategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let number = categoryStore?.getNumberOfCategories() ?? 0
-        if number == 0 {
-            hideTable()
-        } else {
-            showTable()
-        }
+        let number = viewModel.categories.count
+        number == 0 ? hideTable() : showTable()
         return number
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let currentCell = tableView.dequeueReusableCell(withIdentifier: ChooseCategoryTableViewCell.identifier, for: indexPath) as? ChooseCategoryTableViewCell,
-              let currentCategory = categoryStore?.object(at: indexPath).title
-        else {
-            return UITableViewCell()
-        }
-        let isSelected = selectedCategory == nil ? false : currentCategory == selectedCategory
-        currentCell.configCell(in: currentCategory,
-                                   isSelected: isSelected)
+        guard let currentCell = tableView.dequeueReusableCell(withIdentifier: ChooseCategoryTableViewCell.identifier, for: indexPath) as? ChooseCategoryTableViewCell
+        else { return UITableViewCell() }
+        let title = viewModel.categories[indexPath.row]
+        currentCell.configCell(withTitle: title,
+                               andState: title == (selectedCategory ?? "")
+        )
         return currentCell
     }
 }
@@ -231,22 +226,21 @@ extension ChooseCategoryViewController: UITableViewDataSource {
 
 extension ChooseCategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return Constants.Sizes.heightOfCell
+        Constants.Sizes.heightOfCell
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if let number = categoryStore?.getNumberOfCategories(),
-           indexPath.row == number - 1 {
+        if indexPath.row == viewModel.categories.count - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard let cell = tableView.cellForRow(at: indexPath) as? ChooseCategoryTableViewCell,
-              let chosenCategory = categoryStore?.object(at: indexPath).title
+        guard let cell = tableView.cellForRow(at: indexPath) as? ChooseCategoryTableViewCell
         else { return }
-        cell.showCheckmark()
+        let chosenCategory = viewModel.categories[indexPath.row]
+        cell.setSelected(true)
         dismiss(animated: true, completion: {
             self.delegate?.updateCell(at: 0, by: chosenCategory)
         })
@@ -254,6 +248,6 @@ extension ChooseCategoryViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? ChooseCategoryTableViewCell else { return }
-        cell.hideCheckmark()
+        cell.setSelected(false)
     }
 }
