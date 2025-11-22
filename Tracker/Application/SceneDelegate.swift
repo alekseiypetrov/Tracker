@@ -1,6 +1,10 @@
 import UIKit
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+protocol SceneDelegateProtocol {
+    func routeFromOnboardingToMainPage()
+}
+
+final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     private let firstEnterKey = "firstEnter"
@@ -9,8 +13,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         let wasFirstEnter = UserDefaults.standard.bool(forKey: firstEnterKey)
-        window.rootViewController = wasFirstEnter ? TabBarController() : OnboardingViewController(firstEnterKey)
+        window.rootViewController = wasFirstEnter ? TabBarController() : OnboardingViewController(sceneDelegate: self)
         window.makeKeyAndVisible()
         self.window = window
+    }
+}
+
+extension SceneDelegate: SceneDelegateProtocol {
+    func routeFromOnboardingToMainPage() {
+        guard let window 
+        else {
+            assertionFailure("Не удалось получить window из SceneDelegate")
+            return
+        }
+        UserDefaults.standard.setValue(true, forKey: firstEnterKey)
+        UIView.transition(with: window,
+                          duration: 0.15,
+                          options: .transitionCrossDissolve,
+                          animations: {
+            window.rootViewController = TabBarController()
+        })
     }
 }

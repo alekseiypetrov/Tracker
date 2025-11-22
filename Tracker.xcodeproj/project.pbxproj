@@ -35,6 +35,7 @@
 		97EF92362ECC8C200079590B /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EF92352ECC8C200079590B /* OnboardingViewController.swift */; };
 		97EF925A2ECDCBA60079590B /* ChooseCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EF92592ECDCBA60079590B /* ChooseCategoryViewModel.swift */; };
 		97EF925C2ECDCC450079590B /* ChooseCategoryTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EF925B2ECDCC450079590B /* ChooseCategoryTableViewCellViewModel.swift */; };
+		97EF92672ED20BAB0079590B /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EF92662ED20BAB0079590B /* OnboardingPageViewController.swift */; };
 		97F381F62EABAC990013F66B /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F52EABAC990013F66B /* Tracker.swift */; };
 		97F381F82EABACA50013F66B /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F72EABACA50013F66B /* TrackerCategory.swift */; };
 		97F381FA2EABACB50013F66B /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F381F92EABACB50013F66B /* TrackerRecord.swift */; };
@@ -80,6 +81,7 @@
 		97EF92352ECC8C200079590B /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		97EF92592ECDCBA60079590B /* ChooseCategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCategoryViewModel.swift; sourceTree = "<group>"; };
 		97EF925B2ECDCC450079590B /* ChooseCategoryTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCategoryTableViewCellViewModel.swift; sourceTree = "<group>"; };
+		97EF92662ED20BAB0079590B /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		97F381F52EABAC990013F66B /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		97F381F72EABACA50013F66B /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		97F381F92EABACB50013F66B /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
@@ -223,6 +225,7 @@
 			isa = PBXGroup;
 			children = (
 				97EF92352ECC8C200079590B /* OnboardingViewController.swift */,
+				97EF92662ED20BAB0079590B /* OnboardingPageViewController.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -429,6 +432,7 @@
 				97F381F62EABAC990013F66B /* Tracker.swift in Sources */,
 				972F1EBC2EC6947B00A5B31B /* DataBaseStore.swift in Sources */,
 				97CFCAAA2EB78EDC0090FD9C /* ColorCollectionViewCell.swift in Sources */,
+				97EF92672ED20BAB0079590B /* OnboardingPageViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

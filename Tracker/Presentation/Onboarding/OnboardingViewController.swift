@@ -1,46 +1,37 @@
 import UIKit
 
+struct PageModel {
+    let title: String
+    let image: UIImage
+}
+
+extension PageModel {
+    static let aboutTracking = PageModel(title: "Отслеживайте только то, что хотите", image: UIImage.bluePage)
+    static let aboutWaterAndYoga = PageModel(title: "Даже если это не литры воды и йога", image: UIImage.redPage)
+}
+
 final class OnboardingViewController: UIPageViewController {
     
     // MARK: - Constants
     
     private enum Constants {
         static let cornerRadius: CGFloat = 16.0
-        static let heightOfLabel: CGFloat = 96.0
         static let heightOfPageControl: CGFloat = 6.0
         static let heightOfButton: CGFloat = 60.0
         static let titleForButton = NSAttributedString(
             string: "Вот это технологии!", 
             attributes: [.font: UIFont.systemFont(ofSize: 16.0, weight: .medium),
                          .foregroundColor: UIColor.ypWhite])
-        static let fontForLabel = UIFont.systemFont(ofSize: 32.0, weight: .bold)
-        static let setupForViewControllers: [(String, UIImage)] = [
-            ("Отслеживайте только то, что хотите", UIImage.bluePage),
-            ("Даже если это не литры воды и йога", UIImage.redPage)
-        ]
     }
     
     // MARK: - Private properties
     
-    private let userDefaultsKey: String
+    var sceneDelegate: SceneDelegateProtocol?
     private lazy var pages: [UIViewController] = {
-        var viewControllers: [UIViewController] = []
-        for (title, image) in Constants.setupForViewControllers {
-            let viewController = UIViewController()
-            let imageView = createImageView(withImage: image)
-            let label = createLabel(withTitle: title)
-            viewController.view.addSubviews([imageView, label])
-            NSLayoutConstraint.activate([
-                imageView.widthAnchor.constraint(equalTo: viewController.view.widthAnchor),
-                imageView.heightAnchor.constraint(equalTo: viewController.view.heightAnchor),
-                label.heightAnchor.constraint(equalToConstant: Constants.heightOfLabel),
-                label.leadingAnchor.constraint(equalTo: viewController.view.leadingAnchor, constant: 16.0),
-                label.trailingAnchor.constraint(equalTo: viewController.view.trailingAnchor, constant: -16.0),
-                label.centerYAnchor.constraint(equalTo: viewController.view.centerYAnchor, constant: 64.0)
-            ])
-            viewControllers.append(viewController)
-        }
-        return viewControllers
+        [
+            OnboardingPageViewController(pageModel: PageModel.aboutTracking),
+            OnboardingPageViewController(pageModel: PageModel.aboutWaterAndYoga),
+        ]
     }()
     
     // MARK: - UI-elements
@@ -61,7 +52,7 @@ final class OnboardingViewController: UIPageViewController {
         button.layer.masksToBounds = true
         button.layer.cornerRadius = Constants.cornerRadius
         button.addAction(UIAction(handler: { [weak self] _ in
-            self?.acceptButtonPressed()
+            self?.sceneDelegate?.routeFromOnboardingToMainPage()
         }),
                          for: .touchUpInside)
         return button
@@ -69,8 +60,8 @@ final class OnboardingViewController: UIPageViewController {
     
     // MARK: - Initializers
     
-    init(_ key: String) {
-        userDefaultsKey = key
+    init(sceneDelegate: SceneDelegateProtocol) {
+        self.sceneDelegate = sceneDelegate
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
     }
     
@@ -90,39 +81,7 @@ final class OnboardingViewController: UIPageViewController {
         setupViewAndConstraints()
     }
     
-    // MARK: - Actions
-    
-    private func acceptButtonPressed() {
-        UserDefaults.standard.setValue(true, forKey: userDefaultsKey)
-        guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
-              let window = sceneDelegate.window
-        else {
-            assertionFailure("Не удалось получить window из SceneDelegate")
-            return
-        }
-        UIView.transition(with: window,
-                          duration: 0.15,
-                          options: .transitionCrossDissolve,
-                          animations: {
-            window.rootViewController = TabBarController()
-        })
-    }
-    
     // MARK: - Private methods
-    
-    private func createLabel(withTitle text: String) -> UILabel {
-        let label = UILabel()
-        label.numberOfLines = 2
-        label.textColor = .ypBlack
-        label.font = Constants.fontForLabel
-        label.textAlignment = .center
-        label.text = text
-        return label
-    }
-    
-    private func createImageView(withImage image: UIImage) -> UIImageView {
-        UIImageView(image: image)
-    }
     
     private func setupViewAndConstraints() {
         let views: [UIView] = [pageControl, acceptButton]
