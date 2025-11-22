@@ -257,16 +257,9 @@ extension TrackersViewController: TrackersViewControllerDelegate {
 
 extension TrackersViewController: TrackersCollectionViewCellDelegate {
     private func setDaysAtTracker(with id: UInt) -> String {
-        let numberOfDays = numberOfTimesCompleted(byTrackerWith: id)
-        var resultString: String
-        if numberOfDays % 10 == 1 && numberOfDays % 100 != 11 {
-            resultString = "\(numberOfDays) день"
-        } else if Set(2...4).contains(numberOfDays %  10) && !Set(12...14).contains(numberOfDays %  100)  {
-            resultString = "\(numberOfDays) дня"
-        } else {
-            resultString = "\(numberOfDays) дней"
-        }
-        return resultString
+        String.localizedStringWithFormat(
+            NSLocalizedString("numberOfDays", comment: "A number of days which a tracker was completed"),
+            numberOfTimesCompleted(byTrackerWith: id))
     }
     
     private func numberOfTimesCompleted(byTrackerWith id: UInt) -> Int {
