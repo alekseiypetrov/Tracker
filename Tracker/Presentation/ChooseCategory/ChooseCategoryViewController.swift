@@ -102,10 +102,8 @@ final class ChooseCategoryViewController: UIViewController {
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
                 self?.changeHeightOfTable()
-                self?.viewModel.updateSelectionStates(selectedCategory: self?.selectedCategory)
             }
         }
-        viewModel.updateSelectionStates(selectedCategory: selectedCategory)
         setupViewsAndConstraints()
     }
     
@@ -216,7 +214,10 @@ extension ChooseCategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let currentCell = tableView.dequeueReusableCell(withIdentifier: ChooseCategoryTableViewCell.identifier, for: indexPath) as? ChooseCategoryTableViewCell
         else { return UITableViewCell() }
-        currentCell.viewModel = viewModel.categories[indexPath.row]
+        let title = viewModel.categories[indexPath.row]
+        currentCell.configCell(withTitle: title,
+                               andState: title == (selectedCategory ?? "")
+        )
         return currentCell
     }
 }
@@ -238,8 +239,8 @@ extension ChooseCategoryViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         guard let cell = tableView.cellForRow(at: indexPath) as? ChooseCategoryTableViewCell
         else { return }
-        let chosenCategory = viewModel.categories[indexPath.row].title
-        cell.viewModel?.setSelected(true)
+        let chosenCategory = viewModel.categories[indexPath.row]
+        cell.setSelected(true)
         dismiss(animated: true, completion: {
             self.delegate?.updateCell(at: 0, by: chosenCategory)
         })
@@ -247,6 +248,6 @@ extension ChooseCategoryViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? ChooseCategoryTableViewCell else { return }
-        cell.viewModel?.setSelected(false)
+        cell.setSelected(false)
     }
 }

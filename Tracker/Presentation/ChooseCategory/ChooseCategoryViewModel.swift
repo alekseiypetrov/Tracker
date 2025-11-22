@@ -1,10 +1,8 @@
-typealias Binding<T> = (T) -> ()
-
 final class ChooseCategoryViewModel {
-    var categoriesBinding: Binding<[ChooseCategoryTableViewCellViewModel]>?
+    var categoriesBinding: Binding<[String]>?
     
     private let categoryStore: TrackerCategoryStore
-    private(set) var categories: [ChooseCategoryTableViewCellViewModel] = [] {
+    private(set) var categories: [String] = [] {
         didSet {
             categoriesBinding?(categories)
         }
@@ -20,15 +18,8 @@ final class ChooseCategoryViewModel {
         try categoryStore.addCategory(withTitle: title)
     }
     
-    func updateSelectionStates(selectedCategory: String?) {
-        guard let selectedCategory else { return }
-        categories.forEach { $0.setSelected( selectedCategory == $0.title ) }
-    }
-    
-    private func getCategories() -> [ChooseCategoryTableViewCellViewModel] {
-        categoryStore.getTitlesOfCategories().map {
-            ChooseCategoryTableViewCellViewModel(title: $0, isSelected: false)
-        }
+    private func getCategories() -> [String] {
+        categoryStore.getTitlesOfCategories()
     }
 }
 

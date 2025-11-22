@@ -28,20 +28,7 @@ final class ChooseCategoryTableViewCell: UITableViewCell {
         UIImageView(image: UIImage(systemName: "checkmark")?
             .withTintColor(.ypBlue, renderingMode: .alwaysOriginal))
     }()
-    
-    // MARK: - Public properties
-    
-    var viewModel: ChooseCategoryTableViewCellViewModel? {
-        didSet {
-            viewModel?.titleBinding = { [weak self] in
-                self?.titleOfCellLabel.text = $0
-            }
-            viewModel?.isSelectedBinding = { [weak self] in
-                self?.imageViewOfCheckmark.isHidden = !$0
-            }
-        }
-    }
-    
+
     // MARK: - Initializers
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -50,6 +37,17 @@ final class ChooseCategoryTableViewCell: UITableViewCell {
     }
     
     required init?(coder: NSCoder) { nil }
+    
+    // MARK: - Public methods
+    
+    func configCell(withTitle title: String, andState state: Bool) {
+        titleOfCellLabel.text = title
+        imageViewOfCheckmark.isHidden = !state
+    }
+    
+    func setSelected(_ selected: Bool) {
+        imageViewOfCheckmark.isHidden = !selected
+    }
     
     // MARK: - Private methods
     

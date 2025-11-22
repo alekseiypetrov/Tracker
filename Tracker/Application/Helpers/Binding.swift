@@ -1,0 +1,1 @@
+typealias Binding<T> = (T) -> ()
