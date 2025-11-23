@@ -21,7 +21,7 @@ final class TrackerRecordStore: NSObject {
     
     func deleteRecord(fromObjectWithId id: UInt, atDate date: String) throws {
         guard let record = getSpecificRecord(withId: id, atDate: date)
-        else { throw CoreDataError.nonExistentValue("Данной записи нет в базе") }
+        else { throw CoreDataError.nonExistentValue(NSLocalizedString("nonExistentRecord", comment: "")) }
         context.delete(record)
         saveContext()
     }

@@ -22,7 +22,7 @@ final class NewCategoryViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Новая категория"
+        label.text = NSLocalizedString("createCategoryHeader", comment: "")
         label.textColor = .ypBlack
         label.textAlignment = .center
         label.font = Constants.Fonts.fontForButtonAndTitle
@@ -31,7 +31,7 @@ final class NewCategoryViewController: UIViewController {
     
     private lazy var nameOfCategory: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Введите название категории"
+        textField.placeholder = NSLocalizedString("categoryNamePlaceholder", comment: "")
         textField.font = Constants.Fonts.fontForTextField
         textField.textColor = .ypBlack
         textField.backgroundColor = .ypBackground
@@ -65,7 +65,7 @@ final class NewCategoryViewController: UIViewController {
     
     private lazy var errorLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ограничение 38 символов"
+        label.text = NSLocalizedString("symbolsLimit", comment: "")
         label.textColor = .ypRed
         label.textAlignment = .center
         label.font = Constants.Fonts.fontForTextField
@@ -75,7 +75,7 @@ final class NewCategoryViewController: UIViewController {
     private lazy var createCategoryButton: UIButton = {
         let button = UIButton()
         button.setAttributedTitle(NSAttributedString(
-            string: "Готово",
+            string: NSLocalizedString("doneButtonTitle", comment: ""),
             attributes: [.font: Constants.Fonts.fontForButtonAndTitle,
                          .foregroundColor: UIColor.ypWhite]),
                                   for: .normal)

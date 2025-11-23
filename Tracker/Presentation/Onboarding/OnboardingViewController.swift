@@ -6,8 +6,8 @@ struct PageModel {
 }
 
 extension PageModel {
-    static let aboutTracking = PageModel(title: "Отслеживайте только то, что хотите", image: UIImage.bluePage)
-    static let aboutWaterAndYoga = PageModel(title: "Даже если это не литры воды и йога", image: UIImage.redPage)
+    static let aboutTracking = PageModel(title: NSLocalizedString("aboutTrackingTitle", comment: ""), image: UIImage.bluePage)
+    static let aboutWaterAndYoga = PageModel(title: NSLocalizedString("aboutWaterAndYogaTitle", comment: ""), image: UIImage.redPage)
 }
 
 final class OnboardingViewController: UIPageViewController {
@@ -19,7 +19,7 @@ final class OnboardingViewController: UIPageViewController {
         static let heightOfPageControl: CGFloat = 6.0
         static let heightOfButton: CGFloat = 60.0
         static let titleForButton = NSAttributedString(
-            string: "Вот это технологии!", 
+            string: NSLocalizedString("onboardingButtonTitle", comment: ""),
             attributes: [.font: UIFont.systemFont(ofSize: 16.0, weight: .medium),
                          .foregroundColor: UIColor.ypWhite])
     }

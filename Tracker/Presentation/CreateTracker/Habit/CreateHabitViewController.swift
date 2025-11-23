@@ -1,6 +1,6 @@
 import UIKit
 
-final class CreateHabbitViewController: UIViewController {
+final class CreateHabitViewController: UIViewController {
     
     // MARK: - Constants
     
@@ -19,7 +19,10 @@ final class CreateHabbitViewController: UIViewController {
                 UIColor.sectionColor13, UIColor.sectionColor14, UIColor.sectionColor15,
                 UIColor.sectionColor16, UIColor.sectionColor17, UIColor.sectionColor18
             ]
-            static let headers: [String] = ["Emoji", "Цвет"]
+            static let headers: [String] = [
+                NSLocalizedString("emojiCollectionHeader", comment: ""),
+                NSLocalizedString("colorCollectionHeader", comment: ""),
+            ]
             static let numberOfElements: Int = 18
             static let numberOfCellsInRow: Int = 6
             static let minimumSizeOfColorCell: CGFloat = 48.0
@@ -46,7 +49,7 @@ final class CreateHabbitViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Новая привычка"
+        label.text = NSLocalizedString("habitHeader", comment: "")
         label.textAlignment = .center
         label.font = Constants.Fonts.fontForButtonsAndTitle
         return label
@@ -54,7 +57,7 @@ final class CreateHabbitViewController: UIViewController {
     
     private lazy var nameOfTracker: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Введите название трекера"
+        textField.placeholder = NSLocalizedString("trackerNamePlaceholder", comment: "")
         textField.font = Constants.Fonts.fontForCellsAndTextField
         textField.textColor = .ypBlack
         textField.backgroundColor = .ypBackground
@@ -88,7 +91,7 @@ final class CreateHabbitViewController: UIViewController {
     
     private lazy var errorLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ограничение 38 символов"
+        label.text = NSLocalizedString("symbolsLimit", comment: "")
         label.textColor = .ypRed
         label.textAlignment = .center
         label.font = Constants.Fonts.fontForCellsAndTextField
@@ -129,7 +132,7 @@ final class CreateHabbitViewController: UIViewController {
         }),
                          for: .touchUpInside)
         button.setAttributedTitle(NSAttributedString(
-            string: "Отменить",
+            string: NSLocalizedString("cancelTrackerButtonTitle", comment: ""),
             attributes: [.font: Constants.Fonts.fontForButtonsAndTitle,
                          .foregroundColor: UIColor.ypRed]),
                                   for: .normal)
@@ -148,7 +151,7 @@ final class CreateHabbitViewController: UIViewController {
         }),
                          for: .touchUpInside)
         button.setAttributedTitle(NSAttributedString(
-            string: "Создать",
+            string: NSLocalizedString("createTrackerButtonTitle", comment: ""),
             attributes: [.font: Constants.Fonts.fontForButtonsAndTitle,
                          .foregroundColor: UIColor.ypWhite]),
                                   for: .normal)
@@ -167,7 +170,10 @@ final class CreateHabbitViewController: UIViewController {
     private var selectedParameters: [String?] = Array(repeating: nil, count: 3)
     private var selectedColor: UIColor?
     private var selectedCells: [IndexPath?] = Array(repeating: nil, count: 2)
-    private let cellTitles = ["Категория", "Расписание"]
+    private let cellTitles = [
+        NSLocalizedString("categoryCellTitle", comment: ""),
+        NSLocalizedString("timetableCellTitle", comment: ""),
+    ]
     
     // MARK: - Lifecycle
     
@@ -198,7 +204,7 @@ final class CreateHabbitViewController: UIViewController {
               let emoji = selectedParameters[2],
               let color = selectedColor
         else { return }
-        let timetable: [Weekday] = stringTimetable == "Каждый день"
+        let timetable: [Weekday] = stringTimetable == NSLocalizedString("everydayValue", comment: "")
         ? [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
         : stringTimetable.split(separator: ", ").map { Weekday.convert(from: String($0)) }
         delegate?.addNewTracker(name: name, color: color, emoji: emoji, timetable: timetable, ofCategory: category)
@@ -307,9 +313,9 @@ final class CreateHabbitViewController: UIViewController {
     }
 }
 
-// MARK: - CreateHabbitViewController + CreateHabbitViewControllerDelegate
+// MARK: - CreateHabitViewController + CreateHabbitViewControllerDelegate
 
-extension CreateHabbitViewController: CreateTrackerViewControllerDelegate {
+extension CreateHabitViewController: CreateTrackerViewControllerDelegate {
     func updateCell(at index: Int, by description: String) {
         guard let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CreateTrackerTableViewCell else { return }
         cell.descriptionOfParameter = description
@@ -319,9 +325,9 @@ extension CreateHabbitViewController: CreateTrackerViewControllerDelegate {
     }
 }
 
-// MARK: - CreateHabbitViewController + UITableViewDataSource
+// MARK: - CreateHabitViewController + UITableViewDataSource
 
-extension CreateHabbitViewController: UITableViewDataSource {
+extension CreateHabitViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cellTitles.count
     }
@@ -336,9 +342,9 @@ extension CreateHabbitViewController: UITableViewDataSource {
     }
 }
 
-// MARK: - CreateHabbitViewController + UITableViewDelegate
+// MARK: - CreateHabitViewController + UITableViewDelegate
 
-extension CreateHabbitViewController: UITableViewDelegate {
+extension CreateHabitViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return Constants.Sizes.heightOfCellAndField
     }
@@ -360,7 +366,9 @@ extension CreateHabbitViewController: UITableViewDelegate {
             let navigationController = UINavigationController(rootViewController: categoryViewController)
             present(navigationController, animated: true)
         case 1:
-            let timetableViewController = TimetableViewController()
+            guard let cell = tableView.cellForRow(at: indexPath) as? CreateTrackerTableViewCell
+            else { return }
+            let timetableViewController = TimetableViewController(selectedDays: cell.descriptionOfParameter)
             timetableViewController.delegate = self
             let navigationController = UINavigationController(rootViewController: timetableViewController)
             present(navigationController, animated: true)
@@ -370,9 +378,9 @@ extension CreateHabbitViewController: UITableViewDelegate {
     }
 }
 
-// MARK: - CreateHabbitViewController + UICollectionViewDataSource
+// MARK: - CreateHabitViewController + UICollectionViewDataSource
 
-extension CreateHabbitViewController: UICollectionViewDataSource {
+extension CreateHabitViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return Constants.DataForCollections.headers.count
     }
@@ -435,9 +443,9 @@ extension CreateHabbitViewController: UICollectionViewDataSource {
     }
 }
 
-// MARK: - CreateHabbitViewController + UICollectionViewFlowLayoutDelegate
+// MARK: - CreateHabitViewController + UICollectionViewFlowLayoutDelegate
 
-extension CreateHabbitViewController: UICollectionViewDelegateFlowLayout {
+extension CreateHabitViewController: UICollectionViewDelegateFlowLayout {
     private func getPaddingWidth(from width: CGFloat, sizeOfCell cellSize: CGFloat) -> CGFloat {
         return (width - 2 * Constants.DataForCollections.sectionEdgeInsets.left) / CGFloat(Constants.DataForCollections.numberOfCellsInRow) - cellSize
     }

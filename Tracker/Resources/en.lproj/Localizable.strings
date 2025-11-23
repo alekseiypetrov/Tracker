@@ -1,0 +1,83 @@
+// MARK: - Onboarding
+
+onboardingButtonTitle = "Here is technologies!";
+aboutTrackingTitle = "Track only what you want";
+aboutWaterAndYogaTitle = "Even if it isn't liters of water and yoga";
+
+// MARK: - Alert strings
+
+alertHeader = "Notice";
+alertTitleOfButton = "OK";
+
+// MARK: - Error messages
+
+duplicatingTracker = "A tracker with that name already exists!";
+duplicatingCategory = "A category with that name already exists!";
+nonExistentTracker = "A tracker with that name does not exist!";
+nonExistentCategory = "A category with that name does not exist!";
+nonExistentRecord = "This record is not in the database!";
+nonExistentValue = "It is impossible to get the number of trackers";
+undefinedError = "An unexpected error has occurred";
+
+// MARK: - Statistics
+
+statisticsViewControllerHeader = "Statistics";
+
+// MARK: - Trackers
+
+trackersViewControllerHeader = "Trackers";
+searchBarPlaceholder = "Search";
+titleOfEmptyListOfTrackers = "What are we going to track?";
+pinCategory = "Pinned";
+
+// MARK: - ChooseKindOfNewTracker
+
+chooseKindOfNewTrackerHeader = "Creating a tracker";
+habit = "Habit";
+event = "An irregular event";
+
+// MARK: - CreateTracker
+
+eventHeader = "A new irregular event";
+habitHeader = "A new habit";
+trackerNamePlaceholder = "Enter the name of the tracker";
+symbolsLimit = "The limit is 38 characters";
+emojiCollectionHeader = "Emoji";
+colorCollectionHeader = "Color";
+cancelTrackerButtonTitle = "Cancel";
+createTrackerButtonTitle = "Create";
+categoryCellTitle = "Category";
+timetableCellTitle = "Timetable";
+
+// MARK: - ChooseCategory
+
+addNewCategoryTitle = "Add category";
+titleOfEmptyListOfCategories = "Habits and events can be\ncombined in meaning";
+
+// MARK: - CreateCategory
+
+createCategoryHeader = "New category";
+categoryNamePlaceholder = "Enter the category name";
+doneButtonTitle = "Done";
+
+// MARK: - Timetable
+
+everydayValue = "Every day";
+
+// MARK: - Weekday
+
+mondayFull = "Monday";
+tuesdayFull = "Tuesday";
+wednesdayFull = "Wednesday";
+thursdayFull = "Thursday";
+fridayFull = "Friday";
+saturdayFull = "Saturday";
+sundayFull = "Sunday";
+
+mondayShort = "Mon";
+tuesdayShort = "Tue";
+wednesdayShort = "Wed";
+thursdayShort = "Thu";
+fridayShort = "Fri";
+saturdayShort = "Sat";
+sundayShort = "Sun";

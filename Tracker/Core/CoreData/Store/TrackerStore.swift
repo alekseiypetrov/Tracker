@@ -20,7 +20,7 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
     func addTracker(fromObject tracker: Tracker, toCategory category: String, categoryStore: TrackerCategoryStoreProtocol) throws {
         switch findExistingTracker(withTitle: tracker.name) {
         case .success:
-            throw CoreDataError.duplicatingValue("Трекер с таким именем уже существует!")
+            throw CoreDataError.duplicatingValue(NSLocalizedString("duplicatingTracker", comment: ""))
         case .failure:
             do {
                 let category = try categoryStore.getCategory(withTitle: category)
@@ -54,7 +54,7 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
         request.predicate = NSPredicate(format: "name == %@", title)
         guard let existingTracker = try? context.fetch(request).first
         else {
-            return .failure(CoreDataError.nonExistentValue("Трекер с таким именем не существует"))
+            return .failure(CoreDataError.nonExistentValue(NSLocalizedString("nonExistentTracker", comment: "")))
         }
         return .success(existingTracker)
     }

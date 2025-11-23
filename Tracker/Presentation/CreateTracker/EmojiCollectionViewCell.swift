@@ -43,9 +43,7 @@ final class EmojiCollectionViewCell: UICollectionViewCell {
         setupViewAndConstraints()
     }
     
-    required init?(coder: NSCoder) {
-        nil
-    }
+    required init?(coder: NSCoder) { nil }
     
     // MARK: - Public methods
     

@@ -60,13 +60,13 @@ final class TrackersViewController: UIViewController {
     private lazy var titleTrackerLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: Constants.Sizes.titleTrackerSizeOfText)
-        label.text = "Трекеры"
+        label.text = NSLocalizedString("trackersViewControllerHeader", comment: "")
         return label
     }()
     
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
-        searchBar.placeholder = "Поиск"
+        searchBar.placeholder = NSLocalizedString("searchBarPlaceholder", comment: "")
         searchBar.barTintColor = .ypWhite
         searchBar.backgroundColor = .ypWhite
         searchBar.backgroundImage = UIImage()
@@ -90,7 +90,7 @@ final class TrackersViewController: UIViewController {
     private lazy var titleOfEmptyListLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: Constants.Sizes.titleOfEmptyListSizeOfText)
-        label.text = "Что будем отслеживать?"
+        label.text = NSLocalizedString("titleOfEmptyListOfTrackers", comment: "")
         label.textAlignment = .center
         return label
     }()
@@ -136,10 +136,10 @@ final class TrackersViewController: UIViewController {
     // MARK: - Private methods
     
     private func showAlert(withMessage message: String) {
-        let alert = UIAlertController(title: "Внимание",
+        let alert = UIAlertController(title: NSLocalizedString("alertHeader", comment: ""),
                                       message: message,
                                       preferredStyle: .alert)
-        let action = UIAlertAction(title: "OK", style: .cancel)
+        let action = UIAlertAction(title: NSLocalizedString("alertTitleOfButton", comment: ""), style: .cancel)
         alert.addAction(action)
         present(alert, animated: true)
     }
@@ -214,7 +214,7 @@ extension TrackersViewController: TrackersViewControllerDelegate {
         do {
             guard let numberOfTrackers = trackerStore?.getNumberOfAllTrackers(),
                   let categoryStore
-            else { throw CoreDataError.nonExistentValue("Невозможно получить количество трекеров") }
+            else { throw CoreDataError.nonExistentValue(NSLocalizedString("nonExistentValue", comment: "")) }
             let tracker = Tracker(id: UInt(numberOfTrackers + 1),
                                   name: name,
                                   color: color,
@@ -232,7 +232,7 @@ extension TrackersViewController: TrackersViewControllerDelegate {
             }
         } catch {
             dismiss(animated: true) { [weak self] in
-                self?.showAlert(withMessage: "Возникла непредвиденная ошибка")
+                self?.showAlert(withMessage: NSLocalizedString("undefinedError", comment: ""))
             }
         }
     }
@@ -240,8 +240,8 @@ extension TrackersViewController: TrackersViewControllerDelegate {
     func showViewController(whichName name: ViewController) {
         var navigationController: UINavigationController
         switch name {
-        case .habbit:
-            let viewController = CreateHabbitViewController()
+        case .habit:
+            let viewController = CreateHabitViewController()
             viewController.delegate = self
             navigationController = UINavigationController(rootViewController: viewController)
         case .event:
@@ -296,7 +296,7 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
             } catch CoreDataError.nonExistentValue(let message) {
                 showAlert(withMessage: message)
             } catch {
-                showAlert(withMessage: "Возникла непредвиденная ошибка")
+                showAlert(withMessage: NSLocalizedString("undefinedError", comment: ""))
             }
         } else {
             recordStore?.addRecord(fromObjectWithId: idOfTracker, atDate: formattedCurrentDate)
@@ -354,7 +354,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         let category = filteredCategories[indexPath.section]
         let currentTracker = category.trackers[indexPath.row]
         currentCell.configCell(on: currentTracker, 
-                               isPinned: category.title != "Закрепленные")
+                               isPinned: category.title != NSLocalizedString("pinCategory", comment: ""))
         currentCell.countDays = setDaysAtTracker(with: currentTracker.id)
         currentCell.imageForButton = setButtonImageAtTracker(with: currentTracker.id)
         currentCell.delegate = self

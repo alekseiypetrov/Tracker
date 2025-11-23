@@ -16,7 +16,7 @@ final class ChooseKindOfNewTrackerViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Создание трекера"
+        label.text = NSLocalizedString("chooseKindOfNewTrackerHeader", comment: "")
         label.textAlignment = .center
         label.font = Constants.fontForLabels
         return label
@@ -26,13 +26,13 @@ final class ChooseKindOfNewTrackerViewController: UIViewController {
         let button = UIButton()
         button.addAction(UIAction(handler: { [weak self] _ in
             guard let self else { return }
-            self.createHabbit()
+            self.createHabit()
         }),
                          for: .touchUpInside)
         button.backgroundColor = .ypBlack
         button.layer.masksToBounds = true
         button.layer.cornerRadius = Constants.cornerRadiusOfButtonAndTable
-        button.setAttributedTitle(NSAttributedString(string: "Привычка",
+        button.setAttributedTitle(NSAttributedString(string: NSLocalizedString("habit", comment: ""),
                                                      attributes: Constants.attributesForString),
                                   for: .normal)
         return button
@@ -48,7 +48,7 @@ final class ChooseKindOfNewTrackerViewController: UIViewController {
         button.backgroundColor = .ypBlack
         button.layer.masksToBounds = true
         button.layer.cornerRadius = Constants.cornerRadiusOfButtonAndTable
-        button.setAttributedTitle(NSAttributedString(string: "Нерегулярное событие",
+        button.setAttributedTitle(NSAttributedString(string: NSLocalizedString("event", comment: ""),
                                                      attributes: Constants.attributesForString),
                                   for: .normal)
         return button
@@ -67,10 +67,10 @@ final class ChooseKindOfNewTrackerViewController: UIViewController {
     
     // MARK: - Actions
     
-    private func createHabbit() {
+    private func createHabit() {
         dismiss(animated: true, completion: { [weak self] in
             guard let self else { return }
-            self.delegate?.showViewController(whichName: .habbit)
+            self.delegate?.showViewController(whichName: .habit)
         })
     }
     

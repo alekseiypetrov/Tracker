@@ -1,4 +1,4 @@
 enum ViewController {
-    case habbit
+    case habit
     case event
 }

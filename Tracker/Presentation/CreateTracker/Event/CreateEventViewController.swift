@@ -19,7 +19,10 @@ final class CreateEventViewController: UIViewController {
                 UIColor.sectionColor13, UIColor.sectionColor14, UIColor.sectionColor15,
                 UIColor.sectionColor16, UIColor.sectionColor17, UIColor.sectionColor18
             ]
-            static let headers: [String] = ["Emoji", "Цвет"]
+            static let headers: [String] = [
+                NSLocalizedString("emojiCollectionHeader", comment: ""),
+                NSLocalizedString("colorCollectionHeader", comment: ""),
+            ]
             static let numberOfElements: Int = 18
             static let numberOfCellsInRow: Int = 6
             static let minimumSizeOfColorCell: CGFloat = 48.0
@@ -45,7 +48,7 @@ final class CreateEventViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Новое нерегулярное событие"
+        label.text = NSLocalizedString("eventHeader", comment: "")
         label.textAlignment = .center
         label.font = Constants.Fonts.fontForButtonsAndTitle
         return label
@@ -53,7 +56,7 @@ final class CreateEventViewController: UIViewController {
     
     private lazy var nameOfTracker: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Введите название трекера"
+        textField.placeholder = NSLocalizedString("trackerNamePlaceholder", comment: "")
         textField.font = Constants.Fonts.fontForCellsAndTextField
         textField.textColor = .ypBlack
         textField.backgroundColor = .ypBackground
@@ -87,7 +90,7 @@ final class CreateEventViewController: UIViewController {
     
     private lazy var errorLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ограничение 38 символов"
+        label.text = NSLocalizedString("symbolsLimit", comment: "")
         label.textColor = .ypRed
         label.textAlignment = .center
         label.font = Constants.Fonts.fontForCellsAndTextField
@@ -128,7 +131,7 @@ final class CreateEventViewController: UIViewController {
         }),
                          for: .touchUpInside)
         button.setAttributedTitle(NSAttributedString(
-            string: "Отменить",
+            string: NSLocalizedString("cancelTrackerButtonTitle", comment: ""),
             attributes: [.font: Constants.Fonts.fontForButtonsAndTitle,
                          .foregroundColor: UIColor.ypRed]),
                                   for: .normal)
@@ -147,7 +150,7 @@ final class CreateEventViewController: UIViewController {
         }),
                          for: .touchUpInside)
         button.setAttributedTitle(NSAttributedString(
-            string: "Создать",
+            string: NSLocalizedString("createTrackerButtonTitle", comment: ""),
             attributes: [.font: Constants.Fonts.fontForButtonsAndTitle,
                          .foregroundColor: UIColor.ypWhite]),
                                   for: .normal)
@@ -166,7 +169,7 @@ final class CreateEventViewController: UIViewController {
     private var selectedParameters: [String?] = Array(repeating: nil, count: 2)
     private var selectedColor: UIColor?
     private var selectedCells: [IndexPath?] = Array(repeating: nil, count: 2)
-    private let cellTitles = ["Категория"]
+    private let cellTitles = [NSLocalizedString("categoryCellTitle", comment: "")]
     
     // MARK: - Lifecycle
     

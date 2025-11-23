@@ -48,13 +48,13 @@ final class TabBarController: UITabBarController {
     private func setupViewControllers() {
         let trackerVC = TrackersViewController()
         trackerVC.tabBarItem = UITabBarItem(
-            title: "Трекеры",
+            title: NSLocalizedString("trackersViewControllerHeader", comment: ""),
             image: Constants.Images.trackerBarItemImageFilled,
             selectedImage: Constants.Images.trackerBarItemImage)
         
         let statisticsVC = StatisticsViewController()
         statisticsVC.tabBarItem = UITabBarItem(
-            title: "Статистика",
+            title: NSLocalizedString("statisticsViewControllerHeader", comment: ""),
             image: Constants.Images.statisticsBarItemImageFilled,
             selectedImage: Constants.Images.statisticsBarItemImage)
         

@@ -86,7 +86,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.textColor = .ypBlack
         label.font = Constants.fontForLabels
-        label.text = "0 дней"
+        label.text = ""
         return label
     }()
     
@@ -119,9 +119,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         setupViewsAndConstraintsInCell()
     }
     
-    required init?(coder: NSCoder) {
-        nil
-    }
+    required init?(coder: NSCoder) { nil }
     
     // MARK: - Public methods
     

@@ -46,9 +46,7 @@ final class TimetableTableViewCell: UITableViewCell {
         setupViewsAndConstraints()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("Ошибка в init?(coder:)")
-    }
+    required init?(coder: NSCoder) { nil }
     
     // MARK: - Actions
     
@@ -60,8 +58,9 @@ final class TimetableTableViewCell: UITableViewCell {
     
     // MARK: - Public methods
     
-    func configCell(on day: Weekday) {
+    func configCell(on day: Weekday, withState state: Bool) {
         dayLabel.text = day.fullName
+        switchBar.setOn(state, animated: false)
     }
     
     // MARK: - Private methods
