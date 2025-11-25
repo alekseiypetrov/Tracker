@@ -70,6 +70,7 @@ final class TrackersViewController: UIViewController {
         searchBar.barTintColor = .ypWhite
         searchBar.backgroundColor = .ypWhite
         searchBar.backgroundImage = UIImage()
+        searchBar.delegate = self
         return searchBar
     }()
     
@@ -103,7 +104,9 @@ final class TrackersViewController: UIViewController {
         return dateFormatter
     }()
     
+    private var currentTextInSearchBar: String?
     private var filteredCategories: [TrackerCategory] = []
+    private var categoriesOnAGivenDay: [TrackerCategory] = []
     private var categoryStore: TrackerCategoryStore?
     private var recordStore: TrackerRecordStore?
     private var trackerStore: TrackerStore?
@@ -253,6 +256,15 @@ extension TrackersViewController: TrackersViewControllerDelegate {
     }
 }
 
+// MARK: - TrackersViewController + UISearchBarDelegate
+
+extension TrackersViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        currentTextInSearchBar = searchText
+        collectionView.reloadData()
+    }
+}
+
 // MARK: - TrackersViewController + TrackersCollectionViewCell
 
 extension TrackersViewController: TrackersCollectionViewCellDelegate {
@@ -315,7 +327,7 @@ extension TrackersViewController: UICollectionViewDataSource {
               let weekday = Weekday(rawValue: calendar.component(.weekday, from: currentDateAtDatePicker)),
               let categories = categoryStore?.getCategories()
         else { return }
-        filteredCategories = categories
+        categoriesOnAGivenDay = categories
             .filter {
                 !$0.trackers.filter {
                     $0.timetable.contains(weekday)
@@ -326,6 +338,21 @@ extension TrackersViewController: UICollectionViewDataSource {
                     $0.timetable.contains(weekday)
                 })
             }
+        if let currentTextInSearchBar, !currentTextInSearchBar.isEmpty {
+            filteredCategories = categoriesOnAGivenDay
+                .filter {
+                    !$0.trackers.filter {
+                        $0.name.lowercased().contains(currentTextInSearchBar.lowercased())
+                    }.isEmpty
+                }.map {
+                    TrackerCategory(title: $0.title,
+                                    trackers: $0.trackers.filter {
+                        $0.name.lowercased().contains(currentTextInSearchBar.lowercased())
+                    })
+                }
+        } else {
+            filteredCategories = categoriesOnAGivenDay
+        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
