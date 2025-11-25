@@ -33,7 +33,6 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         }
         static let fontForLabels = UIFont.systemFont(ofSize: textSizeOfLabels, weight: .medium)
         static let textSizeOfLabels: CGFloat = 12.0
-        static let colorOfBackgroundColorForEmoji: UIColor = .ypWhite.withAlphaComponent(0.3)
     }
     
     // MARK: - UI-elements
@@ -56,7 +55,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.font = Constants.fontForLabels
         label.textAlignment = .center
-        label.backgroundColor = Constants.colorOfBackgroundColorForEmoji
+        label.backgroundColor = .white.withAlphaComponent(0.3)
         label.layer.masksToBounds = true
         label.layer.cornerRadius = Constants.CornerRadius.ofEmojiLabel
         return label

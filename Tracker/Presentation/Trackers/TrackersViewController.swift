@@ -22,7 +22,7 @@ final class TrackersViewController: UIViewController {
             static let imageViewOfEmptyListSize: CGFloat = 80.0
             static let titleOfEmptyListSizeOfText: CGFloat = 12.0
             static let titleOfEmptyListLabelHeight: CGFloat = 18.0
-            static let datePickerSize: CGSize = CGSize(width: 97.0, height: 34.0)
+            static let datePickerSize: CGSize = CGSize(width: 87.0, height: 34.0)
             static let searchBarHeight: CGFloat = 36.0
             static let heightOfCell: CGFloat = 148.0
         }
@@ -30,6 +30,7 @@ final class TrackersViewController: UIViewController {
             static let verticalSpacing: CGFloat = 0.0
             static let horizontalSpacing: CGFloat = 9.0
         }
+        static let backgroundColorOfDatePicker = UIColor(red: 240.0 / 255.0, green: 240.0 / 255.0, blue: 240.0 / 255.0, alpha: 1.0)
         static let edgeInsetsForSection: UIEdgeInsets = UIEdgeInsets(top: 0.0, left: 12.0, bottom: 0.0, right: 12.0)
     }
     
@@ -48,12 +49,18 @@ final class TrackersViewController: UIViewController {
     
     private lazy var datePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
+        datePicker.overrideUserInterfaceStyle = .light
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .compact
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         var calendar = Calendar(identifier: .gregorian)
         calendar.firstWeekday = 2
         datePicker.calendar = calendar
+        if let button = self.findButton(in: datePicker) {
+            button.backgroundColor = Constants.backgroundColorOfDatePicker
+            button.layer.cornerRadius = 8
+            button.layer.masksToBounds = true
+        }
         return datePicker
     }()
     
@@ -138,6 +145,18 @@ final class TrackersViewController: UIViewController {
     
     // MARK: - Private methods
     
+    private func findButton(in view: UIView) -> UIButton? {
+        for subview in view.subviews {
+            if let button = subview as? UIButton {
+                return button
+            }
+            if let found = findButton(in: subview) {
+                return found
+            }
+        }
+        return nil
+    }
+
     private func showAlert(withMessage message: String) {
         let alert = UIAlertController(title: NSLocalizedString("alertHeader", comment: ""),
                                       message: message,
