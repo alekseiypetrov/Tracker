@@ -279,17 +279,16 @@ extension TrackersViewController: TrackersViewControllerDelegate {
     }
     
     func showViewController(whichName name: ViewController) {
-        var navigationController: UINavigationController
+        var navigationController: UINavigationController, flag: Bool
         switch name {
         case .habit:
-            let viewController = CreateHabitViewController()
-            viewController.delegate = self
-            navigationController = UINavigationController(rootViewController: viewController)
+            flag = true
         case .event:
-            let viewController = CreateEventViewController()
-            viewController.delegate = self
-            navigationController = UINavigationController(rootViewController: viewController)
+            flag = false
         }
+        let viewController = CreateTrackerViewController(kindOfTrackerIsAHabit: flag)
+        viewController.delegate = self
+        navigationController = UINavigationController(rootViewController: viewController)
         present(navigationController, animated: true)
     }
 }

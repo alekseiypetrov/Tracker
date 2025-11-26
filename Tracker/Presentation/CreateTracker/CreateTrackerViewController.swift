@@ -1,6 +1,6 @@
 import UIKit
 
-final class CreateEventViewController: UIViewController {
+final class CreateTrackerViewController: UIViewController {
     
     // MARK: - Constants
     
@@ -32,7 +32,7 @@ final class CreateEventViewController: UIViewController {
         }
         enum Sizes {
             static let heightOfLabel: CGFloat = 22.0
-            static let heightOfTableAndCellAndField: CGFloat = 75.0
+            static let heightOfCellAndField: CGFloat = 75.0
             static let heightOfButton: CGFloat = 60.0
         }
         enum Fonts {
@@ -48,7 +48,7 @@ final class CreateEventViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = NSLocalizedString("eventHeader", comment: "")
+        label.text = self.isAHabit ? NSLocalizedString("habitHeader", comment: "") : NSLocalizedString("eventHeader", comment: "")
         label.textAlignment = .center
         label.font = Constants.Fonts.fontForButtonsAndTitle
         return label
@@ -113,11 +113,11 @@ final class CreateEventViewController: UIViewController {
         collectionView.allowsMultipleSelection = true
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(EmojiCollectionViewCell.self, 
+        collectionView.register(EmojiCollectionViewCell.self,
                                 forCellWithReuseIdentifier: EmojiCollectionViewCell.identifier)
         collectionView.register(ColorCollectionViewCell.self,
                                 forCellWithReuseIdentifier: ColorCollectionViewCell.identifier)
-        collectionView.register(HeaderSupplementaryView.self, 
+        collectionView.register(HeaderSupplementaryView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: HeaderSupplementaryView.identifier)
         return collectionView
@@ -165,11 +165,25 @@ final class CreateEventViewController: UIViewController {
     
     // MARK: - Private properties
     
+    private let isAHabit: Bool
     private var constraintsOfErrorLabel: [NSLayoutConstraint] = []
-    private var selectedParameters: [String?] = Array(repeating: nil, count: 2)
+    private var selectedParameters: [String?] = Array(repeating: nil, count: 3)
     private var selectedColor: UIColor?
     private var selectedCells: [IndexPath?] = Array(repeating: nil, count: 2)
-    private let cellTitles = [NSLocalizedString("categoryCellTitle", comment: "")]
+    private let cellTitles = [
+        NSLocalizedString("categoryCellTitle", comment: ""),
+        NSLocalizedString("timetableCellTitle", comment: ""),
+    ]
+    
+    // MARK: - Initializers
+    
+    init(kindOfTrackerIsAHabit isAHabit: Bool) {
+        self.isAHabit = isAHabit
+        selectedParameters[1] = isAHabit ? nil : NSLocalizedString("everydayValue", comment: "")
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) { nil }
     
     // MARK: - Lifecycle
     
@@ -193,13 +207,16 @@ final class CreateEventViewController: UIViewController {
         dismiss(animated: true)
     }
     
-    private func createTracker() {
+    func createTracker() {
         guard let name = nameOfTracker.text,
               let category = selectedParameters[0],
-              let emoji = selectedParameters[1],
+              let stringTimetable = selectedParameters[1],
+              let emoji = selectedParameters[2],
               let color = selectedColor
         else { return }
-        let timetable: [Weekday] = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
+        let timetable: [Weekday] = stringTimetable == NSLocalizedString("everydayValue", comment: "")
+        ? [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
+        : stringTimetable.split(separator: ", ").map { Weekday.convert(from: String($0)) }
         delegate?.addNewTracker(name: name, color: color, emoji: emoji, timetable: timetable, ofCategory: category)
     }
     
@@ -225,7 +242,7 @@ final class CreateEventViewController: UIViewController {
     // MARK: - Private methods
     
     private func setupViewsAndConstraints() {
-        let views = [titleLabel, nameOfTracker, errorLabel, tableView, 
+        let views = [titleLabel, nameOfTracker, errorLabel, tableView,
                      сollectionView, cancelButton, createTrackerButton]
         view.addSubviews(views)
         view.backgroundColor = .ypWhite
@@ -238,6 +255,7 @@ final class CreateEventViewController: UIViewController {
         ]
         activateButton()
         
+        let numberOfCells = isAHabit ? 2.0 : 1.0
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 28.0),
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -246,11 +264,11 @@ final class CreateEventViewController: UIViewController {
             nameOfTracker.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24.0),
             nameOfTracker.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             nameOfTracker.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
-            nameOfTracker.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfTableAndCellAndField),
+            nameOfTracker.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfCellAndField),
             tableView.topAnchor.constraint(equalTo: nameOfTracker.bottomAnchor, constant: 24.0),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
-            tableView.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfTableAndCellAndField),
+            tableView.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfCellAndField * numberOfCells),
             сollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 16.0),
             сollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             сollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -275,7 +293,7 @@ final class CreateEventViewController: UIViewController {
     private func activateButton() {
         if let inputedText = nameOfTracker.text,
            !inputedText.isEmpty,
-           selectedParameters.allSatisfy({ $0 != nil }),
+           selectedParameters.allSatisfy( { $0 != nil }),
            selectedColor != nil {
             createTrackerButton.isEnabled = true
             createTrackerButton.backgroundColor = .ypBlack
@@ -306,21 +324,21 @@ final class CreateEventViewController: UIViewController {
     }
 }
 
-// MARK: - CreateEventViewController + CreateHabbitViewControllerDelegate
+// MARK: - CreateTrackerViewController + CreateHabbitViewControllerDelegate
 
-extension CreateEventViewController: CreateTrackerViewControllerDelegate {
+extension CreateTrackerViewController: CreateTrackerViewControllerDelegate {
     func updateCell(at index: Int, by description: String) {
         guard let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CreateTrackerTableViewCell else { return }
         cell.descriptionOfParameter = description
         cell.update()
-        selectedParameters[0] = !description.isEmpty ? description : nil
+        selectedParameters[index] = !description.isEmpty ? description : nil
         activateButton()
     }
 }
 
-// MARK: - CreateEventViewController + UITableViewDataSource
+// MARK: - CreateTrackerViewController + UITableViewDataSource
 
-extension CreateEventViewController: UITableViewDataSource {
+extension CreateTrackerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cellTitles.count
     }
@@ -335,15 +353,17 @@ extension CreateEventViewController: UITableViewDataSource {
     }
 }
 
-// MARK: - CreateEventViewController + UITableViewDelegate
+// MARK: - CreateTrackerViewController + UITableViewDelegate
 
-extension CreateEventViewController: UITableViewDelegate {
+extension CreateTrackerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return Constants.Sizes.heightOfTableAndCellAndField
+        return Constants.Sizes.heightOfCellAndField
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+        if !isAHabit || indexPath.row == cellTitles.count - 1 {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -356,21 +376,28 @@ extension CreateEventViewController: UITableViewDelegate {
             categoryViewController.delegate = self
             let navigationController = UINavigationController(rootViewController: categoryViewController)
             present(navigationController, animated: true)
+        case 1:
+            guard let cell = tableView.cellForRow(at: indexPath) as? CreateTrackerTableViewCell
+            else { return }
+            let timetableViewController = TimetableViewController(selectedDays: cell.descriptionOfParameter)
+            timetableViewController.delegate = self
+            let navigationController = UINavigationController(rootViewController: timetableViewController)
+            present(navigationController, animated: true)
         default:
             return
         }
     }
 }
 
-// MARK: - CreateEventViewController + UICollectionViewDataSource
+// MARK: - CreateTrackerViewController + UICollectionViewDataSource
 
-extension CreateEventViewController: UICollectionViewDataSource {
+extension CreateTrackerViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return Constants.DataForCollections.headers.count
+        Constants.DataForCollections.headers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return Constants.DataForCollections.numberOfElements
+        Constants.DataForCollections.numberOfElements
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -427,11 +454,11 @@ extension CreateEventViewController: UICollectionViewDataSource {
     }
 }
 
-// MARK: - CreateEventViewController + UICollectionViewFlowLayoutDelegate
+// MARK: - CreateTrackerViewController + UICollectionViewFlowLayoutDelegate
 
-extension CreateEventViewController: UICollectionViewDelegateFlowLayout {
+extension CreateTrackerViewController: UICollectionViewDelegateFlowLayout {
     private func getPaddingWidth(from width: CGFloat, sizeOfCell cellSize: CGFloat) -> CGFloat {
-        return (width - 2 * Constants.DataForCollections.sectionEdgeInsets.left) / CGFloat(Constants.DataForCollections.numberOfCellsInRow) - cellSize
+        (width - 2 * Constants.DataForCollections.sectionEdgeInsets.left) / CGFloat(Constants.DataForCollections.numberOfCellsInRow) - cellSize
     }
     
     private func calculateCellSize(for collectionView: UICollectionView) -> CGSize {
@@ -447,7 +474,7 @@ extension CreateEventViewController: UICollectionViewDelegateFlowLayout {
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return calculateCellSize(for: collectionView)
+        calculateCellSize(for: collectionView)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -460,15 +487,15 @@ extension CreateEventViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return Constants.DataForCollections.sectionEdgeInsets
+        Constants.DataForCollections.sectionEdgeInsets
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.frame.width,
+        CGSize(width: collectionView.frame.width,
                       height: Constants.DataForCollections.heightOfHeader)
     }
     
@@ -483,7 +510,7 @@ extension CreateEventViewController: UICollectionViewDelegateFlowLayout {
                 oldCell.updateCell(toSelected: false)
                 collectionView.deselectItem(at: oldIndexPath, animated: false)
             }
-            selectedParameters[1] = currentCell.emoji
+            selectedParameters[2] = currentCell.emoji
             selectedCells[0] = indexPath
         case 1:
             guard let currentCell = cell as? ColorCollectionViewCell else { return }
@@ -506,7 +533,7 @@ extension CreateEventViewController: UICollectionViewDelegateFlowLayout {
         case 0:
             guard let oldCell = cell as? EmojiCollectionViewCell else { return }
             oldCell.updateCell(toSelected: false)
-            selectedParameters[1] = nil
+            selectedParameters[2] = nil
             selectedCells[0] = nil
         case 1:
             guard let oldCell = cell as? ColorCollectionViewCell else { return }
