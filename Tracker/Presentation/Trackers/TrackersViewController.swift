@@ -25,11 +25,17 @@ final class TrackersViewController: UIViewController {
             static let datePickerSize: CGSize = CGSize(width: 87.0, height: 34.0)
             static let searchBarHeight: CGFloat = 36.0
             static let heightOfCell: CGFloat = 148.0
+            static let sizeOfFilterButton = CGSize(width: 114, height: 50)
         }
         enum Spacing {
             static let verticalSpacing: CGFloat = 0.0
             static let horizontalSpacing: CGFloat = 9.0
         }
+        static let cornerRadiusOfFilterButton: CGFloat = 16.0
+        static let titleForFilterButton = NSAttributedString(
+            string: NSLocalizedString("titleOfFilterButton", comment: ""),
+            attributes: [.font: UIFont.systemFont(ofSize: 17.0, weight: .regular),
+                         .foregroundColor: UIColor.white])
         static let backgroundColorOfDatePicker = UIColor(red: 240.0 / 255.0, green: 240.0 / 255.0, blue: 240.0 / 255.0, alpha: 1.0)
         static let edgeInsetsForSection: UIEdgeInsets = UIEdgeInsets(top: 0.0, left: 12.0, bottom: 0.0, right: 12.0)
     }
@@ -89,6 +95,15 @@ final class TrackersViewController: UIViewController {
         collectionView.register(TrackersCollectionViewCell.self, forCellWithReuseIdentifier: TrackersCollectionViewCell.identifier)
         collectionView.register(HeaderSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderSupplementaryView.identifier)
         return collectionView
+    }()
+    
+    private lazy var filterButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .ypBlue
+        button.setAttributedTitle(Constants.titleForFilterButton, for: .normal)
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = Constants.cornerRadiusOfFilterButton
+        return button
     }()
     
     private lazy var imageViewOfEmptyList: UIImageView = {
@@ -168,16 +183,16 @@ final class TrackersViewController: UIViewController {
     
     private func hideCollection() {
         [imageViewOfEmptyList, titleOfEmptyListLabel].forEach { $0.isHidden = false }
-        collectionView.isHidden = true
+        [collectionView, filterButton].forEach { $0.isHidden = true }
     }
     
     private func showCollection() {
         [imageViewOfEmptyList, titleOfEmptyListLabel].forEach { $0.isHidden = true }
-        collectionView.isHidden = false
+        [collectionView, filterButton].forEach { $0.isHidden = false }
     }
     
     private func setupSubviewsAndConstraints() {
-        view.addSubviews([addTrackerButton, datePicker, titleTrackerLabel, searchBar, collectionView, imageViewOfEmptyList, titleOfEmptyListLabel])
+        view.addSubviews([addTrackerButton, datePicker, titleTrackerLabel, searchBar, collectionView, filterButton, imageViewOfEmptyList, titleOfEmptyListLabel])
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         NSLayoutConstraint.activate([
             addTrackerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 6.0),
@@ -200,6 +215,10 @@ final class TrackersViewController: UIViewController {
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16.0),
+            filterButton.widthAnchor.constraint(equalToConstant: Constants.Sizes.sizeOfFilterButton.width),
+            filterButton.heightAnchor.constraint(equalToConstant: Constants.Sizes.sizeOfFilterButton.height),
             imageViewOfEmptyList.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             imageViewOfEmptyList.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageViewOfEmptyList.widthAnchor.constraint(equalToConstant: Constants.Sizes.imageViewOfEmptyListSize),
@@ -444,19 +463,24 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout & UICollect
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if section == filteredCategories.count - 1 {
+            var insets = Constants.edgeInsetsForSection
+            insets.bottom += Constants.Sizes.sizeOfFilterButton.height + Constants.Spacing.horizontalSpacing
+            return insets
+        }
         return Constants.edgeInsetsForSection
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return Constants.Spacing.horizontalSpacing
+        Constants.Spacing.horizontalSpacing
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return Constants.Spacing.verticalSpacing
+        Constants.Spacing.verticalSpacing
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.frame.width,
+        CGSize(width: collectionView.frame.width,
                    height: 46.0)
     }
 }

@@ -29,6 +29,7 @@ trackersViewControllerHeader = "Трекеры";
 searchBarPlaceholder = "Поиск";
 titleOfEmptyListOfTrackers = "Что будем отслеживать?";
 pinCategory = "Закрепленные";
+titleOfFilterButton = "Фильтры";
 
 // MARK: - ChooseKindOfNewTracker
 

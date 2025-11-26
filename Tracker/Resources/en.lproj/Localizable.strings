@@ -29,6 +29,7 @@ trackersViewControllerHeader = "Trackers";
 searchBarPlaceholder = "Search";
 titleOfEmptyListOfTrackers = "What are we going to track?";
 pinCategory = "Pinned";
+titleOfFilterButton = "Filters";
 
 // MARK: - ChooseKindOfNewTracker
 
