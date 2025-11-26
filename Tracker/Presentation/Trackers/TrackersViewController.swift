@@ -456,6 +456,45 @@ extension TrackersViewController: UICollectionViewDataSource {
 // MARK: - TrackersViewController + UICollectionViewDelegateFlowLayout & UICollectionViewDelegate
 
 extension TrackersViewController: UICollectionViewDelegateFlowLayout & UICollectionViewDelegate {
+    private func deleteTracker(_ tracker: Tracker) {
+        do {
+            try trackerStore?.deleteTracker(fromObject: tracker)
+        } catch {
+            showAlert(withMessage: NSLocalizedString("undefinedError", comment: ""))
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        UIContextMenuConfiguration(actionProvider: { actions in
+            return UIMenu(children: [
+                UIAction(title: NSLocalizedString("titleOfEditingInContextMenu", comment: ""),
+                         handler: { [weak self] _ in
+                             let viewController = EditTrackerViewController()
+                             self?.present(viewController, animated: true)
+                         }),
+                UIAction(title: NSLocalizedString("titleOfDeletingInContextMenu", comment: ""),
+                         attributes: .destructive,
+                         handler: { [weak self] _ in
+                             let alert = UIAlertController(title: NSLocalizedString("alertHeaderForDeleting", comment: ""),
+                                                           message: nil,
+                                                           preferredStyle: .actionSheet)
+                             
+                             alert.addAction(UIAlertAction(
+                                title: NSLocalizedString("alertTitleOfDeleteButton", comment: ""),
+                                style: .destructive, handler: { [weak self] _ in
+                                    guard let self, let indexPath = indexPaths.first else { return }
+                                    let tracker = self.filteredCategories[indexPath.section].trackers[indexPath.row]
+                                     self.deleteTracker(tracker)
+                                 }))
+                             alert.addAction(UIAlertAction(
+                                title: NSLocalizedString("alertTitleOfCancelButton", comment: ""),
+                                style: .cancel))
+                             self?.present(alert, animated: true)
+                         }),
+            ])
+        })
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let cellWidth = (collectionView.frame.width - Constants.Spacing.horizontalSpacing - 2 * Constants.edgeInsetsForSection.left) / 2
         return CGSize(width: cellWidth, height: Constants.Sizes.heightOfCell)

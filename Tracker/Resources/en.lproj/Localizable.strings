@@ -8,6 +8,9 @@ aboutWaterAndYogaTitle = "Even if it isn't liters of water and yoga";
 
 alertHeader = "Notice";
 alertTitleOfButton = "OK";
+alertHeaderForDeleting = "Are you sure you want to delete the tracker?";
+alertTitleOfDeleteButton = "Delete";
+alertTitleOfCancelButton = "Cancel";
 
 // MARK: - Error messages
 
@@ -30,6 +33,8 @@ searchBarPlaceholder = "Search";
 titleOfEmptyListOfTrackers = "What are we going to track?";
 pinCategory = "Pinned";
 titleOfFilterButton = "Filters";
+titleOfEditingInContextMenu = "Edit";
+titleOfDeletingInContextMenu = "Delete";
 
 // MARK: - ChooseKindOfNewTracker
 

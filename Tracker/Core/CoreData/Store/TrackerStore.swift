@@ -17,6 +17,10 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
         self.delegate = delegate
     }
     
+    func deleteTracker(fromObject tracker: Tracker) throws {
+        // TODO: - Will be done later (логика поиска и удаления трекера из БД)
+    }
+    
     func addTracker(fromObject tracker: Tracker, toCategory category: String, categoryStore: TrackerCategoryStoreProtocol) throws {
         switch findExistingTracker(withTitle: tracker.name) {
         case .success:

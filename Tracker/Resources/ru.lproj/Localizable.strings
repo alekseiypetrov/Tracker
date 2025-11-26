@@ -8,6 +8,9 @@ aboutWaterAndYogaTitle = "Даже если это не литры воды и �
 
 alertHeader = "Внимание";
 alertTitleOfButton = "ОК";
+alertHeaderForDeleting = "Уверены, что хотите удалить трекер?";
+alertTitleOfDeleteButton = "Удалить";
+alertTitleOfCancelButton = "Отменить";
 
 // MARK: - Error messages
 
@@ -30,6 +33,8 @@ searchBarPlaceholder = "Поиск";
 titleOfEmptyListOfTrackers = "Что будем отслеживать?";
 pinCategory = "Закрепленные";
 titleOfFilterButton = "Фильтры";
+titleOfEditingInContextMenu = "Редактировать";
+titleOfDeletingInContextMenu = "Удалить";
 
 // MARK: - ChooseKindOfNewTracker
 
