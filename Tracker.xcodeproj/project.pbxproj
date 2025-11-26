@@ -223,6 +223,22 @@
 			path = EditTracker;
 			sourceTree = "<group>";
 		};
+		97A952552ED7790700247FA8 /* ChooseKindOfNewTracker */ = {
+			isa = PBXGroup;
+			children = (
+				97CFCA9F2EB5056A0090FD9C /* ChooseKindOfNewTrackerViewController.swift */,
+			);
+			path = ChooseKindOfNewTracker;
+			sourceTree = "<group>";
+		};
+		97A952562ED7791900247FA8 /* CreateTracker */ = {
+			isa = PBXGroup;
+			children = (
+				97A952502ED6FD5F00247FA8 /* CreateTrackerViewController.swift */,
+			);
+			path = CreateTracker;
+			sourceTree = "<group>";
+		};
 		97CFCA882EB22F8B0090FD9C /* Timetable */ = {
 			isa = PBXGroup;
 			children = (
@@ -252,17 +268,18 @@
 			path = NewCategory;
 			sourceTree = "<group>";
 		};
-		97CFCA9E2EB4E2640090FD9C /* CreateTracker */ = {
+		97CFCA9E2EB4E2640090FD9C /* ManipulationWithTracker */ = {
 			isa = PBXGroup;
 			children = (
-				97CFCA9F2EB5056A0090FD9C /* ChooseKindOfNewTrackerViewController.swift */,
+				97A952562ED7791900247FA8 /* CreateTracker */,
+				97A952552ED7790700247FA8 /* ChooseKindOfNewTracker */,
+				97A952522ED7170E00247FA8 /* EditTracker */,
 				97CFCA922EB2B27B0090FD9C /* CreateTrackerViewControllerDelegate.swift */,
 				97CFCA892EB22FAF0090FD9C /* CreateTrackerTableViewCell.swift */,
 				97CFCAA72EB78ECD0090FD9C /* EmojiCollectionViewCell.swift */,
 				97CFCAA92EB78EDC0090FD9C /* ColorCollectionViewCell.swift */,
-				97A952502ED6FD5F00247FA8 /* CreateTrackerViewController.swift */,
 			);
-			path = CreateTracker;
+			path = ManipulationWithTracker;
 			sourceTree = "<group>";
 		};
 		97EF92342ECC8C0C0079590B /* Onboarding */ = {
@@ -333,8 +350,7 @@
 				97CFCA942EB369C40090FD9C /* NewCategory */,
 				97CFCA8B2EB22FD70090FD9C /* ChooseCategory */,
 				97CFCA882EB22F8B0090FD9C /* Timetable */,
-				97CFCA9E2EB4E2640090FD9C /* CreateTracker */,
-				97A952522ED7170E00247FA8 /* EditTracker */,
+				97CFCA9E2EB4E2640090FD9C /* ManipulationWithTracker */,
 				97F9FC5D2EA675890034200A /* Statistics */,
 				97F9FC5C2EA675730034200A /* Trackers */,
 				97F9FC5B2EA6756A0034200A /* TabBar */,

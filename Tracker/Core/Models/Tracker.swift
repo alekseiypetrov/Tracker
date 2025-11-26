@@ -19,4 +19,11 @@ struct Tracker {
                        emoji: emoji,
                        timetable: timetable)
     }
+    
+    static func ==(trackerLeft: Tracker, trackerRight: Tracker) -> Bool {
+        trackerLeft.name == trackerRight.name &&
+        trackerLeft.color == trackerRight.color &&
+        trackerLeft.emoji == trackerRight.emoji &&
+        trackerLeft.timetable == trackerRight.timetable
+    }
 }

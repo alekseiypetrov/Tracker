@@ -36,6 +36,11 @@ titleOfFilterButton = "Фильтры";
 titleOfEditingInContextMenu = "Редактировать";
 titleOfDeletingInContextMenu = "Удалить";
 
+// MARK: - EditTracker
+
+editTrackerViewControllerHeader = "Редактирование привычки";
+saveTrackerButtonTitle = "Сохранить";
+
 // MARK: - ChooseKindOfNewTracker
 
 chooseKindOfNewTrackerHeader = "Создание трекера";

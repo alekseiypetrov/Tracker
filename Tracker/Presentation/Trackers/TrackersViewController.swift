@@ -247,6 +247,14 @@ extension TrackersViewController: TrackerStoreDelegate {
 // MARK: - TrackersViewController + TrackersViewControllerDelegate
 
 extension TrackersViewController: TrackersViewControllerDelegate {
+    func updateTracker(_ tracker: Tracker, ofCategory categoryTitle: String) {
+        do {
+            try trackerStore?.updateTracker(fromObject: tracker)
+        } catch {
+            showAlert(withMessage: NSLocalizedString("undefinedError", comment: ""))
+        }
+    }
+    
     func addNewTracker(name: String, 
                        color: UIColor,
                        emoji: String,
@@ -465,11 +473,18 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout & UICollect
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
-        UIContextMenuConfiguration(actionProvider: { actions in
+        guard let indexPath = indexPaths.first else { return nil }
+        let tracker = filteredCategories[indexPath.section].trackers[indexPath.row]
+        let category = filteredCategories[indexPath.section].title
+        let numberOfDays = setDaysAtTracker(with: tracker.id)
+        return UIContextMenuConfiguration(actionProvider: { actions in
             return UIMenu(children: [
                 UIAction(title: NSLocalizedString("titleOfEditingInContextMenu", comment: ""),
                          handler: { [weak self] _ in
-                             let viewController = EditTrackerViewController()
+                             let viewController = EditTrackerViewController(
+                                tracker: tracker,
+                                withNumberOfCompletedDays: numberOfDays,
+                                atCategory: category)
                              self?.present(viewController, animated: true)
                          }),
                 UIAction(title: NSLocalizedString("titleOfDeletingInContextMenu", comment: ""),
@@ -481,10 +496,8 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout & UICollect
                              
                              alert.addAction(UIAlertAction(
                                 title: NSLocalizedString("alertTitleOfDeleteButton", comment: ""),
-                                style: .destructive, handler: { [weak self] _ in
-                                    guard let self, let indexPath = indexPaths.first else { return }
-                                    let tracker = self.filteredCategories[indexPath.section].trackers[indexPath.row]
-                                     self.deleteTracker(tracker)
+                                style: .destructive, handler: { _ in
+                                    self?.deleteTracker(tracker)
                                  }))
                              alert.addAction(UIAlertAction(
                                 title: NSLocalizedString("alertTitleOfCancelButton", comment: ""),
