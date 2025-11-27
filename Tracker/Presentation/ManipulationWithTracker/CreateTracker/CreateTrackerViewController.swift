@@ -104,6 +104,7 @@ final class CreateTrackerViewController: UIViewController {
         tableView.dataSource = self
         tableView.layer.masksToBounds = true
         tableView.layer.cornerRadius = Constants.cornerRadiusOfUIElements
+        tableView.isScrollEnabled = false
         return tableView
     }()
     
@@ -340,7 +341,7 @@ extension CreateTrackerViewController: CreateTrackerViewControllerDelegate {
 
 extension CreateTrackerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cellTitles.count
+        isAHabit ? cellTitles.count : 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -357,7 +358,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
 
 extension CreateTrackerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return Constants.Sizes.heightOfCellAndField
+        Constants.Sizes.heightOfCellAndField
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
