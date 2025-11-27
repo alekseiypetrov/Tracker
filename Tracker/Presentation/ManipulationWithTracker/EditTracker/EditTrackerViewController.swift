@@ -137,7 +137,7 @@ final class EditTrackerViewController: UIViewController {
         let button = UIButton()
         button.addAction(UIAction(handler: { [weak self] _ in
             guard let self else { return }
-            self.cancelOfCreation()
+            self.cancelOfUpdating()
         }),
                          for: .touchUpInside)
         button.setAttributedTitle(NSAttributedString(
@@ -234,7 +234,7 @@ final class EditTrackerViewController: UIViewController {
         view.endEditing(true)
     }
     
-    private func cancelOfCreation() {
+    private func cancelOfUpdating() {
         dismiss(animated: true)
     }
     
@@ -254,7 +254,7 @@ final class EditTrackerViewController: UIViewController {
                                     emoji: emoji,
                                     timetable: timetable)
         if tracker == backupTracker && self.category == category {
-            cancelOfCreation()
+            cancelOfUpdating()
         } else {
             delegate?.updateTracker(backupTracker, ofCategory: category)
         }

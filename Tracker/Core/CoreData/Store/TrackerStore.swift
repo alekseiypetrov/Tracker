@@ -5,6 +5,10 @@ protocol TrackerStoreDelegate: AnyObject {
     func didUpdated()
 }
 
+protocol TrackerStoreProtocol: AnyObject {
+    func findTracker(withId id: Int64) -> Result<TrackerCoreData, CoreDataError>
+}
+
 final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
     
     private weak var delegate: TrackerStoreDelegate?
@@ -18,11 +22,38 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
     }
     
     func deleteTracker(fromObject tracker: Tracker) throws {
-        // TODO: - Will be done later (логика поиска и удаления трекера из БД)
+        // TODO: - Will be done later (логика поиска и удаления трекера из БД) -- протестить
+        switch findExistingTracker(withTitle: tracker.name) {
+        case .failure(let error):
+            throw error
+        case .success(let trackerCoreData):
+            context.delete(trackerCoreData)
+            saveContext()
+            delegate?.didUpdated()
+        }
     }
     
-    func updateTracker(fromObject tracker: Tracker) throws {
-        // TODO: - Will be done later (логика поиска и обновления трекера из БД)
+    func updateTracker(fromObject tracker: Tracker, toCategory category: String, categoryStore: TrackerCategoryStoreProtocol) throws {
+        // TODO: - Will be done later (логика поиска и обновления трекера из БД) -- протестить
+        switch findTracker(withId: Int64(tracker.id)) {
+        case .failure(let error):
+            throw error
+        case .success(let trackerCoreData):
+            do {
+                let category = try categoryStore.getCategory(withTitle: category)
+                trackerCoreData.name = tracker.name
+                trackerCoreData.emoji = tracker.emoji
+                trackerCoreData.color = tracker.color
+                trackerCoreData.timetable = tracker.timetable as NSArray
+                trackerCoreData.category = category
+                saveContext()
+                delegate?.didUpdated()
+            } catch CoreDataError.nonExistentValue(let message) {
+                throw CoreDataError.nonExistentValue(message)
+            } catch {
+                throw error
+            }
+        }
     }
     
     func addTracker(fromObject tracker: Tracker, toCategory category: String, categoryStore: TrackerCategoryStoreProtocol) throws {
@@ -41,8 +72,8 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
                 newTracker.category = category
                 saveContext()
                 delegate?.didUpdated()
-            } catch CoreDataError.duplicatingValue(let message) {
-                throw CoreDataError.duplicatingValue(message)
+            } catch CoreDataError.nonExistentValue(let message) {
+                throw CoreDataError.nonExistentValue(message)
             } catch {
                 throw error
             }
@@ -63,6 +94,18 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
         guard let existingTracker = try? context.fetch(request).first
         else {
             return .failure(CoreDataError.nonExistentValue(NSLocalizedString("nonExistentTracker", comment: "")))
+        }
+        return .success(existingTracker)
+    }
+}
+
+extension TrackerStore: TrackerStoreProtocol {
+    func findTracker(withId id: Int64) -> Result<TrackerCoreData, CoreDataError> {
+        let request = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %ld", id)
+        guard let existingTracker = try? context.fetch(request).first
+        else {
+            return .failure(CoreDataError.nonExistentValue(NSLocalizedString("nonExistentTrackerWithId", comment: "")))
         }
         return .success(existingTracker)
     }

@@ -17,6 +17,7 @@ alertTitleOfCancelButton = "Cancel";
 duplicatingTracker = "A tracker with that name already exists!";
 duplicatingCategory = "A category with that name already exists!";
 nonExistentTracker = "A tracker with that name does not exist!";
+nonExistentTrackerWithId = "A tracker with that ID does not exist!";
 nonExistentCategory = "A category with that name does not exist!";
 nonExistentRecord = "This record is not in the database!";
 nonExistentValue = "It is impossible to get the number of trackers";

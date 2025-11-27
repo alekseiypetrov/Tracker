@@ -17,6 +17,7 @@ alertTitleOfCancelButton = "Отменить";
 duplicatingTracker = "Трекер с таким именем уже существует!";
 duplicatingCategory = "Категория с таким именем уже существует!";
 nonExistentTracker = "Трекер с таким именем не существует!";
+nonExistentTrackerWithId = "Трекер с таким ID не существует!";
 nonExistentCategory = "Категория с таким именем не существует!";
 nonExistentRecord = "Данной записи нет в базе!";
 nonExistentValue = "Невозможно получить количество трекеров";

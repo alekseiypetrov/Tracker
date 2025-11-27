@@ -247,11 +247,29 @@ extension TrackersViewController: TrackerStoreDelegate {
 // MARK: - TrackersViewController + TrackersViewControllerDelegate
 
 extension TrackersViewController: TrackersViewControllerDelegate {
-    func updateTracker(_ tracker: Tracker, ofCategory categoryTitle: String) {
+    private func deleteTracker(_ tracker: Tracker) {
         do {
-            try trackerStore?.updateTracker(fromObject: tracker)
+            try trackerStore?.deleteTracker(fromObject: tracker)
+        } catch CoreDataError.nonExistentValue(let message) {
+            showAlert(withMessage: message)
         } catch {
             showAlert(withMessage: NSLocalizedString("undefinedError", comment: ""))
+        }
+    }
+    
+    func updateTracker(_ tracker: Tracker, ofCategory categoryTitle: String) {
+        do {
+            guard let categoryStore else { throw CoreDataError.invalidStore }
+            try trackerStore?.updateTracker(fromObject: tracker, toCategory: categoryTitle, categoryStore: categoryStore)
+            dismiss(animated: true)
+        } catch CoreDataError.nonExistentValue(let message) {
+            dismiss(animated: true) { [weak self] in
+                self?.showAlert(withMessage: message)
+            }
+        } catch {
+            dismiss(animated: true) { [weak self] in
+                self?.showAlert(withMessage: NSLocalizedString("undefinedError", comment: ""))
+            }
         }
     }
     
@@ -340,9 +358,9 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
         let currentDateAtDatePicker = datePicker.date
         let isItAFuture = currentDateAtDatePicker.timeIntervalSinceNow > 0
         guard !isItAFuture,
-              let indexPath = collectionView.indexPath(for: tracker) else {
-            return
-        }
+              let indexPath = collectionView.indexPath(for: tracker),
+              let trackerStore
+        else { return }
         let formattedCurrentDate = dateFormatter.string(from: currentDateAtDatePicker)
         let idOfTracker = filteredCategories[indexPath.section].trackers[indexPath.row].id
         if let flag = recordStore?.getStatusOfTracker(withId: idOfTracker, atDate: formattedCurrentDate),
@@ -356,7 +374,7 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
                 showAlert(withMessage: NSLocalizedString("undefinedError", comment: ""))
             }
         } else {
-            recordStore?.addRecord(fromObjectWithId: idOfTracker, atDate: formattedCurrentDate)
+            recordStore?.addRecord(fromObjectWithId: idOfTracker, atDate: formattedCurrentDate, trackerStore: trackerStore)
             tracker.imageForButton = Constants.Images.imageOfButtonWithCheckmark
         }
         tracker.countDays = setDaysAtTracker(with: idOfTracker)
@@ -464,14 +482,6 @@ extension TrackersViewController: UICollectionViewDataSource {
 // MARK: - TrackersViewController + UICollectionViewDelegateFlowLayout & UICollectionViewDelegate
 
 extension TrackersViewController: UICollectionViewDelegateFlowLayout & UICollectionViewDelegate {
-    private func deleteTracker(_ tracker: Tracker) {
-        do {
-            try trackerStore?.deleteTracker(fromObject: tracker)
-        } catch {
-            showAlert(withMessage: NSLocalizedString("undefinedError", comment: ""))
-        }
-    }
-    
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
         guard let indexPath = indexPaths.first else { return nil }
         let tracker = filteredCategories[indexPath.section].trackers[indexPath.row]
@@ -485,6 +495,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout & UICollect
                                 tracker: tracker,
                                 withNumberOfCompletedDays: numberOfDays,
                                 atCategory: category)
+                             viewController.delegate = self
                              self?.present(viewController, animated: true)
                          }),
                 UIAction(title: NSLocalizedString("titleOfDeletingInContextMenu", comment: ""),

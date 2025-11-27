@@ -12,10 +12,13 @@ final class TrackerRecordStore: NSObject {
         super.init()
     }
     
-    func addRecord(fromObjectWithId id: UInt, atDate date: String) {
+    func addRecord(fromObjectWithId id: UInt, atDate date: String, trackerStore: TrackerStoreProtocol) {
+        guard let tracker = try? trackerStore.findTracker(withId: Int64(id)).get()
+        else { return }
         let newRecord = TrackerRecordCoreData(context: context)
         newRecord.id = Int64(id)
         newRecord.date = date
+        newRecord.tracker = tracker
         saveContext()
     }
     
