@@ -26,6 +26,7 @@
 		97A9524F2ED6416B00247FA8 /* AppMetricaLibraryAdapter in Frameworks */ = {isa = PBXBuildFile; productRef = 97A9524E2ED6416B00247FA8 /* AppMetricaLibraryAdapter */; };
 		97A952512ED6FD5F00247FA8 /* CreateTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A952502ED6FD5F00247FA8 /* CreateTrackerViewController.swift */; };
 		97A952542ED7174F00247FA8 /* EditTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A952532ED7174F00247FA8 /* EditTrackerViewController.swift */; };
+		97A952592ED8A8BA00247FA8 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A952582ED8A8BA00247FA8 /* AnalyticsService.swift */; };
 		97B1F95D2EB097540045D7D7 /* TrackersCollectionViewCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B1F95C2EB097540045D7D7 /* TrackersCollectionViewCellDelegate.swift */; };
 		97CFCA832EB2030C0090FD9C /* TimetableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA822EB2030C0090FD9C /* TimetableViewController.swift */; };
 		97CFCA852EB205540090FD9C /* TimetableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA842EB205540090FD9C /* TimetableTableViewCell.swift */; };
@@ -86,6 +87,7 @@
 		97A952372ED63B8D00247FA8 /* TrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerTests.swift; sourceTree = "<group>"; };
 		97A952502ED6FD5F00247FA8 /* CreateTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerViewController.swift; sourceTree = "<group>"; };
 		97A952532ED7174F00247FA8 /* EditTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTrackerViewController.swift; sourceTree = "<group>"; };
+		97A952582ED8A8BA00247FA8 /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		97B1F95C2EB097540045D7D7 /* TrackersCollectionViewCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersCollectionViewCellDelegate.swift; sourceTree = "<group>"; };
 		97CFCA822EB2030C0090FD9C /* TimetableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableViewController.swift; sourceTree = "<group>"; };
 		97CFCA842EB205540090FD9C /* TimetableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableTableViewCell.swift; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 		972F1EAD2EBF66D500A5B31B /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				97A952572ED8A83100247FA8 /* Services */,
 				972F1EB22EC309E500A5B31B /* CoreData */,
 				97F381F42EABAC880013F66B /* Models */,
 			);
@@ -237,6 +240,14 @@
 				97A952502ED6FD5F00247FA8 /* CreateTrackerViewController.swift */,
 			);
 			path = CreateTracker;
+			sourceTree = "<group>";
+		};
+		97A952572ED8A83100247FA8 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				97A952582ED8A8BA00247FA8 /* AnalyticsService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		97CFCA882EB22F8B0090FD9C /* Timetable */ = {
@@ -539,6 +550,7 @@
 				97EF92362ECC8C200079590B /* OnboardingViewController.swift in Sources */,
 				97CFCA8A2EB22FB00090FD9C /* CreateTrackerTableViewCell.swift in Sources */,
 				97CFCAA62EB65DE80090FD9C /* ViewController.swift in Sources */,
+				97A952592ED8A8BA00247FA8 /* AnalyticsService.swift in Sources */,
 				97EF925A2ECDCBA60079590B /* ChooseCategoryViewModel.swift in Sources */,
 				97CFCA852EB205540090FD9C /* TimetableTableViewCell.swift in Sources */,
 				97F9FC472EA667BE0034200A /* SceneDelegate.swift in Sources */,

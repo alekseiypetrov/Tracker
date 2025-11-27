@@ -21,7 +21,6 @@ final class TrackersViewController: UIViewController {
             static let titleTrackerLabelSize: CGSize = CGSize(width: 254.0, height: 41.0)
             static let imageViewOfEmptyListSize: CGFloat = 80.0
             static let titleOfEmptyListSizeOfText: CGFloat = 12.0
-            static let titleOfEmptyListLabelHeight: CGFloat = 18.0
             static let datePickerSize: CGSize = CGSize(width: 87.0, height: 34.0)
             static let searchBarHeight: CGFloat = 36.0
             static let heightOfCell: CGFloat = 148.0
@@ -45,11 +44,17 @@ final class TrackersViewController: UIViewController {
     private lazy var addTrackerButton: UIButton = {
         let button = UIButton()
         button.setImage(Constants.Images.imageAddTrackerButton, for: .normal)
-        button.addAction(UIAction(handler: { [weak self] _ in
-            guard let self else { return }
-            self.addTracker()
-        }),
-                         for: .touchUpInside)
+        button.addAction(
+            UIAction(
+                handler: { [weak self] _ in
+                    guard let self else { return }
+                    AnalyticsService.shared.sendEvent(name: "addTrackerButton_tap",
+                                                      parameters: ["event": "click",
+                                                                   "screen": "Main",
+                                                                   "item": "add_track"])
+                    self.addTracker()
+                }),
+            for: .touchUpInside)
         return button
     }()
     
@@ -103,6 +108,15 @@ final class TrackersViewController: UIViewController {
         button.setAttributedTitle(Constants.titleForFilterButton, for: .normal)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = Constants.cornerRadiusOfFilterButton
+        button.addAction(UIAction(handler: { [weak self] _ in
+            guard let self else { return }
+            AnalyticsService.shared.sendEvent(name: "filterButton_tap",
+                                              parameters: ["event": "click",
+                                                           "screen": "Main",
+                                                           "item": "filter"])
+            // TODO: - Will be done later (вызов метода для фильтра трекеров)
+        }),
+                         for: .touchUpInside)
         return button
     }()
     
@@ -142,6 +156,20 @@ final class TrackersViewController: UIViewController {
         trackerStore = TrackerStore(delegate: self)
         recordStore = TrackerRecordStore()
         setupSubviewsAndConstraints()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        AnalyticsService.shared.sendEvent(name: "TrackersViewController_opening",
+                                          parameters: ["event": "open",
+                                                       "screen": "Main"])
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        AnalyticsService.shared.sendEvent(name: "TrackersViewController_closing",
+                                          parameters: ["event": "close",
+                                                       "screen": "Main"])
     }
     
     // MARK: - Actions
@@ -355,6 +383,10 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
     }
     
     func didTappedButtonInTracker(_ tracker: TrackersCollectionViewCell) {
+        AnalyticsService.shared.sendEvent(name: "trackerButton_tap",
+                                          parameters: ["event": "click",
+                                                       "screen": "Main",
+                                                       "item": "track"])
         let currentDateAtDatePicker = datePicker.date
         let isItAFuture = currentDateAtDatePicker.timeIntervalSinceNow > 0
         guard !isItAFuture,
@@ -491,6 +523,10 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout & UICollect
             return UIMenu(children: [
                 UIAction(title: NSLocalizedString("titleOfEditingInContextMenu", comment: ""),
                          handler: { [weak self] _ in
+                             AnalyticsService.shared.sendEvent(name: "editButtonOfContextMenu_tap",
+                                                               parameters: ["event": "click",
+                                                                            "screen": "Main",
+                                                                            "item": "edit"])
                              let viewController = EditTrackerViewController(
                                 tracker: tracker,
                                 withNumberOfCompletedDays: numberOfDays,
@@ -501,9 +537,14 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout & UICollect
                 UIAction(title: NSLocalizedString("titleOfDeletingInContextMenu", comment: ""),
                          attributes: .destructive,
                          handler: { [weak self] _ in
-                             let alert = UIAlertController(title: NSLocalizedString("alertHeaderForDeleting", comment: ""),
-                                                           message: nil,
-                                                           preferredStyle: .actionSheet)
+                             AnalyticsService.shared.sendEvent(name: "deleteButtonOfContextMenu_tap",
+                                                               parameters: ["event": "click",
+                                                                            "screen": "Main",
+                                                                            "item": "delete"])
+                             let alert = UIAlertController(
+                                title: NSLocalizedString("alertHeaderForDeleting", comment: ""),
+                                message: nil,
+                                preferredStyle: .actionSheet)
                              
                              alert.addAction(UIAlertAction(
                                 title: NSLocalizedString("alertTitleOfDeleteButton", comment: ""),
