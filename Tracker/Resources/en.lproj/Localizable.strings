@@ -37,6 +37,14 @@ titleOfFilterButton = "Filters";
 titleOfEditingInContextMenu = "Edit";
 titleOfDeletingInContextMenu = "Delete";
 
+// MARK: - Filters
+
+filterHeader = "Filters";
+allTrackersHeader = "All trackers";
+todayTrackersHeader = "Trackers for today";
+completedTrackersHeader = "Completed";
+nonCompletedTrackersHeader = "Not completed";
+
 // MARK: - EditTracker
 
 editTrackerViewControllerHeader = "Editing a habit";

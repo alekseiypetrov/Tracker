@@ -115,6 +115,8 @@ final class TrackersViewController: UIViewController {
                                                            "screen": "Main",
                                                            "item": "filter"])
             // TODO: - Will be done later (вызов метода для фильтра трекеров)
+            let chooseFilterViewController = ChooseFilterViewController(delegate: self)
+            self.present(chooseFilterViewController, animated: true)
         }),
                          for: .touchUpInside)
         return button
@@ -275,6 +277,10 @@ extension TrackersViewController: TrackerStoreDelegate {
 // MARK: - TrackersViewController + TrackersViewControllerDelegate
 
 extension TrackersViewController: TrackersViewControllerDelegate {
+    func updateCollection(by filter: String) {
+        // TODO: - Will be done later (доп фильрация)
+    }
+    
     private func deleteTracker(_ tracker: Tracker) {
         do {
             try trackerStore?.deleteTracker(fromObject: tracker)
