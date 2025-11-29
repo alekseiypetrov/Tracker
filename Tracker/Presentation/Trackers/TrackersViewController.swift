@@ -30,11 +30,17 @@ final class TrackersViewController: UIViewController {
             static let verticalSpacing: CGFloat = 0.0
             static let horizontalSpacing: CGFloat = 9.0
         }
+        enum TitleForFilterButton {
+            static let whiteTitle = NSAttributedString(
+                string: NSLocalizedString("titleOfFilterButton", comment: ""),
+                attributes: [.font: UIFont.systemFont(ofSize: 17.0, weight: .regular),
+                             .foregroundColor: UIColor.white])
+            static let redTitle = NSAttributedString(
+                string: NSLocalizedString("titleOfFilterButton", comment: ""),
+                attributes: [.font: UIFont.systemFont(ofSize: 17.0, weight: .regular),
+                             .foregroundColor: UIColor.red])
+        }
         static let cornerRadiusOfFilterButton: CGFloat = 16.0
-        static let titleForFilterButton = NSAttributedString(
-            string: NSLocalizedString("titleOfFilterButton", comment: ""),
-            attributes: [.font: UIFont.systemFont(ofSize: 17.0, weight: .regular),
-                         .foregroundColor: UIColor.white])
         static let backgroundColorOfDatePicker = UIColor(red: 240.0 / 255.0, green: 240.0 / 255.0, blue: 240.0 / 255.0, alpha: 1.0)
         static let edgeInsetsForSection: UIEdgeInsets = UIEdgeInsets(top: 0.0, left: 12.0, bottom: 0.0, right: 12.0)
     }
@@ -105,7 +111,7 @@ final class TrackersViewController: UIViewController {
     private lazy var filterButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .ypBlue
-        button.setAttributedTitle(Constants.titleForFilterButton, for: .normal)
+        button.setAttributedTitle(Constants.TitleForFilterButton.whiteTitle, for: .normal)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = Constants.cornerRadiusOfFilterButton
         button.addAction(UIAction(handler: { [weak self] _ in
@@ -114,7 +120,6 @@ final class TrackersViewController: UIViewController {
                                               parameters: ["event": "click",
                                                            "screen": "Main",
                                                            "item": "filter"])
-            // TODO: - Will be done later (вызов метода для фильтра трекеров)
             let chooseFilterViewController = ChooseFilterViewController(delegate: self)
             self.present(chooseFilterViewController, animated: true)
         }),
@@ -143,6 +148,7 @@ final class TrackersViewController: UIViewController {
     }()
     
     private var currentTextInSearchBar: String?
+    private var currentFilter: Int = 0
     private var filteredCategories: [TrackerCategory] = []
     private var categoriesOnAGivenDay: [TrackerCategory] = []
     private var categoryStore: TrackerCategoryStore?
@@ -185,7 +191,9 @@ final class TrackersViewController: UIViewController {
     
     @objc 
     private func datePickerValueChanged(_ sender: UIDatePicker) {
-        collectionView.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            self?.collectionView.reloadData()
+        }
     }
     
     // MARK: - Private methods
@@ -270,15 +278,25 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
 
 extension TrackersViewController: TrackerStoreDelegate {
     func didUpdated() {
-        collectionView.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            self?.collectionView.reloadData()
+        }
     }
 }
 
 // MARK: - TrackersViewController + TrackersViewControllerDelegate
 
 extension TrackersViewController: TrackersViewControllerDelegate {
-    func updateCollection(by filter: String) {
-        // TODO: - Will be done later (доп фильрация)
+    func updateCollection(by filter: Int) {
+        currentFilter = filter
+        DispatchQueue.main.async { [weak self] in
+            self?.collectionView.reloadData()
+        }
+        filterButton
+            .setAttributedTitle(
+                currentFilter > 1 ? Constants.TitleForFilterButton.redTitle : Constants.TitleForFilterButton.whiteTitle,
+                for: .normal
+            )
     }
     
     private func deleteTracker(_ tracker: Tracker) {
@@ -358,7 +376,9 @@ extension TrackersViewController: TrackersViewControllerDelegate {
 extension TrackersViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         currentTextInSearchBar = searchText
-        collectionView.reloadData()
+        DispatchQueue.main.async { [weak self] in
+            self?.collectionView.reloadData()
+        }
     }
 }
 
@@ -422,7 +442,24 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
 // MARK: - TrackersViewController + UICollectionViewDataSource
 
 extension TrackersViewController: UICollectionViewDataSource {
+    private func getFilter(by number: Int) -> Filter {
+        switch number {
+        case 1:
+            return Filter.today
+        case 2:
+            return Filter.completed
+        case 3:
+            return Filter.nonCompleted
+        default:
+            return Filter.all
+        }
+    }
+    
     private func filterCategories() {
+        let filter = getFilter(by: currentFilter)
+        if filter == .today {
+            datePicker.date = Date.now
+        }
         let currentDateAtDatePicker = datePicker.date
         guard let calendar = datePicker.calendar,
               let weekday = Weekday(rawValue: calendar.component(.weekday, from: currentDateAtDatePicker)),
@@ -439,6 +476,35 @@ extension TrackersViewController: UICollectionViewDataSource {
                     $0.timetable.contains(weekday)
                 })
             }
+        if filter == .completed,
+           let recordStore {
+            let formattedDate = dateFormatter.string(from: currentDateAtDatePicker)
+            categoriesOnAGivenDay = categoriesOnAGivenDay
+                .filter {
+                    !$0.trackers.filter {
+                        recordStore.getStatusOfTracker(withId: $0.id, atDate: formattedDate)
+                    }.isEmpty
+                }.map {
+                    TrackerCategory(title: $0.title,
+                                    trackers: $0.trackers.filter {
+                        recordStore.getStatusOfTracker(withId: $0.id, atDate: formattedDate)
+                    })
+                }
+        } else if filter == .nonCompleted,
+                  let recordStore {
+            let formattedDate = dateFormatter.string(from: currentDateAtDatePicker)
+            categoriesOnAGivenDay = categoriesOnAGivenDay
+                .filter {
+                    !$0.trackers.filter {
+                        !recordStore.getStatusOfTracker(withId: $0.id, atDate: formattedDate)
+                    }.isEmpty
+                }.map {
+                    TrackerCategory(title: $0.title,
+                                    trackers: $0.trackers.filter {
+                        !recordStore.getStatusOfTracker(withId: $0.id, atDate: formattedDate)
+                    })
+                }
+        }
         if let currentTextInSearchBar, !currentTextInSearchBar.isEmpty {
             filteredCategories = categoriesOnAGivenDay
                 .filter {
@@ -453,6 +519,9 @@ extension TrackersViewController: UICollectionViewDataSource {
                 }
         } else {
             filteredCategories = categoriesOnAGivenDay
+        }
+        if currentFilter == 1 {
+            currentFilter = 0
         }
     }
     

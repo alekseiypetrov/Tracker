@@ -28,6 +28,7 @@
 		97A952542ED7174F00247FA8 /* EditTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A952532ED7174F00247FA8 /* EditTrackerViewController.swift */; };
 		97A952592ED8A8BA00247FA8 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A952582ED8A8BA00247FA8 /* AnalyticsService.swift */; };
 		97A9525C2ED9ADC600247FA8 /* ChooseFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A9525B2ED9ADC600247FA8 /* ChooseFilterViewController.swift */; };
+		97A9525E2EDB063A00247FA8 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A9525D2EDB063A00247FA8 /* Filter.swift */; };
 		97B1F95D2EB097540045D7D7 /* TrackersCollectionViewCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B1F95C2EB097540045D7D7 /* TrackersCollectionViewCellDelegate.swift */; };
 		97CFCA832EB2030C0090FD9C /* TimetableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA822EB2030C0090FD9C /* TimetableViewController.swift */; };
 		97CFCA852EB205540090FD9C /* TimetableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CFCA842EB205540090FD9C /* TimetableTableViewCell.swift */; };
@@ -90,6 +91,7 @@
 		97A952532ED7174F00247FA8 /* EditTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTrackerViewController.swift; sourceTree = "<group>"; };
 		97A952582ED8A8BA00247FA8 /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		97A9525B2ED9ADC600247FA8 /* ChooseFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseFilterViewController.swift; sourceTree = "<group>"; };
+		97A9525D2EDB063A00247FA8 /* Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 		97B1F95C2EB097540045D7D7 /* TrackersCollectionViewCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersCollectionViewCellDelegate.swift; sourceTree = "<group>"; };
 		97CFCA822EB2030C0090FD9C /* TimetableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableViewController.swift; sourceTree = "<group>"; };
 		97CFCA842EB205540090FD9C /* TimetableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableTableViewCell.swift; sourceTree = "<group>"; };
@@ -320,6 +322,7 @@
 				97F381F92EABACB50013F66B /* TrackerRecord.swift */,
 				97F381FB2EABAE330013F66B /* Weekday.swift */,
 				97CFCAA52EB65DE80090FD9C /* ViewController.swift */,
+				97A9525D2EDB063A00247FA8 /* Filter.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -548,6 +551,7 @@
 				97CFCA9A2EB3F76F0090FD9C /* ChooseCategoryTableViewCell.swift in Sources */,
 				97CFCAA82EB78ECD0090FD9C /* EmojiCollectionViewCell.swift in Sources */,
 				97CFCA982EB36C7F0090FD9C /* ChooseCategoryViewControllerDelegate.swift in Sources */,
+				97A9525E2EDB063A00247FA8 /* Filter.swift in Sources */,
 				97F9FC5F2EA6759C0034200A /* StatisticsViewController.swift in Sources */,
 				97F381F82EABACA50013F66B /* TrackerCategory.swift in Sources */,
 				97F9FC592EA672F60034200A /* TabBarController.swift in Sources */,

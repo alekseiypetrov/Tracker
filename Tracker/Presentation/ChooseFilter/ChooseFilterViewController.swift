@@ -51,8 +51,8 @@ final class ChooseFilterViewController: UIViewController {
     
     // MARK: - Private properties
     
-    var selectedFilter: Int
-    let keyOfFilter = "selectedFilter"
+    private var selectedFilter: Int
+    private let keyOfFilter = "selectedFilter"
     
     // MARK: - Initializers
     
@@ -102,8 +102,8 @@ extension ChooseFilterViewController: UITableViewDataSource {
         guard let currentCell = tableView.dequeueReusableCell(withIdentifier: ChooseCategoryTableViewCell.identifier) as? ChooseCategoryTableViewCell
         else { return UITableViewCell() }
         let title = Constants.headersOfCells[indexPath.row]
-        currentCell.configCell(withTitle: Constants.headersOfCells[indexPath.row],
-                               andState: title == (Constants.headersOfCells[selectedFilter] ))
+        currentCell.configCell(withTitle: title,
+                               andState: indexPath.row == selectedFilter && indexPath.row > 1)
         return currentCell
     }
 }
@@ -125,11 +125,13 @@ extension ChooseFilterViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         guard let cell = tableView.cellForRow(at: indexPath) as? ChooseCategoryTableViewCell
         else { return }
-        let chosenFilter = Constants.headersOfCells[indexPath.row]
-        cell.setSelected(true)
+        let chosenFilter = indexPath.row
+        if chosenFilter > 1 {
+            cell.setSelected(true)
+        }
         dismiss(animated: true, completion: {
             DispatchQueue.global().async {
-                UserDefaults.standard.setValue(indexPath.row, forKey: self.keyOfFilter)
+                UserDefaults.standard.setValue(chosenFilter, forKey: self.keyOfFilter)
             }
             self.delegate?.updateCollection(by: chosenFilter)
         })
