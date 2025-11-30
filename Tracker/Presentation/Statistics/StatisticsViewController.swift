@@ -66,15 +66,30 @@ final class StatisticsViewController: UIViewController {
         return tableView
     }()
     
+    // MARK: - Private properties
+    
+    private var statisticsData: [Int] = []
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewsAndConstaints()
-        // TODO: - Will be done later (логика отображения картинки или таблицы)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        statisticsData = Constants.keys.map {
+            UserDefaults.standard.integer(forKey: $0)
+        }
+        nothingToAnalyze() ? hideTable() : showTable()
     }
     
     // MARK: - Private methods
+    
+    private func nothingToAnalyze() -> Bool {
+        statisticsData.allSatisfy { $0 == 0 }
+    }
     
     private func hideTable() {
         [imageView, emptyStatisticsListLabel].forEach { $0.isHidden = false }
@@ -84,6 +99,9 @@ final class StatisticsViewController: UIViewController {
     private func showTable() {
         [imageView, emptyStatisticsListLabel].forEach { $0.isHidden = true }
         tableView.isHidden = false
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
     
     private func setupViewsAndConstaints() {
@@ -122,7 +140,7 @@ extension StatisticsViewController: UITableViewDataSource {
         guard let currentCell = tableView.dequeueReusableCell(withIdentifier: StatisticsTableViewCell.identifier) as? StatisticsTableViewCell
         else { return UITableViewCell() }
         currentCell.configCell(withTitle: Constants.titles[indexPath.row],
-                               andNumber: UserDefaults.standard.integer(forKey: Constants.keys[indexPath.row]))
+                               andNumber: statisticsData[indexPath.row])
         return currentCell
     }
 }

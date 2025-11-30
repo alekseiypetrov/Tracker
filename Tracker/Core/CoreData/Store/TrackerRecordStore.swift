@@ -41,6 +41,14 @@ final class TrackerRecordStore: NSObject {
         getSpecificRecord(withId: id, atDate: date) != nil
     }
     
+    func getNumberOfRecordsGroupedByTheDate() -> [String: Int] {
+        let fetchRequest = TrackerRecordCoreData.fetchRequest()
+        guard let records = try? context.fetch(fetchRequest)
+        else { return [:] }
+        return Dictionary(grouping: records) { $0.date ?? "" }
+            .mapValues { $0.count }
+    }
+    
     private func getSpecificRecord(withId id: UInt, atDate date: String) -> TrackerRecordCoreData? {
         let fetchRequest = TrackerRecordCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %ld AND date == %@", id, date)
