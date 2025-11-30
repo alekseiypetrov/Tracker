@@ -26,6 +26,7 @@ undefinedError = "An unexpected error has occurred";
 // MARK: - Statistics
 
 statisticsViewControllerHeader = "Statistics";
+titleOfEmptyListOfStatistics = "There is nothing to analyze yet";
 
 // MARK: - Trackers
 
