@@ -8,7 +8,6 @@ final class TrackersViewController: UIViewController {
         enum Images {
             static let imageAddTrackerButton = UIImage.addTracker
                 .withTintColor(.ypBlack, renderingMode: .alwaysOriginal)
-            static let imageOfEmptyList = UIImage.emptyList
             static let imageOfButtonWithPlus = UIImage(systemName: "plus.circle.fill")?
                 .withConfiguration(UIImage.SymbolConfiguration(pointSize: Sizes.sizeOfButtonInCell))
             static let imageOfButtonWithCheckmark = UIImage(systemName: "checkmark.circle.fill")?
@@ -128,7 +127,7 @@ final class TrackersViewController: UIViewController {
     }()
     
     private lazy var imageViewOfEmptyList: UIImageView = {
-        UIImageView(image: Constants.Images.imageOfEmptyList)
+        UIImageView(image: UIImage.emptyTrackersList)
     }()
     
     private lazy var titleOfEmptyListLabel: UILabel = {
@@ -436,6 +435,9 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
             tracker.imageForButton = Constants.Images.imageOfButtonWithCheckmark
         }
         tracker.countDays = setDaysAtTracker(with: idOfTracker)
+        DispatchQueue.main.async { [weak self] in
+            self?.collectionView.reloadData()
+        }
     }
 }
 
