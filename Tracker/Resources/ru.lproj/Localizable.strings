@@ -27,6 +27,9 @@ undefinedError = "Возникла непредвиденная ошибка";
 
 statisticsViewControllerHeader = "Статистика";
 titleOfEmptyListOfStatistics = "Анализировать пока нечего";
+completedTrackersTitle = "Трекеров завершено";
+averageRatePerDaysTitle = "Среднее значение";
+maximumTrackersPerDayTitle = "Лучший день";
 
 // MARK: - Trackers
 

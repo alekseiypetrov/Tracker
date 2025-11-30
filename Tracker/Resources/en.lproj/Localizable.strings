@@ -27,6 +27,9 @@ undefinedError = "An unexpected error has occurred";
 
 statisticsViewControllerHeader = "Statistics";
 titleOfEmptyListOfStatistics = "There is nothing to analyze yet";
+completedTrackersTitle = "Trackers completed";
+averageRatePerDaysTitle = "Mean value";
+maximumTrackersPerDayTitle = "Best day";
 
 // MARK: - Trackers
 

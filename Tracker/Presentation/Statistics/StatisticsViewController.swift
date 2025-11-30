@@ -6,6 +6,7 @@ final class StatisticsViewController: UIViewController {
     
     private enum Constants {
         enum Sizes {
+            static let spacingBetweenCells: CGFloat = 12.0
             static let heightOfEmptyListLabel: CGFloat = 18.0
             static let heightOfTitleStatisticsLabel: CGFloat = 41.0
             static let sizeOfImageOfEmptyList: CGFloat = 80.0
@@ -25,7 +26,12 @@ final class StatisticsViewController: UIViewController {
                 attributes: [.font: Fonts.fontForEmptyListLabel,
                              .foregroundColor: UIColor.ypBlack])
         }
-        static let cellTableViewEdgeInsets = UIEdgeInsets(top: 12.0, left: 0.0, bottom: 0.0, right: 0.0)
+        static let titles = [
+            NSLocalizedString("completedTrackersTitle", comment: ""),
+            NSLocalizedString("averageRatePerDaysTitle", comment: ""),
+            NSLocalizedString("maximumTrackersPerDayTitle", comment: ""),
+        ]
+        static let keys = ["completedTrackers", "averageRate", "maximumTrackers"]
     }
     
     // MARK: - UI-elements
@@ -50,9 +56,13 @@ final class StatisticsViewController: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
-        // TODO: - Configure table
-        tableView.rowHeight = Constants.Sizes.heightOfCellInList
-        tableView.separatorInset = Constants.cellTableViewEdgeInsets
+        tableView.backgroundColor = .ypWhite
+        tableView.separatorStyle = .none
+        tableView.isScrollEnabled = false
+        tableView.allowsSelection = false
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(StatisticsTableViewCell.self, forCellReuseIdentifier: StatisticsTableViewCell.identifier)
         return tableView
     }()
     
@@ -61,9 +71,20 @@ final class StatisticsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewsAndConstaints()
+        // TODO: - Will be done later (логика отображения картинки или таблицы)
     }
     
     // MARK: - Private methods
+    
+    private func hideTable() {
+        [imageView, emptyStatisticsListLabel].forEach { $0.isHidden = false }
+        tableView.isHidden = true
+    }
+    
+    private func showTable() {
+        [imageView, emptyStatisticsListLabel].forEach { $0.isHidden = true }
+        tableView.isHidden = false
+    }
     
     private func setupViewsAndConstaints() {
         let views: [UIView] = [titleStatisticsLabel, imageView, emptyStatisticsListLabel, tableView]
@@ -74,9 +95,10 @@ final class StatisticsViewController: UIViewController {
             titleStatisticsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
             titleStatisticsLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 44.0),
             titleStatisticsLabel.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfTitleStatisticsLabel),
-            tableView.topAnchor.constraint(equalTo: titleStatisticsLabel.bottomAnchor, constant: 12.0),
+            tableView.topAnchor.constraint(equalTo: titleStatisticsLabel.bottomAnchor, constant: 77.0),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             imageView.widthAnchor.constraint(equalToConstant: Constants.Sizes.sizeOfImageOfEmptyList),
@@ -89,16 +111,35 @@ final class StatisticsViewController: UIViewController {
     }
 }
 
+// MARK: - StatisticsViewController + UITableViewDataSource
+
 extension StatisticsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        0
+        Constants.titles.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        UITableViewCell()
+        guard let currentCell = tableView.dequeueReusableCell(withIdentifier: StatisticsTableViewCell.identifier) as? StatisticsTableViewCell
+        else { return UITableViewCell() }
+        currentCell.configCell(withTitle: Constants.titles[indexPath.row],
+                               andNumber: UserDefaults.standard.integer(forKey: Constants.keys[indexPath.row]))
+        return currentCell
     }
 }
 
+// MARK: - StatisticsViewController + UITableViewDelegate
+
 extension StatisticsViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        Constants.Sizes.heightOfCellInList + Constants.Sizes.spacingBetweenCells
+    }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.contentView.layoutMargins = UIEdgeInsets(
+            top: 0,
+            left: 0,
+            bottom: Constants.Sizes.spacingBetweenCells,
+            right: 0
+        )
+    }
 }
