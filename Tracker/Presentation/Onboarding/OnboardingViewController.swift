@@ -38,6 +38,7 @@ final class OnboardingViewController: UIPageViewController {
     
     private lazy var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
+        pageControl.overrideUserInterfaceStyle = .light
         pageControl.numberOfPages = pages.count
         pageControl.currentPage = 0
         pageControl.currentPageIndicatorTintColor = .ypBlack
@@ -47,6 +48,7 @@ final class OnboardingViewController: UIPageViewController {
     
     private lazy var acceptButton: UIButton = {
         let button = UIButton()
+        button.overrideUserInterfaceStyle = .light
         button.backgroundColor = .ypBlack
         button.setAttributedTitle(Constants.titleForButton, for: .normal)
         button.layer.masksToBounds = true
