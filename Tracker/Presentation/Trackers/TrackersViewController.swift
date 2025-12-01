@@ -42,7 +42,11 @@ final class TrackersViewController: UIViewController {
         static let cornerRadiusOfFilterButton: CGFloat = 16.0
         static let backgroundColorOfDatePicker = UIColor(red: 240.0 / 255.0, green: 240.0 / 255.0, blue: 240.0 / 255.0, alpha: 1.0)
         static let edgeInsetsForSection: UIEdgeInsets = UIEdgeInsets(top: 0.0, left: 12.0, bottom: 0.0, right: 12.0)
-        static let keys = ["completedTrackers", "averageRate", "maximumTrackers"]
+        enum UserDefaultsKeys {
+            static let allCompletedTrackers = "completedTrackers"
+            static let trackersAverageRate = "averageRate"
+            static let maximumTrackersPerDay = "maximumTrackers"
+        }
     }
     
     // MARK: - UI-elements
@@ -220,28 +224,34 @@ final class TrackersViewController: UIViewController {
     private func calculateStatistics() {
         guard let recordsGroupedByDate = recordStore?.getNumberOfRecordsGroupedByTheDate() else { return }
         storage.setValue(recordsGroupedByDate.reduce(0, { $0 + $1.value }),
-                         forKey: Constants.keys[0])
-        if !recordsGroupedByDate.isEmpty {
-            storage.setValue(recordsGroupedByDate.reduce(0, { $0 + $1.value }) / recordsGroupedByDate.count,
-                             forKey: Constants.keys[1])
-        } else {
-            storage.setValue(0,
-                             forKey: Constants.keys[1])
-        }
-        let currentValueOfMaximumScore = storage.integer(forKey: Constants.keys[2])
-        let newMaximumScore = recordsGroupedByDate.max(by: { $0.value < $1.value })?.value
-        if let newMaximumScore,
-           recordsGroupedByDate.contains(where: { $0.value == currentValueOfMaximumScore }) {
-            storage.setValue(max(currentValueOfMaximumScore, newMaximumScore),
-                             forKey: Constants.keys[2])
-        } else if let newMaximumScore {
-            storage.setValue(newMaximumScore,
-                             forKey: Constants.keys[2])
-        } else {
-            storage.setValue(0,
-                             forKey: Constants.keys[2])
-        }
+                         forKey: Constants.UserDefaultsKeys.allCompletedTrackers)
+        storage.setValue(calculateAverageRate(recordsGroupedByDate),
+                         forKey: Constants.UserDefaultsKeys.trackersAverageRate)
+        storage.setValue(calculateMaximumTrackers(recordsGroupedByDate),
+                         forKey: Constants.UserDefaultsKeys.maximumTrackersPerDay)
         storage.synchronize()
+    }
+    
+    private func calculateAverageRate(_ records: [String: Int]) -> Int {
+        switch !records.isEmpty {
+        case true:
+            return records.reduce(0, { $0 + $1.value }) / records.count
+        case false:
+            return 0
+        }
+    }
+    
+    private func calculateMaximumTrackers(_ records: [String: Int]) -> Int {
+        let currentValueOfMaximumScore = storage.integer(forKey: Constants.UserDefaultsKeys.maximumTrackersPerDay)
+        let newMaximumScore = records.max(by: { $0.value < $1.value })?.value
+        switch (newMaximumScore, records.contains(where: { $0.value == currentValueOfMaximumScore })) {
+        case (let score?, true):
+            return max(currentValueOfMaximumScore, score)
+        case (let score?, false):
+            return score
+        case (nil, _):
+            return 0
+        }
     }
 
     private func showAlert(withMessage message: String) {

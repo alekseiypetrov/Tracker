@@ -26,12 +26,16 @@ final class StatisticsViewController: UIViewController {
                 attributes: [.font: Fonts.fontForEmptyListLabel,
                              .foregroundColor: UIColor.ypBlack])
         }
+        enum UserDefaultsKeys {
+            static let allCompletedTrackers = "completedTrackers"
+            static let trackersAverageRate = "averageRate"
+            static let maximumTrackersPerDay = "maximumTrackers"
+        }
         static let titles = [
             NSLocalizedString("completedTrackersTitle", comment: ""),
             NSLocalizedString("averageRatePerDaysTitle", comment: ""),
             NSLocalizedString("maximumTrackersPerDayTitle", comment: ""),
         ]
-        static let keys = ["completedTrackers", "averageRate", "maximumTrackers"]
     }
     
     // MARK: - UI-elements
@@ -79,7 +83,11 @@ final class StatisticsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        statisticsData = Constants.keys.map {
+        statisticsData = [
+            Constants.UserDefaultsKeys.allCompletedTrackers,
+            Constants.UserDefaultsKeys.trackersAverageRate,
+            Constants.UserDefaultsKeys.maximumTrackersPerDay
+        ].map {
             UserDefaults.standard.integer(forKey: $0)
         }
         nothingToAnalyze() ? hideTable() : showTable()

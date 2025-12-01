@@ -34,7 +34,6 @@ final class TrackerStore: NSObject, NSFetchedResultsControllerDelegate {
     }
     
     func updateTracker(fromObject tracker: Tracker, toCategory category: String, categoryStore: TrackerCategoryStoreProtocol) throws {
-        // TODO: - Will be done later (логика поиска и обновления трекера из БД) -- протестить
         switch findTracker(withId: Int64(tracker.id)) {
         case .failure(let error):
             throw error
