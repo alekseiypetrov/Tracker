@@ -109,18 +109,26 @@ final class StatisticsViewController: UIViewController {
         view.addSubviews(views)
         
         NSLayoutConstraint.activate([
+            
+            // titleStatisticsLabel
             titleStatisticsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             titleStatisticsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
             titleStatisticsLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 44.0),
             titleStatisticsLabel.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfTitleStatisticsLabel),
+            
+            // tableView
             tableView.topAnchor.constraint(equalTo: titleStatisticsLabel.bottomAnchor, constant: 77.0),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            // imageView
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             imageView.widthAnchor.constraint(equalToConstant: Constants.Sizes.sizeOfImageOfEmptyList),
             imageView.heightAnchor.constraint(equalToConstant: Constants.Sizes.sizeOfImageOfEmptyList),
+            
+            // emptyStatisticsListLabel
             emptyStatisticsListLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             emptyStatisticsListLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
             emptyStatisticsListLabel.topAnchor.constraint(equalTo: imageView.safeAreaLayoutGuide.bottomAnchor, constant: 8.0),

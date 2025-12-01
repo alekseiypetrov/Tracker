@@ -113,10 +113,14 @@ final class StatisticsTableViewCell: UITableViewCell {
         let views = [numericalLabel, titleLabel]
         contentView.addSubviews(views)
         NSLayoutConstraint.activate([
+            
+            // numericalLabel
             numericalLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12.0),
             numericalLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12.0),
             numericalLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12.0),
             numericalLabel.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfNumbericalLabel),
+            
+            // titleLabel
             titleLabel.topAnchor.constraint(equalTo: numericalLabel.bottomAnchor, constant: 7.0),
             titleLabel.leadingAnchor.constraint(equalTo: numericalLabel.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: numericalLabel.trailingAnchor),

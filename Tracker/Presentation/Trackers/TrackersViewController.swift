@@ -20,7 +20,7 @@ final class TrackersViewController: UIViewController {
             static let titleTrackerLabelSize: CGSize = CGSize(width: 254.0, height: 41.0)
             static let imageViewOfEmptyListSize: CGFloat = 80.0
             static let titleOfEmptyListSizeOfText: CGFloat = 12.0
-            static let datePickerSize: CGSize = CGSize(width: 87.0, height: 34.0)
+            static let datePickerSize: CGSize = CGSize(width: 97.0, height: 34.0)
             static let searchBarHeight: CGFloat = 36.0
             static let heightOfCell: CGFloat = 148.0
             static let sizeOfFilterButton = CGSize(width: 114, height: 50)
