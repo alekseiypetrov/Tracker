@@ -12,16 +12,19 @@ final class TrackerRecordStore: NSObject {
         super.init()
     }
     
-    func addRecord(fromObjectWithId id: UInt, atDate date: String) {
+    func addRecord(fromObjectWithId id: UInt, atDate date: String, trackerStore: TrackerStoreProtocol) {
+        guard let tracker = try? trackerStore.findTracker(withId: Int64(id)).get()
+        else { return }
         let newRecord = TrackerRecordCoreData(context: context)
         newRecord.id = Int64(id)
         newRecord.date = date
+        newRecord.tracker = tracker
         saveContext()
     }
     
     func deleteRecord(fromObjectWithId id: UInt, atDate date: String) throws {
         guard let record = getSpecificRecord(withId: id, atDate: date)
-        else { throw CoreDataError.nonExistentValue("Данной записи нет в базе") }
+        else { throw CoreDataError.nonExistentValue(NSLocalizedString("nonExistentRecord", comment: "")) }
         context.delete(record)
         saveContext()
     }
@@ -36,6 +39,14 @@ final class TrackerRecordStore: NSObject {
     
     func getStatusOfTracker(withId id: UInt, atDate date: String) -> Bool {
         getSpecificRecord(withId: id, atDate: date) != nil
+    }
+    
+    func getNumberOfRecordsGroupedByTheDate() -> [String: Int] {
+        let fetchRequest = TrackerRecordCoreData.fetchRequest()
+        guard let records = try? context.fetch(fetchRequest)
+        else { return [:] }
+        return Dictionary(grouping: records) { $0.date ?? "" }
+            .mapValues { $0.count }
     }
     
     private func getSpecificRecord(withId id: UInt, atDate date: String) -> TrackerRecordCoreData? {

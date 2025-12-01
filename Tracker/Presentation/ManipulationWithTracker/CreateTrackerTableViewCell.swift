@@ -60,9 +60,7 @@ final class CreateTrackerTableViewCell: UITableViewCell {
         setupViewsAndConstraints()
     }
     
-    required init?(coder: NSCoder) {
-        nil
-    }
+    required init?(coder: NSCoder) { nil }
     
     // MARK: - Public methods
     

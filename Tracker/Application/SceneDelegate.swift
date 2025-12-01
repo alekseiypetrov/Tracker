@@ -8,6 +8,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     private let firstEnterKey = "firstEnter"
+    private let keyOfFilter = "selectedFilter"
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
@@ -16,6 +17,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = wasFirstEnter ? TabBarController() : OnboardingViewController(sceneDelegate: self)
         window.makeKeyAndVisible()
         self.window = window
+    }
+    
+    func sceneDidDisconnect(_ scene: UIScene) {
+        UserDefaults.standard.setValue(0, forKey: keyOfFilter)
     }
 }
 

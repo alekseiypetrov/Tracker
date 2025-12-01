@@ -17,9 +17,9 @@ final class ChooseCategoryViewController: UIViewController {
             static let fontOfButtonAndTitle = UIFont.systemFont(ofSize: 16.0, weight: .medium)
             static let fontOfCell = UIFont.systemFont(ofSize: 17.0, weight: .regular)
         }
-        static let imageOfEmptyList = UIImage.emptyList
+        static let imageOfEmptyList = UIImage.emptyTrackersList
         static let cornerRadius: CGFloat = 16.0
-        static let titleForButton = NSAttributedString(string: "Добавить категорию",
+        static let titleForButton = NSAttributedString(string: NSLocalizedString("addNewCategoryTitle", comment: ""),
                                                        attributes: [.font: Fonts.fontOfButtonAndTitle,
                                                                     .foregroundColor: UIColor.ypWhite])
     }
@@ -28,7 +28,7 @@ final class ChooseCategoryViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Категория"
+        label.text = NSLocalizedString("categoryCellTitle", comment: "")
         label.textColor = .ypBlack
         label.textAlignment = .center
         label.font = Constants.Fonts.fontOfButtonAndTitle
@@ -42,7 +42,7 @@ final class ChooseCategoryViewController: UIViewController {
     private lazy var titleOfEmptyListLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
-        label.text = "Привычки и события можно\nобъединить по смыслу"
+        label.text = NSLocalizedString("titleOfEmptyListOfCategories", comment: "")
         label.textColor = .ypBlack
         label.textAlignment = .center
         label.font = Constants.Fonts.fontOfLabelUnderImage
@@ -174,10 +174,10 @@ final class ChooseCategoryViewController: UIViewController {
     }
     
     private func showAlert(withMessage message: String) {
-        let alert = UIAlertController(title: "Внимание",
+        let alert = UIAlertController(title: NSLocalizedString("alertHeader", comment: ""),
                                       message: message,
                                       preferredStyle: .alert)
-        let action = UIAlertAction(title: "OK", style: .cancel)
+        let action = UIAlertAction(title: NSLocalizedString("alertTitleOfButton", comment: ""), style: .cancel)
         alert.addAction(action)
         present(alert, animated: true)
     }
@@ -196,7 +196,7 @@ extension ChooseCategoryViewController: ChooseCategoryViewControllerDelegate {
             }
         } catch {
             dismiss(animated: true) { [weak self] in
-                self?.showAlert(withMessage: "Возникла непредвиденная ошибка")
+                self?.showAlert(withMessage: NSLocalizedString("undefinedError", comment: ""))
             }
         }
     }

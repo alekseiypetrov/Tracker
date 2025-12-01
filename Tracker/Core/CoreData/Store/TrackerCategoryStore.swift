@@ -63,7 +63,7 @@ final class TrackerCategoryStore: NSObject {
             newTrackerCategory.title = title
             saveContext()
         case .success:
-            throw CoreDataError.duplicatingValue("Категория с таким именем уже существует")
+            throw CoreDataError.duplicatingValue(NSLocalizedString("duplicatingCategory", comment: ""))
         }
     }
     
@@ -73,7 +73,7 @@ final class TrackerCategoryStore: NSObject {
         if let existingCategory = try? context.fetch(request).first {
             return .success(existingCategory)
         }
-        return .failure(CoreDataError.nonExistentValue("Категория с таким именем не существует"))
+        return .failure(CoreDataError.nonExistentValue(NSLocalizedString("nonExistentCategory", comment: "")))
     }
 }
 

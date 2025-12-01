@@ -13,6 +13,7 @@ final class OnboardingPageViewController: UIViewController {
     
     private lazy var label: UILabel = {
         let label = UILabel()
+        label.overrideUserInterfaceStyle = .light
         label.numberOfLines = 2
         label.textColor = .ypBlack
         label.font = Constants.fontForLabel

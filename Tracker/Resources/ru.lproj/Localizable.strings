@@ -1,0 +1,108 @@
+// MARK: - Onboarding
+
+onboardingButtonTitle = "Вот это технологии!";
+aboutTrackingTitle = "Отслеживайте только то, что хотите";
+aboutWaterAndYogaTitle = "Даже если это не литры воды и йога";
+
+// MARK: - Alert strings
+
+alertHeader = "Внимание";
+alertTitleOfButton = "ОК";
+alertHeaderForDeleting = "Уверены, что хотите удалить трекер?";
+alertTitleOfDeleteButton = "Удалить";
+alertTitleOfCancelButton = "Отменить";
+
+// MARK: - Error messages
+
+duplicatingTracker = "Трекер с таким именем уже существует!";
+duplicatingCategory = "Категория с таким именем уже существует!";
+nonExistentTracker = "Трекер с таким именем не существует!";
+nonExistentTrackerWithId = "Трекер с таким ID не существует!";
+nonExistentCategory = "Категория с таким именем не существует!";
+nonExistentRecord = "Данной записи нет в базе!";
+nonExistentValue = "Невозможно получить количество трекеров";
+undefinedError = "Возникла непредвиденная ошибка";
+
+// MARK: - Statistics
+
+statisticsViewControllerHeader = "Статистика";
+titleOfEmptyListOfStatistics = "Анализировать пока нечего";
+completedTrackersTitle = "Трекеров завершено";
+averageRatePerDaysTitle = "Среднее значение";
+maximumTrackersPerDayTitle = "Лучший день";
+
+// MARK: - Trackers
+
+trackersViewControllerHeader = "Трекеры";
+searchBarPlaceholder = "Поиск";
+titleOfEmptyListOfTrackers = "Что будем отслеживать?";
+titleOfNotFoundedListOfTrackers = "Ничего не найдено";
+pinCategory = "Закрепленные";
+titleOfFilterButton = "Фильтры";
+titleOfEditingInContextMenu = "Редактировать";
+titleOfDeletingInContextMenu = "Удалить";
+
+// MARK: - Filters
+
+filterHeader = "Фильтры";
+allTrackersHeader = "Все трекеры";
+todayTrackersHeader = "Трекеры на сегодня";
+completedTrackersHeader = "Завершенные";
+nonCompletedTrackersHeader = "Не завершенные";
+
+// MARK: - EditTracker
+
+editTrackerViewControllerHeader = "Редактирование привычки";
+saveTrackerButtonTitle = "Сохранить";
+
+// MARK: - ChooseKindOfNewTracker
+
+chooseKindOfNewTrackerHeader = "Создание трекера";
+habit = "Привычка";
+event = "Нерегулярное событие";
+
+// MARK: - CreateTracker
+
+eventHeader = "Новое нерегулярное событие";
+habitHeader = "Новая привычка";
+trackerNamePlaceholder = "Введите название трекера";
+symbolsLimit = "Ограничение 38 символов";
+emojiCollectionHeader = "Emoji";
+colorCollectionHeader = "Цвет";
+cancelTrackerButtonTitle = "Отменить";
+createTrackerButtonTitle = "Создать";
+categoryCellTitle = "Категория";
+timetableCellTitle = "Расписание";
+
+// MARK: - ChooseCategory
+
+addNewCategoryTitle = "Добавить категорию";
+titleOfEmptyListOfCategories = "Привычки и события можно\nобъединить по смыслу";
+
+// MARK: - CreateCategory
+
+createCategoryHeader = "Новая категория";
+categoryNamePlaceholder = "Введите название категории";
+doneButtonTitle = "Готово";
+
+// MARK: - Timetable
+
+everydayValue = "Каждый день";
+
+// MARK: - Weekday
+
+mondayFull = "Понедельник";
+tuesdayFull = "Вторник";
+wednesdayFull = "Среда";
+thursdayFull = "Четверг";
+fridayFull = "Пятница";
+saturdayFull = "Суббота";
+sundayFull = "Воскресенье";
+
+mondayShort = "Пн";
+tuesdayShort = "Вт";
+wednesdayShort = "Ср";
+thursdayShort = "Чт";
+fridayShort = "Пт";
+saturdayShort = "Сб";
+sundayShort = "Вс";

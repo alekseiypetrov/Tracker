@@ -13,7 +13,7 @@ final class TimetableViewController: UIViewController {
         static let cornerRadiusOfButtonAndTable: CGFloat = 16.0
         static let fontForLabels = UIFont.systemFont(ofSize: 16.0, weight: .medium)
         static let titleForButton = NSAttributedString(
-            string: "Готово",
+            string: NSLocalizedString("doneButtonTitle", comment: ""),
             attributes: [.font: fontForLabels,
                          .foregroundColor: UIColor.ypWhite])
     }
@@ -25,13 +25,13 @@ final class TimetableViewController: UIViewController {
     // MARK: - Private properties
     
     private let week: [Weekday] = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
-    private var acceptedDays: [Weekday] = []
+    private var acceptedDays: [Weekday]
     
     // MARK: - UI-elements
     
     private lazy var timetableLabel: UILabel = {
         let label = UILabel()
-        label.text = "Расписание"
+        label.text = NSLocalizedString("timetableCellTitle", comment: "")
         label.textAlignment = .center
         label.font = Constants.fontForLabels
         return label
@@ -50,8 +50,7 @@ final class TimetableViewController: UIViewController {
     
     private lazy var acceptButton: UIButton = {
         let button = UIButton()
-        button.addAction(UIAction(title: "Готово",
-                                  handler: { [weak self] _ in
+        button.addAction(UIAction(handler: { [weak self] _ in
             guard let self else { return }
             self.acceptTimetable()
         }),
@@ -62,6 +61,21 @@ final class TimetableViewController: UIViewController {
         button.setAttributedTitle(Constants.titleForButton, for: .normal)
         return button
     }()
+    
+    // MARK: - Initializers
+    
+    init(selectedDays: String?) {
+        if let selectedDays {
+            self.acceptedDays = selectedDays == NSLocalizedString("everydayValue", comment: "")
+            ? [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
+            : selectedDays.split(separator: ", ").map { Weekday.convert(from: String($0)) }
+        } else {
+            self.acceptedDays = []
+        }
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) { nil }
     
     // MARK: - Lifecycle
     
@@ -75,7 +89,7 @@ final class TimetableViewController: UIViewController {
     private func acceptTimetable() {
         var acceptedDaysInString: String
         if acceptedDays.count == week.count {
-            acceptedDaysInString = "Каждый день"
+            acceptedDaysInString = NSLocalizedString("everydayValue", comment: "")
         } else {
             acceptedDays.sort(by: { $0.orderNumber < $1.orderNumber })
             acceptedDaysInString = acceptedDays.map { $0.shortName }.joined(separator: ", ")
@@ -134,7 +148,8 @@ extension TimetableViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         let currentDay = week[indexPath.row]
-        currentCell.configCell(on: currentDay)
+        let state = acceptedDays.contains(where: { $0 == currentDay })
+        currentCell.configCell(on: currentDay, withState: state)
         currentCell.delegate = self
         return currentCell
     }

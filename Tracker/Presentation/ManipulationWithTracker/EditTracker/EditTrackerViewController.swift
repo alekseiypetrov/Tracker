@@ -1,6 +1,6 @@
 import UIKit
 
-final class CreateHabbitViewController: UIViewController {
+final class EditTrackerViewController: UIViewController {
     
     // MARK: - Constants
     
@@ -19,7 +19,10 @@ final class CreateHabbitViewController: UIViewController {
                 UIColor.sectionColor13, UIColor.sectionColor14, UIColor.sectionColor15,
                 UIColor.sectionColor16, UIColor.sectionColor17, UIColor.sectionColor18
             ]
-            static let headers: [String] = ["Emoji", "Цвет"]
+            static let headers: [String] = [
+                NSLocalizedString("emojiCollectionHeader", comment: ""),
+                NSLocalizedString("colorCollectionHeader", comment: ""),
+            ]
             static let numberOfElements: Int = 18
             static let numberOfCellsInRow: Int = 6
             static let minimumSizeOfColorCell: CGFloat = 48.0
@@ -30,12 +33,12 @@ final class CreateHabbitViewController: UIViewController {
         enum Sizes {
             static let heightOfLabel: CGFloat = 22.0
             static let heightOfCellAndField: CGFloat = 75.0
-            static let heightOfTable: CGFloat = 2.0 * heightOfCellAndField
             static let heightOfButton: CGFloat = 60.0
         }
         enum Fonts {
             static let fontForButtonsAndTitle = UIFont.systemFont(ofSize: 16.0, weight: .medium)
             static let fontForCellsAndTextField = UIFont.systemFont(ofSize: 17.0, weight: .regular)
+            static let fontForNumberOfDaysLabel = UIFont.boldSystemFont(ofSize: 32.0)
         }
         static let cornerRadiusOfUIElements: CGFloat = 16.0
         static let borderWidth: CGFloat = 1.0
@@ -46,15 +49,24 @@ final class CreateHabbitViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Новая привычка"
+        label.text = NSLocalizedString("editTrackerViewControllerHeader", comment: "")
         label.textAlignment = .center
         label.font = Constants.Fonts.fontForButtonsAndTitle
         return label
     }()
     
+    private lazy var numberOfDaysLabel: UILabel = {
+        let label = UILabel()
+        label.text = self.numberOfDays
+        label.textAlignment = .center
+        label.font = Constants.Fonts.fontForNumberOfDaysLabel
+        return label
+    }()
+    
     private lazy var nameOfTracker: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Введите название трекера"
+        textField.text = self.tracker.name
+        textField.placeholder = NSLocalizedString("trackerNamePlaceholder", comment: "")
         textField.font = Constants.Fonts.fontForCellsAndTextField
         textField.textColor = .ypBlack
         textField.backgroundColor = .ypBackground
@@ -88,7 +100,7 @@ final class CreateHabbitViewController: UIViewController {
     
     private lazy var errorLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ограничение 38 символов"
+        label.text = NSLocalizedString("symbolsLimit", comment: "")
         label.textColor = .ypRed
         label.textAlignment = .center
         label.font = Constants.Fonts.fontForCellsAndTextField
@@ -125,11 +137,11 @@ final class CreateHabbitViewController: UIViewController {
         let button = UIButton()
         button.addAction(UIAction(handler: { [weak self] _ in
             guard let self else { return }
-            self.cancelOfCreation()
+            self.cancelOfUpdating()
         }),
                          for: .touchUpInside)
         button.setAttributedTitle(NSAttributedString(
-            string: "Отменить",
+            string: NSLocalizedString("cancelTrackerButtonTitle", comment: ""),
             attributes: [.font: Constants.Fonts.fontForButtonsAndTitle,
                          .foregroundColor: UIColor.ypRed]),
                                   for: .normal)
@@ -140,15 +152,15 @@ final class CreateHabbitViewController: UIViewController {
         return button
     }()
     
-    private lazy var createTrackerButton: UIButton = {
+    private lazy var saveTrackerButton: UIButton = {
         let button = UIButton()
         button.addAction(UIAction(handler: { [weak self] _ in
             guard let self else { return }
-            self.createTracker()
+            self.saveTracker()
         }),
                          for: .touchUpInside)
         button.setAttributedTitle(NSAttributedString(
-            string: "Создать",
+            string: NSLocalizedString("saveTrackerButtonTitle", comment: ""),
             attributes: [.font: Constants.Fonts.fontForButtonsAndTitle,
                          .foregroundColor: UIColor.ypWhite]),
                                   for: .normal)
@@ -163,11 +175,46 @@ final class CreateHabbitViewController: UIViewController {
     
     // MARK: - Private properties
     
+    private let tracker: Tracker
+    private let numberOfDays: String
+    private let category: String
     private var constraintsOfErrorLabel: [NSLayoutConstraint] = []
     private var selectedParameters: [String?] = Array(repeating: nil, count: 3)
     private var selectedColor: UIColor?
     private var selectedCells: [IndexPath?] = Array(repeating: nil, count: 2)
-    private let cellTitles = ["Категория", "Расписание"]
+    private let cellTitles = [
+        NSLocalizedString("categoryCellTitle", comment: ""),
+        NSLocalizedString("timetableCellTitle", comment: ""),
+    ]
+    
+    // MARK: - Initializers
+    
+    init(tracker: Tracker, withNumberOfCompletedDays numberOfDays: String, atCategory category: String) {
+        self.tracker = tracker
+        self.numberOfDays = numberOfDays
+        self.category = category
+        
+        selectedParameters[0] = category
+        if tracker.timetable.count == 7 {
+            selectedParameters[1] = NSLocalizedString("everydayValue", comment: "")
+        } else {
+            selectedParameters[1] = tracker.timetable.map { $0.shortName }.joined(separator: ", ")
+        }
+        selectedParameters[2] = tracker.emoji
+        selectedColor = tracker.color
+        selectedCells = [
+            IndexPath(
+                row: Constants.DataForCollections.emojies.firstIndex(of: tracker.emoji) ?? 0,
+                section: 0),
+            IndexPath(
+                row: Constants.DataForCollections.colors.firstIndex(of: tracker.color) ?? 0,
+                section: 1),
+        ]
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) { nil }
     
     // MARK: - Lifecycle
     
@@ -187,21 +234,30 @@ final class CreateHabbitViewController: UIViewController {
         view.endEditing(true)
     }
     
-    private func cancelOfCreation() {
+    private func cancelOfUpdating() {
         dismiss(animated: true)
     }
     
-    func createTracker() {
+    func saveTracker() {
         guard let name = nameOfTracker.text,
               let category = selectedParameters[0],
               let stringTimetable = selectedParameters[1],
               let emoji = selectedParameters[2],
               let color = selectedColor
         else { return }
-        let timetable: [Weekday] = stringTimetable == "Каждый день"
+        let timetable: [Weekday] = stringTimetable == NSLocalizedString("everydayValue", comment: "")
         ? [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
         : stringTimetable.split(separator: ", ").map { Weekday.convert(from: String($0)) }
-        delegate?.addNewTracker(name: name, color: color, emoji: emoji, timetable: timetable, ofCategory: category)
+        let backupTracker = Tracker(id: tracker.id,
+                                    name: name,
+                                    color: color,
+                                    emoji: emoji,
+                                    timetable: timetable)
+        if tracker == backupTracker && self.category == category {
+            cancelOfUpdating()
+        } else {
+            delegate?.updateTracker(backupTracker, ofCategory: category)
+        }
     }
     
     @objc
@@ -226,8 +282,8 @@ final class CreateHabbitViewController: UIViewController {
     // MARK: - Private methods
     
     private func setupViewsAndConstraints() {
-        let views = [titleLabel, nameOfTracker, errorLabel, tableView,
-                     сollectionView, cancelButton, createTrackerButton]
+        let views = [titleLabel, numberOfDaysLabel, nameOfTracker, errorLabel, tableView,
+                     сollectionView, cancelButton, saveTrackerButton]
         view.addSubviews(views)
         view.backgroundColor = .ypWhite
         
@@ -244,14 +300,17 @@ final class CreateHabbitViewController: UIViewController {
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             titleLabel.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfLabel),
-            nameOfTracker.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24.0),
+            numberOfDaysLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
+            numberOfDaysLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
+            numberOfDaysLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24.0),
+            numberOfDaysLabel.bottomAnchor.constraint(equalTo: nameOfTracker.topAnchor, constant: -40.0),
             nameOfTracker.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             nameOfTracker.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
             nameOfTracker.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfCellAndField),
             tableView.topAnchor.constraint(equalTo: nameOfTracker.bottomAnchor, constant: 24.0),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16.0),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16.0),
-            tableView.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfTable),
+            tableView.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfCellAndField * 2.0),
             сollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 16.0),
             сollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             сollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -259,11 +318,11 @@ final class CreateHabbitViewController: UIViewController {
             cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20.0),
             cancelButton.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfButton),
-            createTrackerButton.bottomAnchor.constraint(equalTo: cancelButton.bottomAnchor),
-            createTrackerButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.0),
-            createTrackerButton.leadingAnchor.constraint(equalTo: cancelButton.trailingAnchor, constant: 8.0),
-            createTrackerButton.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfButton),
-            createTrackerButton.widthAnchor.constraint(equalTo: cancelButton.widthAnchor),
+            saveTrackerButton.bottomAnchor.constraint(equalTo: cancelButton.bottomAnchor),
+            saveTrackerButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20.0),
+            saveTrackerButton.leadingAnchor.constraint(equalTo: cancelButton.trailingAnchor, constant: 8.0),
+            saveTrackerButton.heightAnchor.constraint(equalToConstant: Constants.Sizes.heightOfButton),
+            saveTrackerButton.widthAnchor.constraint(equalTo: cancelButton.widthAnchor),
         ])
     }
     
@@ -278,11 +337,11 @@ final class CreateHabbitViewController: UIViewController {
            !inputedText.isEmpty,
            selectedParameters.allSatisfy( { $0 != nil }),
            selectedColor != nil {
-            createTrackerButton.isEnabled = true
-            createTrackerButton.backgroundColor = .ypBlack
+            saveTrackerButton.isEnabled = true
+            saveTrackerButton.backgroundColor = .ypBlack
         } else {
-            createTrackerButton.isEnabled = false
-            createTrackerButton.backgroundColor = .ypGray
+            saveTrackerButton.isEnabled = false
+            saveTrackerButton.backgroundColor = .ypGray
         }
     }
     
@@ -307,9 +366,9 @@ final class CreateHabbitViewController: UIViewController {
     }
 }
 
-// MARK: - CreateHabbitViewController + CreateHabbitViewControllerDelegate
+// MARK: - EditTrackerViewController + CreateTrackerViewControllerDelegate
 
-extension CreateHabbitViewController: CreateTrackerViewControllerDelegate {
+extension EditTrackerViewController: CreateTrackerViewControllerDelegate {
     func updateCell(at index: Int, by description: String) {
         guard let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CreateTrackerTableViewCell else { return }
         cell.descriptionOfParameter = description
@@ -319,11 +378,11 @@ extension CreateHabbitViewController: CreateTrackerViewControllerDelegate {
     }
 }
 
-// MARK: - CreateHabbitViewController + UITableViewDataSource
+// MARK: - EditTrackerViewController + UITableViewDataSource
 
-extension CreateHabbitViewController: UITableViewDataSource {
+extension EditTrackerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cellTitles.count
+        cellTitles.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -332,13 +391,15 @@ extension CreateHabbitViewController: UITableViewDataSource {
         }
         let currentTitle = cellTitles[indexPath.row]
         currentCell.configCell(with: currentTitle)
+        currentCell.descriptionOfParameter = selectedParameters[indexPath.row]
+        currentCell.update()
         return currentCell
     }
 }
 
-// MARK: - CreateHabbitViewController + UITableViewDelegate
+// MARK: - EditTrackerViewController + UITableViewDelegate
 
-extension CreateHabbitViewController: UITableViewDelegate {
+extension EditTrackerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return Constants.Sizes.heightOfCellAndField
     }
@@ -360,7 +421,9 @@ extension CreateHabbitViewController: UITableViewDelegate {
             let navigationController = UINavigationController(rootViewController: categoryViewController)
             present(navigationController, animated: true)
         case 1:
-            let timetableViewController = TimetableViewController()
+            guard let cell = tableView.cellForRow(at: indexPath) as? CreateTrackerTableViewCell
+            else { return }
+            let timetableViewController = TimetableViewController(selectedDays: cell.descriptionOfParameter)
             timetableViewController.delegate = self
             let navigationController = UINavigationController(rootViewController: timetableViewController)
             present(navigationController, animated: true)
@@ -370,15 +433,15 @@ extension CreateHabbitViewController: UITableViewDelegate {
     }
 }
 
-// MARK: - CreateHabbitViewController + UICollectionViewDataSource
+// MARK: - EditTrackerViewController + UICollectionViewDataSource
 
-extension CreateHabbitViewController: UICollectionViewDataSource {
+extension EditTrackerViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return Constants.DataForCollections.headers.count
+        Constants.DataForCollections.headers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return Constants.DataForCollections.numberOfElements
+        Constants.DataForCollections.numberOfElements
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -435,11 +498,11 @@ extension CreateHabbitViewController: UICollectionViewDataSource {
     }
 }
 
-// MARK: - CreateHabbitViewController + UICollectionViewFlowLayoutDelegate
+// MARK: - EditTrackerViewController + UICollectionViewFlowLayoutDelegate
 
-extension CreateHabbitViewController: UICollectionViewDelegateFlowLayout {
+extension EditTrackerViewController: UICollectionViewDelegateFlowLayout {
     private func getPaddingWidth(from width: CGFloat, sizeOfCell cellSize: CGFloat) -> CGFloat {
-        return (width - 2 * Constants.DataForCollections.sectionEdgeInsets.left) / CGFloat(Constants.DataForCollections.numberOfCellsInRow) - cellSize
+        (width - 2 * Constants.DataForCollections.sectionEdgeInsets.left) / CGFloat(Constants.DataForCollections.numberOfCellsInRow) - cellSize
     }
     
     private func calculateCellSize(for collectionView: UICollectionView) -> CGSize {
@@ -455,7 +518,7 @@ extension CreateHabbitViewController: UICollectionViewDelegateFlowLayout {
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return calculateCellSize(for: collectionView)
+        calculateCellSize(for: collectionView)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -468,15 +531,15 @@ extension CreateHabbitViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return Constants.DataForCollections.sectionEdgeInsets
+        Constants.DataForCollections.sectionEdgeInsets
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.frame.width,
+        CGSize(width: collectionView.frame.width,
                       height: Constants.DataForCollections.heightOfHeader)
     }
     
