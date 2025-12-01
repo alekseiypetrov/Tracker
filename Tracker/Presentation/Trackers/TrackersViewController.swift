@@ -165,6 +165,7 @@ final class TrackersViewController: UIViewController {
         trackerStore = TrackerStore(delegate: self)
         recordStore = TrackerRecordStore()
         setupSubviewsAndConstraints()
+        configureScreenTapEvent()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -195,6 +196,11 @@ final class TrackersViewController: UIViewController {
         DispatchQueue.main.async { [weak self] in
             self?.collectionView.reloadData()
         }
+    }
+    
+    @objc
+    private func hideKeyboard() {
+        view.endEditing(true)
     }
     
     // MARK: - Private methods
@@ -255,6 +261,12 @@ final class TrackersViewController: UIViewController {
     private func showCollection() {
         [imageViewOfEmptyList, titleOfEmptyListLabel].forEach { $0.isHidden = true }
         [collectionView, filterButton].forEach { $0.isHidden = false }
+    }
+    
+    private func configureScreenTapEvent() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
     }
     
     private func setupSubviewsAndConstraints() {
