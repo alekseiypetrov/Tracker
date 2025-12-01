@@ -54,10 +54,10 @@ final class TrackersViewController: UIViewController {
             UIAction(
                 handler: { [weak self] _ in
                     guard let self else { return }
-                    AnalyticsService.shared.sendEvent(name: "addTrackerButton_tap",
-                                                      parameters: ["event": "click",
-                                                                   "screen": "Main",
-                                                                   "item": "add_track"])
+                    AnalyticsService.sendEvent(name: "addTrackerButton_tap",
+                                               parameters: ["event": "click",
+                                                            "screen": "Main",
+                                                            "item": "add_track"])
                     self.addTracker()
                 }),
             for: .touchUpInside)
@@ -116,10 +116,10 @@ final class TrackersViewController: UIViewController {
         button.layer.cornerRadius = Constants.cornerRadiusOfFilterButton
         button.addAction(UIAction(handler: { [weak self] _ in
             guard let self else { return }
-            AnalyticsService.shared.sendEvent(name: "filterButton_tap",
-                                              parameters: ["event": "click",
-                                                           "screen": "Main",
-                                                           "item": "filter"])
+            AnalyticsService.sendEvent(name: "filterButton_tap",
+                                       parameters: ["event": "click",
+                                                    "screen": "Main",
+                                                    "item": "filter"])
             let chooseFilterViewController = ChooseFilterViewController(delegate: self)
             self.present(chooseFilterViewController, animated: true)
         }),
@@ -170,16 +170,16 @@ final class TrackersViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        AnalyticsService.shared.sendEvent(name: "TrackersViewController_opening",
-                                          parameters: ["event": "open",
-                                                       "screen": "Main"])
+        AnalyticsService.sendEvent(name: "TrackersViewController_opening",
+                                   parameters: ["event": "open",
+                                                "screen": "Main"])
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        AnalyticsService.shared.sendEvent(name: "TrackersViewController_closing",
-                                          parameters: ["event": "close",
-                                                       "screen": "Main"])
+        AnalyticsService.sendEvent(name: "TrackersViewController_closing",
+                                   parameters: ["event": "close",
+                                                "screen": "Main"])
     }
     
     // MARK: - Actions
@@ -449,10 +449,10 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
     }
     
     func didTappedButtonInTracker(_ tracker: TrackersCollectionViewCell) {
-        AnalyticsService.shared.sendEvent(name: "trackerButton_tap",
-                                          parameters: ["event": "click",
-                                                       "screen": "Main",
-                                                       "item": "track"])
+        AnalyticsService.sendEvent(name: "trackerButton_tap",
+                                   parameters: ["event": "click",
+                                                "screen": "Main",
+                                                "item": "track"])
         let currentDateAtDatePicker = datePicker.date
         let isItAFuture = currentDateAtDatePicker.timeIntervalSinceNow > 0
         guard !isItAFuture,
@@ -642,10 +642,10 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout & UICollect
             return UIMenu(children: [
                 UIAction(title: NSLocalizedString("titleOfEditingInContextMenu", comment: ""),
                          handler: { [weak self] _ in
-                             AnalyticsService.shared.sendEvent(name: "editButtonOfContextMenu_tap",
-                                                               parameters: ["event": "click",
-                                                                            "screen": "Main",
-                                                                            "item": "edit"])
+                             AnalyticsService.sendEvent(name: "editButtonOfContextMenu_tap",
+                                                        parameters: ["event": "click",
+                                                                     "screen": "Main",
+                                                                     "item": "edit"])
                              let viewController = EditTrackerViewController(
                                 tracker: tracker,
                                 withNumberOfCompletedDays: numberOfDays,
@@ -656,10 +656,10 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout & UICollect
                 UIAction(title: NSLocalizedString("titleOfDeletingInContextMenu", comment: ""),
                          attributes: .destructive,
                          handler: { [weak self] _ in
-                             AnalyticsService.shared.sendEvent(name: "deleteButtonOfContextMenu_tap",
-                                                               parameters: ["event": "click",
-                                                                            "screen": "Main",
-                                                                            "item": "delete"])
+                             AnalyticsService.sendEvent(name: "deleteButtonOfContextMenu_tap",
+                                                        parameters: ["event": "click",
+                                                                     "screen": "Main",
+                                                                     "item": "delete"])
                              let alert = UIAlertController(
                                 title: NSLocalizedString("alertHeaderForDeleting", comment: ""),
                                 message: nil,
