@@ -157,7 +157,7 @@ final class TrackersViewController: UIViewController {
     }()
     
     private var currentTextInSearchBar: String?
-    private var currentFilter: Int = 0
+    private var currentFilter: Filter = .all
     private var filteredCategories: [TrackerCategory] = []
     private var categoriesOnAGivenDay: [TrackerCategory] = []
     private var categoryStore: TrackerCategoryStore?
@@ -343,15 +343,20 @@ extension TrackersViewController: TrackerStoreDelegate {
 
 extension TrackersViewController: TrackersViewControllerDelegate {
     func updateCollection(by filter: Int) {
-        currentFilter = filter
+        currentFilter = Filter(rawValue: filter) ?? .all
         DispatchQueue.main.async { [weak self] in
             self?.collectionView.reloadData()
         }
-        filterButton
-            .setAttributedTitle(
-                currentFilter > 1 ? Constants.TitleForFilterButton.redTitle : Constants.TitleForFilterButton.whiteTitle,
-                for: .normal
-            )
+        let getCurrentAttributedTitle: () -> NSAttributedString = {
+            switch self.currentFilter {
+            case .all, .today:
+                return Constants.TitleForFilterButton.whiteTitle
+            default:
+                return Constants.TitleForFilterButton.redTitle
+            }
+        }
+        filterButton.setAttributedTitle(getCurrentAttributedTitle(),
+                                        for: .normal)
     }
     
     private func deleteTracker(_ tracker: Tracker) {
@@ -503,29 +508,18 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
 // MARK: - TrackersViewController + UICollectionViewDataSource
 
 extension TrackersViewController: UICollectionViewDataSource {
-    private func getFilter(by number: Int) -> Filter {
-        switch number {
-        case 1:
-            return Filter.today
-        case 2:
-            return Filter.completed
-        case 3:
-            return Filter.nonCompleted
-        default:
-            return Filter.all
-        }
-    }
-    
     private func filterCategories() {
-        let filter = getFilter(by: currentFilter)
-        if filter == .today {
+        if currentFilter == .today {
             datePicker.date = Date.now
+            currentFilter = .all
         }
+        
         let currentDateAtDatePicker = datePicker.date
         guard let calendar = datePicker.calendar,
               let weekday = Weekday(rawValue: calendar.component(.weekday, from: currentDateAtDatePicker)),
               let categories = categoryStore?.getCategories()
         else { return }
+        
         if categories.isEmpty || categories.allSatisfy({ $0.trackers.isEmpty }) {
             imageViewOfEmptyList.image = Constants.Images.imageOfEmptyTrackersList
             titleOfEmptyListLabel.text = Constants.TitlesForEmptyList.noTrackers
@@ -533,6 +527,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             imageViewOfEmptyList.image = Constants.Images.imageOfNotFoundedTrackers
             titleOfEmptyListLabel.text = Constants.TitlesForEmptyList.notFoundedTrackers
         }
+        
         categoriesOnAGivenDay = categories
             .filter {
                 !$0.trackers.filter {
@@ -544,8 +539,9 @@ extension TrackersViewController: UICollectionViewDataSource {
                     $0.timetable.contains(weekday)
                 })
             }
-        if filter == .completed,
-           let recordStore {
+        
+        switch (currentFilter, recordStore) {
+        case (.completed, let recordStore?):
             let formattedDate = dateFormatter.string(from: currentDateAtDatePicker)
             categoriesOnAGivenDay = categoriesOnAGivenDay
                 .filter {
@@ -558,8 +554,7 @@ extension TrackersViewController: UICollectionViewDataSource {
                         recordStore.getStatusOfTracker(withId: $0.id, atDate: formattedDate)
                     })
                 }
-        } else if filter == .nonCompleted,
-                  let recordStore {
+        case (.nonCompleted, let recordStore?):
             let formattedDate = dateFormatter.string(from: currentDateAtDatePicker)
             categoriesOnAGivenDay = categoriesOnAGivenDay
                 .filter {
@@ -572,7 +567,9 @@ extension TrackersViewController: UICollectionViewDataSource {
                         !recordStore.getStatusOfTracker(withId: $0.id, atDate: formattedDate)
                     })
                 }
+        default: break
         }
+
         if let currentTextInSearchBar, !currentTextInSearchBar.isEmpty {
             filteredCategories = categoriesOnAGivenDay
                 .filter {
@@ -587,9 +584,6 @@ extension TrackersViewController: UICollectionViewDataSource {
                 }
         } else {
             filteredCategories = categoriesOnAGivenDay
-        }
-        if currentFilter == 1 {
-            currentFilter = 0
         }
     }
     
