@@ -36,6 +36,7 @@ maximumTrackersPerDayTitle = "Лучший день";
 trackersViewControllerHeader = "Трекеры";
 searchBarPlaceholder = "Поиск";
 titleOfEmptyListOfTrackers = "Что будем отслеживать?";
+titleOfNotFoundedListOfTrackers = "Ничего не найдено";
 pinCategory = "Закрепленные";
 titleOfFilterButton = "Фильтры";
 titleOfEditingInContextMenu = "Редактировать";

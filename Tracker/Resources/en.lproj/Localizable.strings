@@ -36,6 +36,7 @@ maximumTrackersPerDayTitle = "Best day";
 trackersViewControllerHeader = "Trackers";
 searchBarPlaceholder = "Search";
 titleOfEmptyListOfTrackers = "What are we going to track?";
+titleOfNotFoundedListOfTrackers = "Nothing was found";
 pinCategory = "Pinned";
 titleOfFilterButton = "Filters";
 titleOfEditingInContextMenu = "Edit";

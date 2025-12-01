@@ -6,6 +6,8 @@ final class TrackersViewController: UIViewController {
     
     private enum Constants {
         enum Images {
+            static let imageOfEmptyTrackersList = UIImage.emptyTrackersList
+            static let imageOfNotFoundedTrackers = UIImage.notFoundedTrackers
             static let imageAddTrackerButton = UIImage.addTracker
                 .withTintColor(.ypBlack, renderingMode: .alwaysOriginal)
             static let imageOfButtonWithPlus = UIImage(systemName: "plus.circle.fill")?
@@ -38,6 +40,10 @@ final class TrackersViewController: UIViewController {
                 string: NSLocalizedString("titleOfFilterButton", comment: ""),
                 attributes: [.font: UIFont.systemFont(ofSize: 17.0, weight: .regular),
                              .foregroundColor: UIColor.red])
+        }
+        enum TitlesForEmptyList {
+            static let noTrackers = NSLocalizedString("titleOfEmptyListOfTrackers", comment: "")
+            static let notFoundedTrackers = NSLocalizedString("titleOfNotFoundedListOfTrackers", comment: "")
         }
         static let cornerRadiusOfFilterButton: CGFloat = 16.0
         static let backgroundColorOfDatePicker = UIColor(red: 240.0 / 255.0, green: 240.0 / 255.0, blue: 240.0 / 255.0, alpha: 1.0)
@@ -132,13 +138,12 @@ final class TrackersViewController: UIViewController {
     }()
     
     private lazy var imageViewOfEmptyList: UIImageView = {
-        UIImageView(image: UIImage.emptyTrackersList)
+        UIImageView()
     }()
     
     private lazy var titleOfEmptyListLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: Constants.Sizes.titleOfEmptyListSizeOfText)
-        label.text = NSLocalizedString("titleOfEmptyListOfTrackers", comment: "")
         label.textAlignment = .center
         return label
     }()
@@ -357,6 +362,7 @@ extension TrackersViewController: TrackersViewControllerDelegate {
         } catch {
             showAlert(withMessage: NSLocalizedString("undefinedError", comment: ""))
         }
+        calculateStatistics()
     }
     
     func updateTracker(_ tracker: Tracker, ofCategory categoryTitle: String) {
@@ -373,6 +379,7 @@ extension TrackersViewController: TrackersViewControllerDelegate {
                 self?.showAlert(withMessage: NSLocalizedString("undefinedError", comment: ""))
             }
         }
+        calculateStatistics()
     }
     
     func addNewTracker(name: String, 
@@ -519,6 +526,13 @@ extension TrackersViewController: UICollectionViewDataSource {
               let weekday = Weekday(rawValue: calendar.component(.weekday, from: currentDateAtDatePicker)),
               let categories = categoryStore?.getCategories()
         else { return }
+        if categories.isEmpty || categories.allSatisfy({ $0.trackers.isEmpty }) {
+            imageViewOfEmptyList.image = Constants.Images.imageOfEmptyTrackersList
+            titleOfEmptyListLabel.text = Constants.TitlesForEmptyList.noTrackers
+        } else {
+            imageViewOfEmptyList.image = Constants.Images.imageOfNotFoundedTrackers
+            titleOfEmptyListLabel.text = Constants.TitlesForEmptyList.notFoundedTrackers
+        }
         categoriesOnAGivenDay = categories
             .filter {
                 !$0.trackers.filter {
